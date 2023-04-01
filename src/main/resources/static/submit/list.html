@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>教学信息反馈查看</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="icon" href="../favicon.ico">
+    <style>
+        .el-message-box {
+            width: 50vw;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <h1>教学信息反馈提交记录</h1>
+    <div>
+        <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row border
+                  :default-sort="{prop: 'createTime', order: 'descending'}"
+                  height="700" fit
+                  :scroll="{ x: 'max-content', y: false }">
+            <el-table-column type="index" align="center" label="序号" fixed></el-table-column>
+            <el-table-column prop="courseName" label="课程名称" sortable align="center"></el-table-column>
+            <el-table-column prop="teacherName" label="教师姓名" sortable align="center"></el-table-column>
+            <el-table-column prop="shouldArriveNum" label="应到人数" align="center"></el-table-column>
+            <el-table-column prop="actualArriveNum" label="实到人数" align="center"></el-table-column>
+            <el-table-column prop="classLocation" label="上课地点" align="center"></el-table-column>
+
+            <el-table-column label="记录时间" align="center">
+                <el-table-column prop="recordClassDate" label="上课日期" align="center"></el-table-column>
+                <el-table-column prop="recordCourseNum" label="上课节次" align="center"></el-table-column>
+            </el-table-column>
+
+            <el-table-column prop="feedbackGood" label="信息反馈" align="center">
+                <el-table-column prop="feedbackGood" label="好的方面" align="center"></el-table-column>
+                <el-table-column prop="feedbackNotEnough" label="不足之处" align="center"></el-table-column>
+            </el-table-column>
+            <el-table-column prop="hopesAndSuggestions" label="希望和建议" align="center"></el-table-column>
+            <el-table-column prop="createTime" label="提交时间" sortable align="center"></el-table-column>
+
+            <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                    <el-button type="danger" size="mini" @click="handleDelete(scope.row)" class=" el-icon-delete">
+                        删除
+                    </el-button>
+                </template>
+            </el-table-column>
+
+        </el-table>
+    </div>
+</div>
+</body>
+
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            dataList: [],//当前页要展示的列表数据
+        },
+        created() {
+            this.selectBySubmitPerson();
+        },
+        methods: {
+            handleDelete(row) {
+                this.$confirm("此操作将永久删除当前数据，是否继续？", "提示", {
+                    type: 'warning',
+                }).then(() => {
+                    axios.delete("/feedback/remove/stu/" + row.id).then((response) => {
+                        if (response.data.code === 20021) {
+                            this.$message.success(response.data.msg);
+                        } else {
+                            this.$message({
+                                message: (response.data.msg),
+                                type: 'error',
+                                center: true
+                            })
+                        }
+                    }).finally(() => {
+                        this.selectBySubmitPerson();
+                    });
+                }).catch(() => {
+                    this.$message({
+                        message: ("删除操作取消"),
+                        type: 'info',
+                        center: true
+                    })
+                });
+            },
+
+            selectBySubmitPerson() {
+                axios({
+                    method: 'get',
+                    url: '/feedback/list/stu/' + localStorage.getItem("loginUser")
+                }).then((response) => {
+                    if (response.data.code === 20040) {
+                        this.dataList = response.data.data;
+                        // this.$message.success(response.data.msg)
+                    } else {
+                        this.$message({
+                            message: (response.data.msg),
+                            type: 'error',
+                            center: true
+                        })
+                    }
+                }).catch((e) => {
+                    this.$message({
+                        message: ("接口请求异常  " + e),
+                        type: 'error',
+                        center: true
+                    })
+                });
+            },
+        }
+    });
+</script>
+</html>

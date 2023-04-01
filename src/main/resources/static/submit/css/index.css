@@ -1,0 +1,33 @@
+h1 {
+    width: 100%;
+    height: 5vh;
+    text-align: center;
+    /*font-size: 50px;*/
+    line-height: 32px;
+
+}
+
+.el-card {
+    border-radius: 20px;
+    /*height: 110vh;*/
+    padding: 20px 0;
+}
+
+/*input输入框*/
+.el-input,.el-textarea{
+    width: 50vw;
+}
+
+/*计数器*/
+.el-input-number {
+    width: 50vw;
+}
+
+/*选择器*/
+.el-select {
+    width: 50vw;
+}
+/*error*/
+.el-form-item__error {
+    width: 50vw;
+}

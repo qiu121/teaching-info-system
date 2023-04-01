@@ -1,0 +1,58 @@
+# 日志配置
+logging:
+  level:
+    com.github.qiu121: debug
+    org.springframework: warn
+    root: info
+
+sa-token:
+  # token名称 (同时也是cookie名称)
+  token-name: satoken
+  # token有效期，单位s 默认30天, -1代表永不过期
+  timeout: 604800
+  # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
+  activity-timeout: -1
+  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+  is-share: true
+  # token风格
+  token-style: simple-uuid
+  # 是否输出操作日志
+  is-log: true
+
+spring:
+  #设置启用的环境
+  profiles:
+    active: dev
+
+  main:
+    banner-mode: console
+  application:
+    name: teaching-evaluation-system
+
+  # 配置SpringMVC默认路径匹配策略，适配swagger2
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  # DevTools
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+      additional-paths: src/main/java #重启目录
+
+# mybatis-plus配置
+mybatis-plus:
+  global-config:
+    banner: true
+    db-config:
+      id-type: auto
+  #  搜索指定包别名
+  type-aliases-package: com.github.qiu121.pojo
+  configuration:
+    # 数据库下划线字段与实体中的驼峰属性映射
+    map-underscore-to-camel-case: true
+    # 数据库操作日志
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>南昌工学院信息员教学反馈系统</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="icon" href="../favicon.ico">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="css/index.css">
+    <style>
+        img:hover {
+            cursor: pointer;
+        }
+
+        .el-card {
+            border-radius: 20px;
+            opacity: 0.76;
+            /*backdrop-filter: blur(5px);*/
+        }
+
+        h1 {
+            font-size: 20px;
+            font-family: 微软雅黑, system-ui;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <!--登录表单-->
+    <div class="all">
+        <el-card>
+            <h1>信息员教学反馈系统登录界面</h1>
+            <el-form :model="loginForm" :rules="rules" ref="loginForm">
+                <el-form-item label="账户" prop="username">
+                    <el-input v-model="loginForm.username" placeholder="请输入账户名" clearable
+                              prefix-icon="iconfont el-icon-user" maxlength="20">
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="loginForm.password" placeholder="请输入密码" clearable
+                              prefix-icon="iconfont el-icon-lock" show-password maxlength="20">
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item label="验证码" prop="captcha">
+                    <el-input v-model="loginForm.captcha" placeholder="请输入验证码"
+                              prefix-icon="iconfont el-icon-edit" clearable maxlength="5">
+                    </el-input>
+                    <img :src="captchaPath" alt="图形验证码" style="opacity: 1;"
+                         ref="captcha" title="看不清？点击切换"
+                         @click="freshCaptcha">
+                </el-form-item>
+
+                <el-form-item>
+                    <el-radio-group v-model="userSelect">
+                        <el-radio label="s">信息员</el-radio>
+                        <el-radio label="t">校督导教师</el-radio>
+                        <el-radio label="a">管理员</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button @click="cleanForm" class="el-icon-close">重置</el-button>
+                    <el-button type="primary" @click="loginSubmit" center>登录</el-button>
+                    <el-link type="primary" @click="forgetPassword">更多</el-link>
+                </el-form-item>
+            </el-form>
+        </el-card>
+
+        <!--修改账户密码弹层-->
+        <div class="edit-user-info">
+            <el-dialog title="学生用户密码修改" :visible.sync="dialogFormVisibleEdit" class="modify">
+                <el-form ref="updateUserInfoForm" :model="updateUserInfoForm" :rules="rules" label-position="right"
+                         label-width="100px" class="modifys">
+                    <el-row>
+                        <el-col :span="20">
+                            <el-form-item label="用户名" prop="username">
+                                <el-input v-model="updateUserInfoForm.username" placeholder="请输入用户名"
+                                          clearable maxlength="20"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="20">
+                            <el-form-item label="用户密码" prop="oldPassword">
+                                <el-input v-model="updateUserInfoForm.oldPassword" placeholder="请输入当前密码"
+                                          clearable
+                                          show-password maxlength="20"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="20">
+                            <el-form-item label="新的密码" prop="password">
+                                <el-input v-model="updateUserInfoForm.password" placeholder="请输入新的密码" clearable
+                                          show-password maxlength="20"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="20">
+                            <el-form-item label="确认密码" prop="password2">
+                                <el-input v-model="updateUserInfoForm.password2" placeholder="请再次输入密码" clearable
+                                          show-password maxlength="20"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                </el-form>
+
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisibleEdit = false" class="el-icon-close">取消</el-button>
+                    <el-button type="primary" @click="handleUpdate()" class="el-icon-check">完成</el-button>
+                </div>
+            </el-dialog>
+        </div>
+
+    </div>
+</div>
+</body>
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script src="./api/login.js"></script>
+
+
+<script>
+
+    new Vue({
+        el: '#app',
+        data: {
+
+            captchaPath: "/api/v1/captcha/" + Date.now(),
+            userSelect: "s", //默认以学生账户登录
+            dialogFormVisibleEdit: false,
+            updateUserInfoForm: {
+                //修改账户表单数据
+            },
+            loginForm: {
+                //用户登录表单
+                //图形验证码
+                captcha: "",
+            },
+            rules: {//校验规则
+                username: [
+                    {required: true, message: '用户名不允许为空', trigger: 'blur'},
+                ],
+                oldPassword: [
+                    {required: true, message: '用户密码不允许为空', trigger: 'blur'}
+                ],
+                captcha: [
+                    {required: true, message: '验证码不可为空', trigger: 'blur'}
+                ],
+                password: [
+                    {required: true, message: '用户密码未填写', trigger: 'blur'}
+                ],
+                password2: [
+                    {required: true, message: '请再次输入密码', trigger: 'blur'}
+                ],
+
+            }
+        },
+        methods: {
+            freshCaptcha() {
+                this.captchaPath = '/api/v1/captcha/' + Date.now()
+            },
+            cleanForm() {
+                this.loginForm = {}
+            },
+            forgetPassword() {
+                this.dialogFormVisibleEdit = true
+                this.updateUserInfoForm = {}
+            },
+            handleUpdate() {
+                this.$refs.updateUserInfoForm.validate((valid) => {
+                    if (valid) {
+                        if (this.updateUserInfoForm.password === this.updateUserInfoForm.oldPassword) {
+                            this.$message("新密码不应与旧密码相同,请修改后重试")
+                        } else if (this.updateUserInfoForm.password !== this.updateUserInfoForm.password2) {
+                            this.$message("两次输入密码不一致，请检查后重试")
+                        } else {
+                            updateTApi(this.updateUserInfoForm, this.updateUserInfoForm.oldPassword)
+                                .then((response) => {
+                                    if (response.data.code === 20031) {
+                                        this.$message.success(response.data.msg);
+                                        this.dialogFormVisibleEdit = false;
+                                    } else {
+                                        this.$message.error(response.data.msg);
+                                    }
+                                }).catch((e) => {
+                                this.$message({
+                                    message: ("接口请求异常  " + e),
+                                    type: 'error',
+                                    center: true
+                                })
+                            });
+                        }
+                    }
+                })
+            },
+            loginSubmit() {
+                this.$refs.loginForm.validate((valid) => {
+                    if (valid) {
+                        if (this.userSelect === "s") {
+                            loginSApi(this.loginForm, this.loginForm.captcha)
+                                .then((response) => {
+                                    if (response.data.code === 20041) {
+                                        const loginUser = response.data.data.username
+                                        const college = response.data.data.college
+                                        localStorage.setItem("loginUser", loginUser)
+                                        localStorage.setItem("college", college)
+                                        this.$message.success(response.data.msg);
+                                        window.location.href = "../submit/index.html"
+                                    } else if (response.data.code === 20042) {
+                                        this.$message(response.data.msg);
+                                    } else {
+                                        this.$message({
+                                            message: (response.data.msg),
+                                            type: 'error',
+                                            center: true
+                                        })
+                                    }
+                                }).catch((e) => {
+                                this.$message({
+                                    message: ("接口请求异常  " + e),
+                                    type: 'error',
+                                    center: true
+                                })
+                            });
+                        }
+                        if (this.userSelect === "t") {
+                            loginTApi(this.loginForm, this.loginForm.captcha)
+                                .then((r) => {
+                                    if (r.data.code === 20041) {
+                                        this.$message.success(r.data.msg);
+                                        window.location.href = "../backend/show.html"
+                                    } else if (r.data.code === 20042) {
+                                        this.$message(r.data.msg);
+                                    } else {
+                                        this.$message({
+                                            message: (r.data.msg),
+                                            type: 'error',
+                                            center: true
+                                        })
+                                    }
+                                }).catch((e) => {
+                                this.$message({
+                                    message: ("接口请求异常  " + e),
+                                    type: 'error',
+                                    center: true
+                                })
+                            });
+                        }
+
+                        if (this.userSelect === "a") {
+                            loginAApi(this.loginForm, this.loginForm.captcha)
+                                .then((r) => {
+                                    if (r.data.code === 20041) {
+                                        this.$message.success(r.data.msg);
+                                        //TODO 管理员业务操作页面
+                                        window.location.href = "https://baidu.com"
+                                    } else if (r.data.code === 20042) {
+                                        this.$message(r.data.msg);
+                                    } else {
+                                        this.$message({
+                                            message: (r.data.msg),
+                                            type: 'error',
+                                            center: true
+                                        })
+                                    }
+                                }).catch((e) => {
+                                this.$message({
+                                    message: ("接口请求异常  " + e),
+                                    type: 'error',
+                                    center: true
+                                })
+                            });
+                        }
+
+                    }
+                })
+
+            },
+        }
+    })
+</script>
+</html>
