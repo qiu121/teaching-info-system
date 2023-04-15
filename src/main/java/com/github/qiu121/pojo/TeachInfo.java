@@ -10,10 +10,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:qiu0089@foxmail.com">qiu121</a>
@@ -30,7 +32,7 @@ import java.time.LocalDateTime;
 @ColumnWidth(15)
 @ContentRowHeight(30)
 public class TeachInfo implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2689684323939293112L;
 
     /**
      * 主键
@@ -57,13 +59,13 @@ public class TeachInfo implements Serializable {
      * 课程名称
      */
     @ExcelProperty("课程名称")
-    //@NotBlank(message = "课程名称未填写")
+    @NotBlank(message = "课程名称未填写")
     private String courseName;
     /**
      * 教师姓名
      */
     @ExcelProperty("教师姓名")
-    //@NotBlank(message = "教师姓名未填写")
+    @NotBlank(message = "教师姓名未填写")
     private String teacherName;
     /**
      * 应到人数
@@ -81,7 +83,7 @@ public class TeachInfo implements Serializable {
      * 上课地点
      */
     @ExcelProperty("上课地点")
-    //@NotBlank(message = "上课地点未填写")
+    @NotBlank(message = "上课地点未填写")
     private String classLocation;
     /**
      * 记录时间-日期
@@ -123,4 +125,41 @@ public class TeachInfo implements Serializable {
      */
     private LocalDateTime updateTime;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TeachInfo)) {
+            return false;
+        }
+        TeachInfo teachInfo = (TeachInfo) o;
+        return Objects.equals(getSubmitPerson(), teachInfo.getSubmitPerson())
+                && Objects.equals(getSubmitPersonName(), teachInfo.getSubmitPersonName())
+                && Objects.equals(getSubmitPersonCollege(), teachInfo.getSubmitPersonCollege())
+                && Objects.equals(getSubmitPersonClass(), teachInfo.getSubmitPersonClass())
+                && Objects.equals(getCourseName(), teachInfo.getCourseName())
+                && Objects.equals(getTeacherName(), teachInfo.getTeacherName())
+                && Objects.equals(getShouldArriveNum(), teachInfo.getShouldArriveNum())
+                && Objects.equals(getActualArriveNum(), teachInfo.getActualArriveNum())
+                && Objects.equals(getClassLocation(), teachInfo.getClassLocation())
+                && Objects.equals(getRecordClassDate(), teachInfo.getRecordClassDate())
+                && Objects.equals(getRecordCourseNum(), teachInfo.getRecordCourseNum())
+                && Objects.equals(getFeedbackGood(), teachInfo.getFeedbackGood())
+                && Objects.equals(getFeedbackNotEnough(), teachInfo.getFeedbackNotEnough())
+                && Objects.equals(getHopesAndSuggestions(), teachInfo.getHopesAndSuggestions());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSubmitPerson(),
+                getSubmitPersonName(), getSubmitPersonCollege(),
+                getSubmitPersonClass(), getCourseName(),
+                getTeacherName(), getShouldArriveNum(),
+                getActualArriveNum(), getClassLocation(),
+                getRecordClassDate(), getRecordCourseNum(),
+                getFeedbackGood(), getFeedbackNotEnough(),
+                getHopesAndSuggestions());
+
+    }
 }

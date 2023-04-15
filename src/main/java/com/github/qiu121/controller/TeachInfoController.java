@@ -6,14 +6,15 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.qiu121.common.R;
+import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.pojo.TeachInfo;
-import com.github.qiu121.service.StudentService;
 import com.github.qiu121.service.TeachInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,37 +24,46 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("/feedback")
+@RequestMapping("/feedback/stu")
 public class TeachInfoController {
     @Resource
     private TeachInfoService teachInfoService;
-    @Resource
-    private StudentService studentService;
 
     /**
-     * 教学信息反馈提交
+     * 教学信息反馈提交(信息员)
      *
      * @param teachInfo 教学信息对象
      * @return R
      */
-
     @PostMapping("/add")
-    public R<String> submit(@RequestBody TeachInfo teachInfo) {
-        boolean flag = teachInfoService.save(teachInfo);
+    public R<String> submitStu(@RequestBody @Validated TeachInfo teachInfo) {
         R<String> r = new R<>();
+        if (teachInfo.getActualArriveNum() > teachInfo.getShouldArriveNum()) {
+            throw new BusinessException("实到人数不可 大于 应到人数");
+        }
+
+        for (TeachInfo info : teachInfoService.list()) {
+            if (info.equals(teachInfo)) {
+                log.info("是否为同一条反馈信息(信息员): {}", info.equals(teachInfo));
+                throw new BusinessException("请勿重复添加");
+            }
+        }
+
+        boolean flag = teachInfoService.save(teachInfo);
         return flag ? (r.setCode(20011).setMsg("提交成功"))
                 : (r.setCode(20012).setMsg("提交失败"));
     }
 
     /**
-     * 动态条件查询所有教学反馈信息
+     * 动态条件查询所有教学反馈信息(信息员提交)
      *
      * @param teachInfo 提交数据对象(教师姓名、课程名、上课地点)
      * @return 集合对象
      */
-    @PostMapping("/selectAll/admin/{currentNum}/{pageSize}")
-    public R<IPage<TeachInfo>> selectList(@RequestBody @Validated TeachInfo teachInfo,
-                                          @PathVariable long currentNum, @PathVariable long pageSize) {
+    @GetMapping("/selectAll/{currentNum}/{pageSize}")
+    public R<IPage<TeachInfo>> selectList(@RequestBody TeachInfo teachInfo,
+                                          @PathVariable long currentNum,
+                                          @PathVariable long pageSize) {
 
         IPage<TeachInfo> page = new Page<>(currentNum, pageSize);
 
@@ -73,8 +83,8 @@ public class TeachInfoController {
      * @param username 信息员用户
      * @return 封装集合
      */
-    @GetMapping("/list/stu/{username}")
-    public R<List<TeachInfo>> list(@PathVariable String username) {
+    @GetMapping("/list/{username}")
+    public R<List<TeachInfo>> listTeachInfo(@PathVariable String username) {
         LambdaQueryWrapper<TeachInfo> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TeachInfo::getSubmitPerson, username);
 
@@ -90,8 +100,8 @@ public class TeachInfoController {
      * @param id 教学信息记录id
      * @return TeachInfo
      */
-    @GetMapping("/edit/stu/{id}")
-    public R<TeachInfo> editTeachInfo(@PathVariable Integer id) {
+    @GetMapping("/edit/{id}")
+    public R<TeachInfo> editTeachInfo(@PathVariable Long id) {
         TeachInfo info = teachInfoService.getById(id);
         return new R<>(20041, "查询成功", info);
     }
@@ -103,12 +113,26 @@ public class TeachInfoController {
      * @return R<Boolean>
      */
 
-    @DeleteMapping("/remove/stu/{id}")
-    public R<Boolean> removeTeachInfo(@PathVariable Integer id) {
+    @DeleteMapping("/remove/{id}")
+    public R<Boolean> removeTeachInfo(@PathVariable Long id) {
         final boolean remove = teachInfoService.removeById(id);
         log.info("删除完成：{}", remove);
-        return remove ? new R<>(20021, "删除成功", true) :
-                new R<>(20022, "删除失败", false);
+        return remove ? new R<>(20021, "删除成功") :
+                new R<>(20022, "删除失败");
+    }
+
+    /**
+     * 批量删除 提交的教学信息(信息员)
+     *
+     * @param idList id集合
+     * @return R
+     */
+    @DeleteMapping("/removeBatch/{idList}")
+    public R<Boolean> removeBatchTeachInfo(@PathVariable Long[] idList) {
+        final boolean remove = teachInfoService.removeByIds(Arrays.asList(idList));
+        log.info("删除完成：{}", remove);
+        return remove ? new R<>(20021, "删除成功") :
+                new R<>(20022, "删除失败");
     }
 
     /**
@@ -117,12 +141,12 @@ public class TeachInfoController {
      * @param teachInfo 教学信息对象(必须包含id)
      * @return R<Boolean>
      */
-    @PutMapping("/update/stu")
-    public R<Boolean> updateTeachInfo(@RequestBody TeachInfo teachInfo) {
+    @PutMapping("/update")
+    public R<Boolean> updateTeachInfo(@RequestBody @Validated TeachInfo teachInfo) {
         boolean update = teachInfoService.updateById(teachInfo);
         log.info("修改完成：{}", update);
-        return update ? new R<>(20031, "修改成功", true) :
-                new R<>(20032, "修改失败", false);
+        return update ? new R<>(20031, "修改成功") :
+                new R<>(20032, "修改失败");
     }
 
 }
