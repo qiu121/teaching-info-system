@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class Teacher implements Serializable{
-    private static final long serialVersionUID = 1L;
+public class StuAdmin implements Serializable {
+    private static final long serialVersionUID = -743204470646019477L;
 
     /**
      * 主键
@@ -35,10 +35,27 @@ public class Teacher implements Serializable{
      */
     @NotBlank(message = "密码不可为空")
     private String password;
+
     /**
-     * 用户权限
+     * 学院
      */
-    private String permissions;
+    private String college;
+    /**
+     * 层次级别(本、专)
+     */
+    private String educationLevel;
+    /**
+     * 入学年份(年级)
+     */
+    private Integer enrollmentYear;
+    /**
+     * 班级
+     */
+    private String className;
+    /**
+     * 姓名
+     */
+    private String name;
 
     /**
      * 创建时间

@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class Admin implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7931538101927338973L;
     /**
      * 主键
      */
@@ -34,11 +34,6 @@ public class Admin implements Serializable {
      */
     @NotBlank(message = "密码不可为空")
     private String password;
-    /**
-     * 用户权限
-     */
-    private String permissions;
-
     /**
      * 创建时间
      */

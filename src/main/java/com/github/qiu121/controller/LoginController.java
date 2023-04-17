@@ -1,6 +1,5 @@
 package com.github.qiu121.controller;
 
-import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -11,6 +10,10 @@ import com.github.qiu121.pojo.Student;
 import com.github.qiu121.service.AdminService;
 import com.github.qiu121.service.StuAdminService;
 import com.github.qiu121.service.StudentService;
+import com.github.qiu121.util.SecureUtil;
+import com.github.qiu121.vo.AdminVo;
+import com.github.qiu121.vo.StuAdminVo;
+import com.github.qiu121.vo.StudentVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +32,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/login/users")
 @Slf4j
-public class UserLoginController {
+public class LoginController {
     @Resource
     private StudentService studentService;
     @Resource
@@ -53,7 +56,7 @@ public class UserLoginController {
         //查询账户名，为后续转存调用
         wrapper.lambda()
                 .eq(Student::getUsername, student.getUsername())
-                .eq(Student::getPassword, SaSecureUtil.sha256(SaSecureUtil.md5(student.getPassword())));
+                .eq(Student::getPassword, SecureUtil.encrypt(student.getPassword()));
         //查询出多个结果抛出异常
         Student one = studentService.getOne(wrapper, true);
 
@@ -67,24 +70,27 @@ public class UserLoginController {
         log.info("验证码校对: {}", flag);
         if (!flag) {
             return new R<>(20043, "验证码错误");
-        }
-        if (one == null) {
-            log.info("账号或密码错误: {}", (Object) null);
-            return new R<>(20042, "账号或密码错误,请检查登录信息");
         } else {
-            StpUtil.login(one.getUsername());
-            log.info("登录设备类型： {}", StpUtil.getLoginDevice());
-            log.info("权限信息: {}", StpUtil.getTokenInfo());
+            if (one == null) {
+                log.info("账号或密码错误: {}", (Object) null);
+                return new R<>(20042, "账号或密码错误,请检查登录信息");
+            } else {
+                StpUtil.login(one.getUsername());
+                log.info("登录设备类型： {}", StpUtil.getLoginDevice());
+                log.info("权限信息: {}", StpUtil.getTokenInfo());
 
-            final ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+                //将数据用VO对象重新赋值，响应返回
+                final StudentVo studentVo = new StudentVo(one);
 
-            final HashMap<String, Object> map = new HashMap<>();
-            map.put("sa-token", StpUtil.getTokenInfo().getTokenValue());
-            map.put("info", one);
+                final ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+                final HashMap<String, Object> map = new HashMap<>();
+                map.put("sa-token", StpUtil.getTokenInfo().getTokenValue());
+                map.put("info", studentVo);
 
-            list.add(map);
+                list.add(map);
 
-            return new R<>(20041, "登录成功", list);
+                return new R<>(20041, "登录成功", list);
+            }
         }
     }
 
@@ -103,10 +109,10 @@ public class UserLoginController {
                                                   HttpServletRequest request) {
         LambdaQueryWrapper<StuAdmin> wrapper = new LambdaQueryWrapper<>();
         wrapper
-                .eq(StuAdmin::getUsername, stuAdmin.getUsername())
-                .eq(StuAdmin::getPassword, SaSecureUtil.sha256(SaSecureUtil.md5(stuAdmin.getPassword())));
+                .eq(StuAdmin::getUsername, stuAdmin.getUsername())//哈希算法加密
+                .eq(StuAdmin::getPassword, SecureUtil.encrypt(stuAdmin.getPassword()));
         //查询出多个结果抛出异常
-        StuAdmin stuAdmin1 = stuAdminService.getOne(wrapper, true);
+        StuAdmin stuAdminOne = stuAdminService.getOne(wrapper, true);
 
         String verifyCode = (String) request.getSession().getAttribute("verifyCode");
 
@@ -118,23 +124,24 @@ public class UserLoginController {
         log.info("验证码校对: {}", flag);
         if (!flag) {
             return new R<>(20043, "验证码错误");
-        }
-        if (stuAdmin1 == null) {
-            log.info("账号或密码错误: {}", (Object) null);
-            return new R<>(20042, "账号或密码错误,请检查账号信息");
         } else {
-            log.info("登录成功: {}", stuAdmin1);
-            StpUtil.login(stuAdmin1.getUsername());
+            if (stuAdminOne == null) {
+                log.info("账号或密码错误: {}", (Object) null);
+                return new R<>(20042, "账号或密码错误,请检查账号信息");
+            } else {
+                log.info("登录成功: {}", stuAdminOne);
+                StpUtil.login(stuAdminOne.getUsername());
 
-            final ArrayList<HashMap<String, Object>> arrayList = new ArrayList<>();
+                final ArrayList<HashMap<String, Object>> arrayList = new ArrayList<>();
 
-            final HashMap<String, Object> map = new HashMap<>();
-            map.put("sa-token", StpUtil.getTokenInfo().getTokenValue());
-            map.put("info", stuAdmin1);
+                final HashMap<String, Object> map = new HashMap<>();
+                map.put("sa-token", StpUtil.getTokenInfo().getTokenValue());
+                map.put("info", new StuAdminVo(stuAdminOne));
 
-            arrayList.add(map);
+                arrayList.add(map);
 
-            return new R<>(20041, "登录成功", arrayList);
+                return new R<>(20041, "登录成功", arrayList);
+            }
         }
     }
 
@@ -153,9 +160,9 @@ public class UserLoginController {
         LambdaQueryWrapper<Admin> wrapper = new LambdaQueryWrapper<>();
         //查询账户名，为后续转存调用
         wrapper.eq(Admin::getUsername, admin.getUsername())
-                .eq(Admin::getPassword, SaSecureUtil.sha256(SaSecureUtil.md5(admin.getPassword())));
+                .eq(Admin::getPassword, SecureUtil.encrypt(admin.getPassword()));
         //查询出多个结果抛出异常
-        Admin one = adminService.getOne(wrapper, true);
+        Admin adminOne = adminService.getOne(wrapper, true);
 
         String verifyCode = (String) request.getSession().getAttribute("verifyCode");
 
@@ -167,24 +174,25 @@ public class UserLoginController {
         log.info("验证码校对: {}", flag);
         if (!flag) {
             return new R<>(20043, "验证码错误");
-        }
-        if (one == null) {
-            log.info("账号或密码错误: {}", (Object) null);
-            return new R<>(20042, "账号或密码错误,请检查登录信息");
         } else {
-            StpUtil.login(one.getUsername());
-            log.info("登录成功: {}", one);
-            log.info("权限信息:{}", StpUtil.getTokenInfo());
+            if (adminOne == null) {
+                log.info("账号或密码错误: {}", (Object) null);
+                return new R<>(20042, "账号或密码错误,请检查登录信息");
+            } else {
+                StpUtil.login(adminOne.getUsername());
+                log.info("登录成功: {}", adminOne);
+                log.info("权限信息:{}", StpUtil.getTokenInfo());
 
-            final ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+                final ArrayList<HashMap<String, Object>> list = new ArrayList<>();
 
-            final HashMap<String, Object> map = new HashMap<>();
-            map.put("sa-token", StpUtil.getTokenInfo().getTokenValue());
-            map.put("info", one);
+                final HashMap<String, Object> map = new HashMap<>();
+                map.put("sa-token", StpUtil.getTokenInfo().getTokenValue());
+                map.put("info", new AdminVo(adminOne));
 
-            list.add(map);
+                list.add(map);
 
-            return new R<>(20041, "登录成功", list);
+                return new R<>(20041, "登录成功", list);
+            }
         }
     }
 
