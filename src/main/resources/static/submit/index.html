@@ -3,9 +3,12 @@
 <head>
     <title>教学信息反馈</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <link rel="stylesheet" href="./css/index.css">
-    <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.2/??flexible_css.js,flexible.js"></script>
+    <link rel="stylesheet" href="../lib/element-ui/index.css">
+    <script src="../lib/flexible/flexible_css.js,flexible.js"></script>
+    <!--    <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.2/??flexible_css.js,flexible.js"></script>-->
+
+    <link rel="stylesheet" href="./style/index.css">
+
     <style>
         .el-date-editor.el-input,
         .el-date-editor.el-input__inner {
@@ -28,122 +31,85 @@
             <br>
             <el-form :model="teachInfoFormData" :rules="rules" label-width="100px"
                      ref="teachInfoFormData" size="small">
-                <el-row type="flex" justify="left">
-                    <el-col :span="10">
-                        <el-form-item label="课程名称" prop="courseName">
-                            <el-input v-model="teachInfoFormData.courseName"
-                                      placeholder="填写课程名称">
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
 
-                <el-row type="flex" justify="left">
-                    <el-col :span="10">
-                        <el-form-item label="教师姓名" prop="teacherName">
-                            <el-input v-model="teachInfoFormData.teacherName"
-                                      placeholder="填写教师姓名"
-                                      show-input>
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="课程名称" prop="courseName">
+                    <el-input v-model="teachInfoFormData.courseName"
+                              placeholder="填写课程名称">
+                    </el-input>
+                </el-form-item>
 
-                <el-row>
-                    <el-col :span="20">
-                        <el-form-item label="应到人数" prop="shouldArriveNum">
-                            <el-input-number v-model="teachInfoFormData.shouldArriveNum"
-                                             :min=1 :max=70>
-                            </el-input-number>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="教师姓名" prop="teacherName">
+                    <el-input v-model="teachInfoFormData.teacherName"
+                              placeholder="填写教师姓名"
+                              show-input>
+                    </el-input>
+                </el-form-item>
 
-                <el-row>
-                    <el-col :span="20">
-                        <el-form-item label="实到人数" prop="actualArriveNum">
-                            <el-input-number v-model="teachInfoFormData.actualArriveNum"
-                                             :min=1 :max=70>
-                            </el-input-number>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="应到人数" prop="shouldArriveNum">
+                    <el-input-number v-model="teachInfoFormData.shouldArriveNum"
+                                     :min=1 :max=70>
+                    </el-input-number>
+                </el-form-item>
 
-                <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="上课日期" prop="recordClassDate">
-                            <el-date-picker v-model="teachInfoFormData.recordClassDate"
-                                            type="date" placeholder="选择上课日期">
-                            </el-date-picker>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="实到人数" prop="actualArriveNum">
+                    <el-input-number v-model="teachInfoFormData.actualArriveNum"
+                                     :min=1 :max=teachInfoFormData.shouldArriveNum>
+                    </el-input-number>
+                </el-form-item>
 
-                <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="上课节次" prop="recordCourseNum">
-                            <el-select v-model="teachInfoFormData.recordCourseNum" placeholder="请选择上课节次">
-                                <el-option v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.value"
-                                           :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="上课日期" prop="recordClassDate">
+                    <el-date-picker v-model="teachInfoFormData.recordClassDate"
+                                    type="date" placeholder="选择上课日期">
+                    </el-date-picker>
+                </el-form-item>
 
-                <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="上课地点" prop="classLocation">
-                            <el-input v-model="teachInfoFormData.classLocation"
-                                      placeholder="填写上课地点"
-                                      show-input>
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="上课节次" prop="recordCourseNum">
+                    <el-select v-model="teachInfoFormData.recordCourseNum" placeholder="选择上课节次">
+                        <el-option v-for="item in options"
+                                   :key="item.value"
+                                   :label="item.value"
+                                   :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
 
-                <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="信息反馈(好的方面)" prop="feedbackGood">
-                            <el-input v-model="teachInfoFormData.feedbackGood"
-                                      placeholder="填写信息反馈"
-                                      type="textarea"
-                                      :autosize="{ minRows: 3, maxRows: 5}"
-                                      maxlength="200"
-                                      show-word-limit>
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="信息反馈(不足之处)" prop="feedbackNotEnough">
-                            <el-input v-model="teachInfoFormData.feedbackNotEnough"
-                                      placeholder="填写信息反馈"
-                                      type="textarea"
-                                      :autosize="{ minRows: 3, maxRows: 5}"
-                                      maxlength="200"
-                                      show-word-limit>
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="上课地点" prop="classLocation">
+                    <el-input v-model="teachInfoFormData.classLocation"
+                              placeholder="填写上课地点"
+                              show-input>
+                    </el-input>
+                </el-form-item>
 
-                <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="希望和建议" prop="hopesAndSuggestions">
-                            <el-input v-model="teachInfoFormData.hopesAndSuggestions"
-                                      placeholder="填写希望和建议"
-                                      type="textarea"
-                                      :autosize="{ minRows: 3, maxRows: 5}"
-                                      maxlength="200"
-                                      show-word-limit>
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="信息反馈(好的方面)" prop="feedbackGood">
+                    <el-input v-model="teachInfoFormData.feedbackGood"
+                              placeholder="填写信息反馈"
+                              type="textarea"
+                              :autosize="{ minRows: 3, maxRows: 5}"
+                              maxlength="200"
+                              show-word-limit>
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item label="信息反馈(不足之处)" prop="feedbackNotEnough">
+                    <el-input v-model="teachInfoFormData.feedbackNotEnough"
+                              placeholder="填写信息反馈"
+                              type="textarea"
+                              :autosize="{ minRows: 3, maxRows: 5}"
+                              maxlength="200"
+                              show-word-limit>
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item label="希望和建议" prop="hopesAndSuggestions">
+                    <el-input v-model="teachInfoFormData.hopesAndSuggestions"
+                              placeholder="填写希望和建议"
+                              type="textarea"
+                              :autosize="{ minRows: 3, maxRows: 5}"
+                              maxlength="200"
+                              show-word-limit>
+                    </el-input>
+                </el-form-item>
+
 
                 <el-form-item center>
                     <el-button @click="cleanForm" class="el-icon-close">重置</el-button>
@@ -157,11 +123,12 @@
 </div>
 </body>
 
-<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../lib/vue@2/vue.js"></script>
+<script src="../lib/element-ui/index.js"></script>
+<script src="../lib/axios/axios.min.js"></script>
 
 <script>
+
     new Vue({
         el: '#app',
         data: {
@@ -177,11 +144,14 @@
             }, {
                 value: '九、十节',
             }],
+            loginUser: null,
+            // loginUser: JSON.parse(localStorage.getItem('loginUser')),
             teachInfoFormData: {
-                shouldArriveNum: 50,
-                actualArriveNum: 50,
-                submitPerson: localStorage.getItem("loginUser"),
-                submitPersonCollege: localStorage.getItem("college"),
+                shouldArriveNum: 0,
+                submitPerson: '',
+                submitPersonCollege: '',
+                submitPersonClass: '',
+                submitPersonName: ''
             },
             rules: {//校验规则
                 courseName: [
@@ -219,19 +189,29 @@
 
             }
         },
+        created() {
+            this.loginUser = JSON.parse(localStorage.getItem('loginUser'));
+            this.teachInfoFormData.submitPerson = this.loginUser.username;
+            this.teachInfoFormData.submitPersonCollege = this.loginUser.college;
+            this.teachInfoFormData.submitPersonClass = this.loginUser.className;
+            this.teachInfoFormData.submitPersonName = this.loginUser.name;
+        },
         methods: {
             cleanForm() {
-                this.teachInfoFormData = {}
+                this.teachInfoFormData = {
+                    shouldArriveNum: 0,
+                }
             },
             handleSubmit() {
-                console.log(this.teachInfoFormData)
                 this.$refs.teachInfoFormData.validate((valid) => {
                     if (valid) {
-                        axios.post("/feedback/add", this.teachInfoFormData)
+                        axios.post("/feedback/stu/add", this.teachInfoFormData)
                             .then((response) => {
                                     if (response.data.code === 20011) {
                                         this.$message.success(response.data.msg)
-                                        window.location.href = "./list.html";
+                                        setTimeout(() => {
+                                            window.location.href = "./list.html";
+                                        }, 1500);
                                     } else {
                                         this.$message({
                                             message: (response.data.msg),

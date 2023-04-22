@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../lib/element-ui/index.css">
     <link rel="icon" href="../favicon.ico">
     <style>
         .el-message-box {
@@ -40,7 +40,7 @@
             <el-table-column prop="hopesAndSuggestions" label="希望和建议" align="center"></el-table-column>
             <el-table-column prop="createTime" label="提交时间" sortable align="center"></el-table-column>
 
-            <el-table-column label="操作" align="center">
+            <el-table-column v-if="showDeleteColumn" label="操作" align="center">
                 <template slot-scope="scope">
                     <el-button type="danger" size="mini" @click="handleDelete(scope.row)" class=" el-icon-delete">
                         删除
@@ -53,25 +53,33 @@
 </div>
 </body>
 
-<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../lib/vue@2/vue.js"></script>
+<script src="../lib/element-ui/index.js"></script>
+<script src="../lib/axios/axios.min.js"></script>
 
 <script>
     new Vue({
         el: '#app',
         data: {
+            username: null,
             dataList: [],//当前页要展示的列表数据
         },
         created() {
+            this.username = JSON.parse(localStorage.getItem('loginUser')).username;
             this.selectBySubmitPerson();
+        },
+        computed: {
+            // 根据 dataList 的长度来判断是否显示删除列
+            showDeleteColumn() {
+                return this.dataList.length > 0;
+            },
         },
         methods: {
             handleDelete(row) {
                 this.$confirm("此操作将永久删除当前数据，是否继续？", "提示", {
                     type: 'warning',
                 }).then(() => {
-                    axios.delete("/feedback/remove/stu/" + row.id).then((response) => {
+                    axios.delete("/feedback/stu/remove/" + row.id).then((response) => {
                         if (response.data.code === 20021) {
                             this.$message.success(response.data.msg);
                         } else {
@@ -96,11 +104,10 @@
             selectBySubmitPerson() {
                 axios({
                     method: 'get',
-                    url: '/feedback/list/stu/' + localStorage.getItem("loginUser")
+                    url: '/feedback/stu/list/' + this.username
                 }).then((response) => {
                     if (response.data.code === 20040) {
                         this.dataList = response.data.data;
-                        // this.$message.success(response.data.msg)
                     } else {
                         this.$message({
                             message: (response.data.msg),

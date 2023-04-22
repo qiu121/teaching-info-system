@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>南昌工学院信息员教学反馈系统</title>
+    <title>南昌工学院教学信息员反馈系统</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../lib/element-ui/index.css">
     <link rel="icon" href="../favicon.ico">
     <meta name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="./style/index.css">
     <style>
         img:hover {
             cursor: pointer;
@@ -58,7 +58,7 @@
                 <el-form-item>
                     <el-radio-group v-model="userSelect">
                         <el-radio label="s">信息员</el-radio>
-                        <el-radio label="t">校督导教师</el-radio>
+                        <el-radio label="t">信息员组长</el-radio>
                         <el-radio label="a">管理员</el-radio>
                     </el-radio-group>
                 </el-form-item>
@@ -124,11 +124,13 @@
     </div>
 </div>
 </body>
-<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script src="../lib/vue@2/vue.js"></script>
+<script src="../lib/element-ui/index.js"></script>
+<script src="../lib/axios/axios.min.js"></script>
 
 <script src="./api/login.js"></script>
+<script src="./api/stu-pwd.js"></script>
 
 
 <script>
@@ -150,7 +152,7 @@
             },
             rules: {//校验规则
                 username: [
-                    {required: true, message: '用户名不允许为空', trigger: 'blur'},
+                    {required: true, message: '用户名未填写', trigger: 'blur'},
                 ],
                 oldPassword: [
                     {required: true, message: '用户密码不允许为空', trigger: 'blur'}
@@ -205,17 +207,15 @@
                     }
                 })
             },
-            loginSubmit() {
+            loginSubmit: function () {
                 this.$refs.loginForm.validate((valid) => {
                     if (valid) {
                         if (this.userSelect === "s") {
                             loginSApi(this.loginForm, this.loginForm.captcha)
                                 .then((response) => {
                                     if (response.data.code === 20041) {
-                                        const loginUser = response.data.data.username
-                                        const college = response.data.data.college
-                                        localStorage.setItem("loginUser", loginUser)
-                                        localStorage.setItem("college", college)
+                                        const loginUser = response.data.data[0].info
+                                        localStorage.setItem("loginUser", JSON.stringify(loginUser))
                                         this.$message.success(response.data.msg);
                                         window.location.href = "../submit/index.html"
                                     } else if (response.data.code === 20042) {
@@ -239,8 +239,8 @@
                             loginTApi(this.loginForm, this.loginForm.captcha)
                                 .then((r) => {
                                     if (r.data.code === 20041) {
+                                        //TODO 信息员组长后台页面
                                         this.$message.success(r.data.msg);
-                                        window.location.href = "../backend/show.html"
                                     } else if (r.data.code === 20042) {
                                         this.$message(r.data.msg);
                                     } else {
@@ -265,7 +265,6 @@
                                     if (r.data.code === 20041) {
                                         this.$message.success(r.data.msg);
                                         //TODO 管理员业务操作页面
-                                        window.location.href = "https://baidu.com"
                                     } else if (r.data.code === 20042) {
                                         this.$message(r.data.msg);
                                     } else {

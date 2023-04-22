@@ -23,32 +23,24 @@
 function loginSApi(data, urlParam) {
     return axios({
         method: 'post',
-        url: '/users/login/stu/' + urlParam,
-        data: data
+        url: '/login/users/stu/' + urlParam,
+        data
     })
 }
 
 function loginTApi(data, urlParam) {
     return axios({
         method: 'post',
-        url: '/users/login/teach/' + urlParam,
-        data: data
+        url: '/login/users/stuAdmin/' + urlParam,
+        data
     })
 }
 
 function loginAApi(data, urlParam) {
     return axios({
         method: 'post',
-        url: '/users/login/admin/' + urlParam,
-        data: data
-    })
-}
-
-function updateTApi(data, old) {
-    return axios({
-        method: 'put',
-        url: '/users/update/stu/' + old,
-        data: data
+        url: '/login/users/admin/' + urlParam,
+        data
     })
 }
 
