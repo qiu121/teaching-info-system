@@ -7,7 +7,7 @@ logging:
 
 sa-token:
   # token名称 (同时也是cookie名称)
-  token-name: satoken
+  token-name: sa-token
   # token有效期，单位s 默认30天, -1代表永不过期
   timeout: 604800
   # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
@@ -26,6 +26,14 @@ spring:
   profiles:
     active: dev
 
+  # JPA配置
+  jpa:
+    # 控制台显示SQL
+    show-sql: true
+    # 自动生成数据表
+    hibernate:
+      ddl-auto: update
+
   main:
     banner-mode: console
   application:
@@ -35,6 +43,8 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+    servlet:
+      load-on-startup: 1
 
   # DevTools
   devtools:

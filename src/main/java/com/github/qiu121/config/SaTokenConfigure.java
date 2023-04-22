@@ -4,6 +4,7 @@ import cn.dev33.satoken.exception.SaTokenException;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
+import com.github.qiu121.common.enumeration.PermissionEnum;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -25,16 +26,22 @@ public class SaTokenConfigure implements WebMvcConfigurer {
             //拦截路径，排除路径
             SaRouter.match("/**")
                     .notMatch("/login/**",
-                            "/users/login/**",
-                            "/users/update/stu/**",
+                            "/login/users/**",
+                            "/users/stu/update/**",
                             "/api/v1/captcha/**",
-                            "/favicon.ico"
+
+                            "/api/v1/QRcode/**",
+                            "/favicon.ico",
+
+                            //第三方引用资源放行
+                            "/lib/**"
 
 
                     ).check(r -> StpUtil.checkLogin());
 
             // 权限校验 -- 不同模块校验不同权限
-            SaRouter.match("/backend/**", r -> StpUtil.checkPermission("admin"));
+            SaRouter.match("/users/admin/**", r -> StpUtil.checkPermission(
+                    PermissionEnum.ADMIN_PERMISSION.getType()));
 
         })).addPathPatterns("/**");
     }

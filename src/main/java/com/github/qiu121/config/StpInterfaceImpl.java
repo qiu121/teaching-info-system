@@ -2,9 +2,8 @@ package com.github.qiu121.config;
 
 import cn.dev33.satoken.stp.StpInterface;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.github.qiu121.pojo.Student;
-import com.github.qiu121.service.AdminService;
-import com.github.qiu121.service.StudentService;
+import com.github.qiu121.pojo.Permission;
+import com.github.qiu121.service.PermissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -22,23 +21,23 @@ import java.util.List;
 @Slf4j
 public class StpInterfaceImpl implements StpInterface {
     @Resource
-    private AdminService adminService;
-    @Resource
-    private StudentService studentService;
+    private PermissionService permissionService;
+
     /**
      * 返回一个账号所拥有的权限码集合
      */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
 
-        LambdaQueryWrapper<Student> wrapper = new LambdaQueryWrapper<>();
-        wrapper.select(Student::getPermissions)
-                .eq(Student::getUsername, loginId.toString());
-        Student one =studentService .getOne(wrapper);
+        final LambdaQueryWrapper<Permission> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(Permission::getType)
+                .eq(Permission::getUsername, loginId.toString());
+        final Permission one = permissionService.getOne(wrapper);
 
-        ArrayList<String> list = new ArrayList<>();
-        list.add(one.getPermissions());
+        final ArrayList<String> list = new ArrayList<>();
+        list.add(one.getType());
         log.info("当前用户权限：{}", list);
+
         return list;
     }
 
