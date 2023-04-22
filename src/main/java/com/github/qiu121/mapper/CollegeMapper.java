@@ -1,7 +1,7 @@
 package com.github.qiu121.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.github.qiu121.pojo.Teacher;
+import com.github.qiu121.pojo.College;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,5 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2023/3/14
  */
 @Mapper
-public interface TeacherMapper extends BaseMapper<Teacher> {
+public interface CollegeMapper extends BaseMapper<College> {
+
 }

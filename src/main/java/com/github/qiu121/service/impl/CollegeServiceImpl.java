@@ -1,9 +1,9 @@
 package com.github.qiu121.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.qiu121.mapper.TeacherMapper;
-import com.github.qiu121.pojo.Teacher;
-import com.github.qiu121.service.TeacherService;
+import com.github.qiu121.mapper.CollegeMapper;
+import com.github.qiu121.pojo.College;
+import com.github.qiu121.service.CollegeService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,6 +12,5 @@ import org.springframework.stereotype.Service;
  * @date 2023/3/14
  */
 @Service
-public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> implements TeacherService {
-
+public class CollegeServiceImpl extends ServiceImpl<CollegeMapper, College> implements CollegeService {
 }

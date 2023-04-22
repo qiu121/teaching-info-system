@@ -1,7 +1,7 @@
 package com.github.qiu121.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.github.qiu121.pojo.Teacher;
+import com.github.qiu121.pojo.College;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -10,5 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2023/3/14
  */
 @Transactional(rollbackFor = Throwable.class)
-public interface TeacherService extends IService<Teacher> {
+public interface CollegeService extends IService<College> {
 }
