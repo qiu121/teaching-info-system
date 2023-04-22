@@ -22,6 +22,8 @@
         <druid.version>1.2.16</druid.version>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <hutool.version>5.8.15</hutool.version>
+        <satoken.version>1.34.0</satoken.version>
+
     </properties>
 
     <dependencies>
@@ -88,7 +90,7 @@
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-spring-boot-starter</artifactId>
-            <version>1.34.0</version>
+            <version>${satoken.version}</version>
         </dependency>
 
         <dependency>
@@ -96,6 +98,48 @@
             <artifactId>easyexcel</artifactId>
             <version>3.2.1</version>
         </dependency>
+
+        <!--配合Hu-tool,生成链接二维码-->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.5.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.5.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!--配合jpa,生成数据表带上comment注释，解耦-->
+        <dependency>
+            <groupId>com.github.biyanwen</groupId>
+            <artifactId>jpa-comment-spring-boot-starter</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+
+        <!--        <dependency>-->
+        <!--            <groupId>com.github.yulichang</groupId>-->
+        <!--            <artifactId>mybatis-plus-join-boot-starter</artifactId>-->
+        <!--            <version>1.4.4</version>-->
+        <!--        </dependency>-->
 
     </dependencies>
 
@@ -114,7 +158,53 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>woff</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>10</source>
+                    <target>10</target>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
+    <!--小伙子，没配源是吧？问题不大,我这自带了(doge)-->
+    <repositories>
+        <repository>
+            <id>public</id>
+            <name>aliyun maven</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>public</id>
+            <name>aliyun maven</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
 </project>
+
