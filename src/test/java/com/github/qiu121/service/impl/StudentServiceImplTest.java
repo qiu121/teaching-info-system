@@ -1,9 +1,9 @@
 package com.github.qiu121.service.impl;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.qiu121.pojo.Student;
 import com.github.qiu121.service.StudentService;
-import com.github.qiu121.util.SHAUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,23 +25,23 @@ class StudentServiceImplTest {
     void get() {
         QueryWrapper<Student> wrapper = new QueryWrapper<>();
 
-        wrapper.eq("password", SHAUtil.SHA256("123456"))
+        wrapper.eq("password", SaSecureUtil.sha256("123456"))
                 .eq("username", "a14112")
                 .select("id");
 
         Student one = studentService.getOne(wrapper);
-        log.info("" + one);
+        log.info(String.valueOf(one));
 
     }
 
     @Test
     void add() {
         Student student = new Student();
-        String s = SHAUtil.SHA256("123456");
+        String s = SaSecureUtil.sha256("123456");
         student.setUsername("a14112").setPassword(s);
 
         boolean save = studentService.save(student);
-        log.info("" + save);
+        log.info(String.valueOf(save));
 
     }
 
