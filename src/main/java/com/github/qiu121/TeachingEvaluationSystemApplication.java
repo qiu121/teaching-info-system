@@ -4,6 +4,7 @@ import cn.dev33.satoken.SaManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
  * @author <a href="mailto:qiu0089@foxmail.com">qiu121</a>
@@ -12,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @Slf4j
+@EnableJpaAuditing
 public class TeachingEvaluationSystemApplication {
     public static void main(String... args) {
         SpringApplication.run(TeachingEvaluationSystemApplication.class, args);
