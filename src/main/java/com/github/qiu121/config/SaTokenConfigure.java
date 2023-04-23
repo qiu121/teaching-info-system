@@ -40,8 +40,13 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                     ).check(r -> StpUtil.checkLogin());
 
             // 权限校验 -- 不同模块校验不同权限
-            SaRouter.match("/users/admin/**", r -> StpUtil.checkPermission(
+            SaRouter.match("/users/admin/**", r -> StpUtil.checkPermission(PermissionEnum.ADMIN_PERMISSION.getType()));
+            SaRouter.match("/colleges/**", r -> StpUtil.checkPermission(PermissionEnum.ADMIN_PERMISSION.getType()));
+
+            SaRouter.match("/users/stuAdmin/**", r -> StpUtil.checkPermission(
                     PermissionEnum.ADMIN_PERMISSION.getType()));
+            SaRouter.match("/users/stuAdmin/**", r -> StpUtil.checkPermission(
+                    PermissionEnum.STU_ADMIN_PERMISSION.getType()));
 
         })).addPathPatterns("/**");
     }
