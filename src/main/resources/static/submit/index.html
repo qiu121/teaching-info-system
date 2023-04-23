@@ -144,7 +144,7 @@
             }, {
                 value: '九、十节',
             }],
-            loginUser: null,
+            loginUser: {},
             // loginUser: JSON.parse(localStorage.getItem('loginUser')),
             teachInfoFormData: {
                 shouldArriveNum: 0,
@@ -190,7 +190,10 @@
             }
         },
         created() {
-            this.loginUser = JSON.parse(localStorage.getItem('loginUser'));
+            const loginUser = window.localStorage.getItem('loginUser')
+            if (loginUser) {
+                this.loginUser = JSON.parse(loginUser);
+            }
             this.teachInfoFormData.submitPerson = this.loginUser.username;
             this.teachInfoFormData.submitPersonCollege = this.loginUser.college;
             this.teachInfoFormData.submitPersonClass = this.loginUser.className;

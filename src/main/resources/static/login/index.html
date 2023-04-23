@@ -131,6 +131,7 @@
 
 <script src="./api/login.js"></script>
 <script src="./api/stu-pwd.js"></script>
+<script src="./api/auth.js"></script>
 
 
 <script>
@@ -210,6 +211,14 @@
             loginSubmit: function () {
                 this.$refs.loginForm.validate((valid) => {
                     if (valid) {
+                        // 权限检验
+                        authUser(this.loginForm.username)
+                            .then((response) => {
+                                console.log("Hello World!")
+                                if (response.data.code === 20040) {
+                                    window.localStorage.setItem("auth", response.data.data)
+                                }
+                            })
                         if (this.userSelect === "s") {
                             loginSApi(this.loginForm, this.loginForm.captcha)
                                 .then((response) => {
@@ -240,6 +249,8 @@
                                 .then((r) => {
                                     if (r.data.code === 20041) {
                                         //TODO 信息员组长后台页面
+                                        const loginUser = r.data.data[0].info
+                                        localStorage.setItem("loginUser", JSON.stringify(loginUser))
                                         this.$message.success(r.data.msg);
                                     } else if (r.data.code === 20042) {
                                         this.$message(r.data.msg);
@@ -263,8 +274,11 @@
                             loginAApi(this.loginForm, this.loginForm.captcha)
                                 .then((r) => {
                                     if (r.data.code === 20041) {
-                                        this.$message.success(r.data.msg);
                                         //TODO 管理员业务操作页面
+                                        const loginUser = r.data.data[0].info
+                                        localStorage.setItem("loginUser", JSON.stringify(loginUser))
+                                        this.$message.success(r.data.msg);
+                                        this.$message.success(r.data.msg);
                                     } else if (r.data.code === 20042) {
                                         this.$message(r.data.msg);
                                     } else {
