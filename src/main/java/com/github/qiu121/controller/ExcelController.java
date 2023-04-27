@@ -2,6 +2,8 @@ package com.github.qiu121.controller;
 
 import com.github.qiu121.pojo.TeachInfo;
 import com.github.qiu121.util.ExcelUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +20,8 @@ import java.util.List;
  * @date 2023/3/22
  */
 @RestController
+@CrossOrigin
+@Slf4j
 @RequestMapping("/api/v1/excel")
 public class ExcelController {
     @GetMapping("/download")

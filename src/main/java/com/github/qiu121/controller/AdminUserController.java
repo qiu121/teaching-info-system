@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Slf4j
+@CrossOrigin
 @RequestMapping("/users/admin")
 public class AdminUserController {
     @Resource

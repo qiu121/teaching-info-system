@@ -3,10 +3,7 @@ package com.github.qiu121.controller;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +18,7 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("/api/v1")
+@CrossOrigin
 @Slf4j
 public class CaptchaController {
     /**

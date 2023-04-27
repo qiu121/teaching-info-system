@@ -6,14 +6,9 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.qiu121.common.R;
 import com.github.qiu121.common.enumeration.EducationLevel;
-import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.common.exception.DuplicateException;
 import com.github.qiu121.common.exception.NotFoundException;
-import com.github.qiu121.pojo.StuAdmin;
-import com.github.qiu121.pojo.Student;
-import com.github.qiu121.pojo.TeachInfo;
-import com.github.qiu121.pojo.TeachInfo2;
-import com.github.qiu121.pojo.RequestBodyData;
+import com.github.qiu121.pojo.*;
 import com.github.qiu121.service.StudentService;
 import com.github.qiu121.service.TeachInfoService;
 import com.github.qiu121.service.TeachInfoService2;
@@ -37,6 +32,7 @@ import java.util.Objects;
  */
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("/feedback/stuAdmin")
 public class TeachInfoController2 {
     @Resource
@@ -114,7 +110,6 @@ public class TeachInfoController2 {
 
         teacherInfoValidate2(teachInfo);
 
-        final LambdaQueryWrapper<TeachInfo2> wrapper = new LambdaQueryWrapper<>();
         final R<String> r = new R<>();
         final boolean updateFlag = teachInfoService2.updateById(teachInfo);
         return updateFlag ? (r.setCode(20031).setMsg("修改完成"))

@@ -26,6 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("/feedback/stu")
 public class TeachInfoController {
     @Resource
