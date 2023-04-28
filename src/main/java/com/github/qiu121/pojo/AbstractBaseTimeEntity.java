@@ -1,5 +1,6 @@
 package com.github.qiu121.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,12 +25,14 @@ public class AbstractBaseTimeEntity {
     @CreatedDate
     @Column(nullable = false, updatable = false,columnDefinition = "DATETIME " +
             "DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     @LastModifiedDate
     @Column(nullable = false,columnDefinition = "DATETIME" +
             " DEFAULT CURRENT_TIMESTAMP NOT NULL " +
             "ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 
 }
