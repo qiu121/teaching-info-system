@@ -90,11 +90,11 @@ public class TeachInfoController2 {
      * @param idArray 主键数组
      * @return R
      */
-    @DeleteMapping("/removeBatch/{idList}")
+    @DeleteMapping("/removeBatch/{idArray}")
     public R<String> removeBatchTeachInfo2(@PathVariable Long[] idArray) {
         final boolean batchRemoved = teachInfoService2.removeBatchByIds(Arrays.asList(idArray));
         log.info("批量删除完成：{}", batchRemoved);
-        log.info("删除数据: {}", idArray);
+        log.info("删除数据: {}", (Object) idArray);
         return batchRemoved ? new R<>(20021, "删除成功") :
                 new R<>(20022, "删除失败,记录不存在或已删除");
     }
@@ -145,7 +145,7 @@ public class TeachInfoController2 {
      * @param pageSize        每页条数
      * @return R
      */
-    @GetMapping("/selectAllByPermission/{currentNum}/{pageSize}")
+    @PostMapping("/selectAllByPermission/{currentNum}/{pageSize}")
     public R<IPage<TeachInfo>> selectList(@RequestBody RequestBodyData requestBodyData,
                                           @PathVariable long currentNum,
                                           @PathVariable long pageSize) {
@@ -245,7 +245,7 @@ public class TeachInfoController2 {
      * @param pageSize   每页条数
      * @return R
      */
-    @GetMapping("/listAll/{currentNum}/{pageSize}")
+    @PostMapping("/listAll/{currentNum}/{pageSize}")
     public R<IPage<TeachInfo2>> ListAll(@RequestBody TeachInfo2 teachInfo2,
                                         @PathVariable long currentNum,
                                         @PathVariable long pageSize) {

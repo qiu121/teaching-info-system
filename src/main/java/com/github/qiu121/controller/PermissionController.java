@@ -32,7 +32,7 @@ public class PermissionController {
      * @return R
      */
     @GetMapping("/{username}")
-    public R<String> getPermission(@PathVariable String username) {
+    public R<?> getPermission(@PathVariable String username) {
         final LambdaQueryWrapper<Permission> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Permission::getUsername, username);
         log.info("校验权限用户： {}", username);

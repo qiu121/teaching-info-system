@@ -78,7 +78,8 @@ public class StudentUserController {
      * @return 响应封装类型
      */
     @PutMapping("/update/{oldPassword}")
-    public R<String> updatePassword(@RequestBody Student student, @PathVariable String oldPassword) {
+    public R<String> updatePassword(@RequestBody Student student,
+                                    @PathVariable String oldPassword) {
         LambdaQueryWrapper<Student> studentWrapper = new LambdaQueryWrapper<>();
         final String encryptedOldPassword = SecureUtil.encrypt(oldPassword);
         studentWrapper.select(Student::getId)
@@ -190,7 +191,7 @@ public class StudentUserController {
      * @param pageSize   每页条数
      * @return R
      */
-    @GetMapping("/listAll/{currentNum}/{pageSize}")
+    @PostMapping("/listAll/{currentNum}/{pageSize}")
     public R<IPage<StudentVo>> list(@RequestBody Student student,
                                     @PathVariable long currentNum,
                                     @PathVariable long pageSize) {

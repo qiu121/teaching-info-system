@@ -153,7 +153,7 @@ public class StuAdminUserController {
      * @param pageSize   每页条数
      * @return R<IPage < StuAdmin>>
      */
-    @GetMapping("/list/{currentNum}/{pageSize}")
+    @PostMapping("/list/{currentNum}/{pageSize}")
     public R<IPage<StuAdminVo>> list(@RequestBody StuAdmin stuAdmin,
                                      @PathVariable long currentNum,
                                      @PathVariable long pageSize) {

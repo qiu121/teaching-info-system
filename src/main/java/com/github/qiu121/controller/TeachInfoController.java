@@ -54,11 +54,12 @@ public class TeachInfoController {
      * @param teachInfo 提交数据对象(教师姓名、课程名、上课地点)
      * @return 集合对象
      */
-    @GetMapping("/listAll/{currentNum}/{pageSize}")
+    @PostMapping("/listAll/{currentNum}/{pageSize}")
     public R<IPage<TeachInfo>> listAllTeachInfo(@RequestBody TeachInfo teachInfo,
                                                 @PathVariable long currentNum,
                                                 @PathVariable long pageSize) {
 
+        log.info(String.valueOf(teachInfo));
         QueryWrapper<TeachInfo> wrapper = new QueryWrapper<>();
         if (teachInfo != null) {
             wrapper.select("*").lambda()
