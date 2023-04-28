@@ -65,7 +65,7 @@ public class StuAdminUserController {
                     new Permission(username, PermissionEnum.STU_ADMIN_PERMISSION.getType()));
             if (savePermission & saveUser) {
                 log.info("添加完成： {}", true);
-                return new R<>(20012, "添加完成");
+                return new R<>(20010, "添加完成");
             }
         } else {
             throw new DuplicateException("添加失败，该账户已存在");
@@ -101,7 +101,8 @@ public class StuAdminUserController {
         final boolean removedUser = stuAdminService.removeByIds(Arrays.asList(idArray));
 
         log.info("删除完成： {}", removedPermission & removedUser);
-        return removedPermission & removedUser ? new R<>(20021, "删除完成") :
+        return removedPermission & removedUser ?
+                new R<>(20021, "删除完成") :
                 new R<>(20022, "删除失败");
     }
 

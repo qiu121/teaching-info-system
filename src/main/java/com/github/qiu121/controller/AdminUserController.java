@@ -62,7 +62,7 @@ public class AdminUserController {
             final boolean saveUser = adminService.save(admin);
             if (savePermission & saveUser) {
                 log.info("添加完成： {}", true);
-                return new R<>(20012, "添加完成");
+                return new R<>(20010, "添加完成");
             }
         } else {
             throw new DuplicateException("该账户已存在，请勿重复添加");

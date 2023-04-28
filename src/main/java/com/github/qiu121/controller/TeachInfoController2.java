@@ -67,7 +67,7 @@ public class TeachInfoController2 {
     @GetMapping("/get/{id}")
     public R<TeachInfo2> getTeachInfo2(@PathVariable Long id) {
         final TeachInfo2 teachInfo2 = teachInfoService2.getById(id);
-        return new R<>(20020, "查询完成", teachInfo2);
+        return new R<>(20040, "查询完成", teachInfo2);
     }
 
     /**
@@ -80,8 +80,8 @@ public class TeachInfoController2 {
     public R<String> removeTeachInfo2(@PathVariable Long id) {
         final boolean removed = teachInfoService2.removeById(id);
         final R<String> r = new R<>();
-        return removed ? (r.setCode(20041).setMsg("删除完成")) :
-                (r.setCode(20042).setMsg("删除失败,该记录不存在或已删除"));
+        return removed ? (r.setCode(20021).setMsg("删除完成")) :
+                (r.setCode(20022).setMsg("删除失败,该记录不存在或已删除"));
     }
 
     /**
@@ -95,7 +95,8 @@ public class TeachInfoController2 {
         final boolean batchRemoved = teachInfoService2.removeBatchByIds(Arrays.asList(idArray));
         log.info("批量删除完成：{}", batchRemoved);
         log.info("删除数据: {}", (Object) idArray);
-        return batchRemoved ? new R<>(20021, "删除成功") :
+        return batchRemoved ?
+                new R<>(20021, "删除成功") :
                 new R<>(20022, "删除失败,记录不存在或已删除");
     }
 
