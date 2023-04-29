@@ -1,5 +1,6 @@
 package com.github.qiu121.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.qiu121.pojo.StuAdmin;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.experimental.Accessors;
 import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author <a href="mailto:qiu0089@foxmail.com">qiu121</a>
@@ -49,6 +51,16 @@ public class StuAdminVo implements Serializable {
      * 姓名
      */
     private String name;
+    /**
+     * 创建时间
+     */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
+    /**
+     * 修改时间
+     */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateTime;
 
     public StuAdminVo(StuAdmin stuAdmin) {
         BeanUtils.copyProperties(stuAdmin, this);

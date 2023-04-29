@@ -1,5 +1,6 @@
 package com.github.qiu121.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.qiu121.pojo.Admin;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,8 +30,14 @@ public class AdminVo implements Serializable {
      */
     private String username;
     /**
+     * 创建时间
+     */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
+    /**
      * 修改时间
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 
     public AdminVo(Admin admin) {
