@@ -214,8 +214,9 @@ public class StudentUserController {
                                     @PathVariable long currentNum,
                                     @PathVariable long pageSize) {
         final LambdaQueryWrapper<Student> wrapper = new QueryWrapper<Student>().lambda();
-        wrapper.like(StringUtils.isNotBlank(student.getCollege()), Student::getCollege, student.getCollege());
-        wrapper.like(StringUtils.isNotBlank(student.getClassName()), Student::getClassName, student.getClassName());
+        wrapper.like(StringUtils.isNotBlank(student.getCollege()), Student::getCollege, student.getCollege())
+                .like(StringUtils.isNotBlank(student.getClassName()), Student::getClassName, student.getClassName())
+                .like(StringUtils.isNotBlank(student.getEducationLevel()), Student::getEducationLevel, student.getEducationLevel());
 
         final Page<Student> page = studentService.page(new Page<>(currentNum, pageSize), wrapper);
 

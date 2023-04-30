@@ -172,8 +172,9 @@ public class StuAdminUserController {
                                      @PathVariable long currentNum,
                                      @PathVariable long pageSize) {
         final LambdaQueryWrapper<StuAdmin> wrapper = new QueryWrapper<StuAdmin>().lambda();
-        wrapper.like(StringUtils.isNotBlank(stuAdmin.getCollege()), StuAdmin::getCollege, stuAdmin.getCollege());
-        wrapper.like(StringUtils.isNotBlank(stuAdmin.getClassName()), StuAdmin::getClassName, stuAdmin.getClassName());
+        wrapper.like(StringUtils.isNotBlank(stuAdmin.getCollege()), StuAdmin::getCollege, stuAdmin.getCollege())
+                .like(StringUtils.isNotBlank(stuAdmin.getClassName()), StuAdmin::getClassName, stuAdmin.getClassName())
+                .like(StringUtils.isNotBlank(stuAdmin.getEducationLevel()), StuAdmin::getEducationLevel, stuAdmin.getEducationLevel());
 
         final Page<StuAdmin> page = stuAdminService.page(new Page<>(currentNum, pageSize), wrapper);
 
