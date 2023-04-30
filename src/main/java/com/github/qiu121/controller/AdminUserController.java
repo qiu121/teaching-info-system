@@ -1,6 +1,7 @@
 package com.github.qiu121.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.github.qiu121.common.R;
 import com.github.qiu121.common.enumeration.PermissionEnum;
@@ -135,7 +136,14 @@ public class AdminUserController {
         if (StringUtils.isNotBlank(oldPassword)) {
             admin.setPassword(SecureUtil.encrypt(admin.getPassword()));
         }
-        final boolean success = adminService.updateById(admin);
+
+        //动态修改
+        final LambdaUpdateWrapper<Admin> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(Admin::getId, admin.getId())
+                .set(StringUtils.isNotBlank(admin.getUsername()), Admin::getUsername, admin.getUsername())
+                .set(StringUtils.isNotBlank(admin.getPassword()), Admin::getUsername, admin.getPassword());
+
+        final boolean success = adminService.update(wrapper);
 
         log.info("修改完成: {}", success);
         return success ? new R<>(20031, "修改完成") :

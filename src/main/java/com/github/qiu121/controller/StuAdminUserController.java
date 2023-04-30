@@ -2,6 +2,7 @@ package com.github.qiu121.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -138,12 +139,23 @@ public class StuAdminUserController {
         if (StringUtils.isNotBlank(oldPassword)) {
             stuAdmin.setPassword(SecureUtil.encrypt(stuAdmin.getPassword()));
         }
-        final boolean success = stuAdminService.updateById(stuAdmin);
 
-        log.info("修改完成： {}", success);
+        final LambdaUpdateWrapper<StuAdmin> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(StuAdmin::getId, stuAdmin.getId())
+                .set(StringUtils.isNotBlank(stuAdmin.getName()), StuAdmin::getName, stuAdmin.getName())
+                .set(StringUtils.isNotBlank(stuAdmin.getUsername()), StuAdmin::getUsername, stuAdmin.getUsername())
+                .set(StringUtils.isNotBlank(stuAdmin.getPassword()), StuAdmin::getPassword, stuAdmin.getPassword())
+                .set(StringUtils.isNotBlank(stuAdmin.getClassName()), StuAdmin::getClassName, stuAdmin.getClassName())
+
+                //限定的输入格式，不需要判空
+                .set(StuAdmin::getCollege, stuAdmin.getCollege())
+                .set(StuAdmin::getEnrollmentYear, stuAdmin.getEnrollmentYear());
+
+        final boolean success = stuAdminService.update(wrapper);
+
+        log.info("修改完成: {}", success);
         return success ? new R<>(20031, "修改完成") :
                 new R<>(20032, "修改失败");
-
     }
 
     /**

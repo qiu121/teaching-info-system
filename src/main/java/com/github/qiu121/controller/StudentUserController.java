@@ -175,7 +175,22 @@ public class StudentUserController {
         if (StringUtils.isNotBlank(oldPassword)) {
             student.setPassword(SecureUtil.encrypt(student.getPassword()));
         }
-        final boolean success = studentService.updateById(student);
+
+        final LambdaUpdateWrapper<Student> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(Student::getId, student.getId())
+                .set(StringUtils.isNotBlank(student.getUsername()), Student::getUsername, student.getUsername())
+                .set(StringUtils.isNotBlank(student.getPassword()), Student::getPassword, student.getPassword())
+                .set(StringUtils.isNotBlank(student.getClassName()), Student::getClassName, student.getClassName())
+                .set(StringUtils.isNotBlank(student.getName()), Student::getName, student.getName())
+
+                //限定输入，不需要动态判断为空
+                .set(Student::getCollege, student.getCollege())
+                .set(Student::getEnrollmentYear, student.getEnrollmentYear())
+                .set(Student::getEducationLevel, student.getEducationLevel());
+
+        final boolean success = studentService.update(wrapper);
+        //直接通过 id更新，不能动态更新。传入的数据包括时间类型，直接覆盖之前时间(也就是同样的时间,就不能做到自动同步更新修改时间)
+//        final boolean success = studentService.updateById(student);
 
         log.info("修改完成: {}", success);
         return success ? new R<>(20031, "修改完成") :
