@@ -57,8 +57,9 @@ public class StuAdminUserController {
         }
         //查询现有用户名，校验重复数据
         final ArrayList<String> usernameList = new ArrayList<>();
-        for (StuAdmin admin : stuAdminService.list()) {
-            usernameList.add(admin.getUsername());
+        //查询权限表，而不是用户表
+        for (Permission permission : permissionService.list()) {
+            usernameList.add(permission.getUsername());
         }
         if (!usernameList.contains(username)) {
             final boolean saveUser = stuAdminService.save(stuAdmin);

@@ -53,9 +53,12 @@ public class StudentUserController {
         }
         //查询现有用户名，校验重复数据
         final ArrayList<String> usernameList = new ArrayList<>();
-        for (Student stu : studentService.list()) {
-            usernameList.add(stu.getUsername());
+
+        //修改为按权限表判定唯一性，而不是用户表
+        for (Permission permission : permissionService.list()) {
+            usernameList.add(permission.getUsername());
         }
+
         if (!usernameList.contains(username)) {
             final boolean savePermission = permissionService.save(new Permission(username, PermissionEnum.STU_PERMISSION.getType()));
             final boolean saveUser = studentService.save(student);

@@ -54,8 +54,12 @@ public class AdminUserController {
         }
         //查询现有用户名，校验重复数据
         final HashSet<String> usernameList = new HashSet<>();
-        for (Admin a : adminService.list()) {
-            usernameList.add(a.getUsername());
+//        for (Admin a : adminService.list()) {
+//            usernameList.add(a.getUsername());
+//        }
+
+        for (Permission permission : permissionService.list()) {
+            usernameList.add(permission.getUsername());
         }
         if (!usernameList.contains(username)) {
             final boolean savePermission = permissionService.save(
