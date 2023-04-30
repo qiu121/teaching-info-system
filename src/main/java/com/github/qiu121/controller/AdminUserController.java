@@ -111,7 +111,7 @@ public class AdminUserController {
                 .in(Admin::getId, id);
 
         final ArrayList<String> adminUsernameList = new ArrayList<>();
-        for (Admin admin : adminService.list()) {
+        for (Admin admin : adminService.list(wrapper)) {
             adminUsernameList.add(admin.getUsername());
         }
 
@@ -120,8 +120,8 @@ public class AdminUserController {
         permissionWrapper.in(Permission::getUsername, adminUsernameList)
                 .eq(Permission::getType, PermissionEnum.ADMIN_PERMISSION.getType());
 
-        final boolean removeUser = adminService.removeById(id);
         final boolean removePer = permissionService.remove(permissionWrapper);
+        final boolean removeUser = adminService.removeById(id);
 
         log.info("删除完成： {}", removePer & removeUser);
         return new R<>(20020, "删除完成");
@@ -145,7 +145,7 @@ public class AdminUserController {
         final LambdaUpdateWrapper<Admin> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(Admin::getId, admin.getId())
                 .set(StringUtils.isNotBlank(admin.getUsername()), Admin::getUsername, admin.getUsername())
-                .set(StringUtils.isNotBlank(admin.getPassword()), Admin::getUsername, admin.getPassword());
+                .set(StringUtils.isNotBlank(admin.getPassword()), Admin::getPassword, admin.getPassword());
 
         final boolean success = adminService.update(wrapper);
 

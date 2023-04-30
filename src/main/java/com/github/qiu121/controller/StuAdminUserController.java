@@ -91,7 +91,7 @@ public class StuAdminUserController {
                 .select(StuAdmin::getUsername)
                 .in(StuAdmin::getId, Arrays.asList(idArray));
         final ArrayList<String> usernameList = new ArrayList<>();
-        for (StuAdmin stuAdmin : stuAdminService.list()) {
+        for (StuAdmin stuAdmin : stuAdminService.list(wrapper)) {
             usernameList.add(stuAdmin.getUsername());
         }
 
