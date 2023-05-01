@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://npm.elemecdn.com/element-ui/lib/theme-chalk/index.css">
+    <script src="/api/student.js"></script>
+    <script src="/api/college.js"></script>
+    <script src="/api/util.js"></script>
+
+</head>
+
+<style>
+
+    .table-expand {
+        font-size: 0;
+    }
+
+    .table-expand label {
+        width: 90px;
+        color: #99a9bf;
+    }
+
+    .table-expand .el-form-item {
+        margin-right: 0;
+        margin-bottom: 0;
+        width: 50%;
+    }
+
+    .el-pagination {
+        position: fixed;
+        bottom: 20px;
+    }
+
+    .el-select, .el-input {
+        width: 100%;
+    }
+
+</style>
+
+<body>
+<div id="app">
+    <el-form :inline="true" :model="query">
+        <el-form-item label="学院">
+            <el-select v-model="query.college" placeholder="请选择学院">
+                <el-option
+                        v-for="item in college"
+                        :key="item"
+                        :label="item"
+                        :value="item">
+                </el-option>
+            </el-select>
+        </el-form-item>
+
+        <el-form-item label="层次">
+            <el-select v-model="query.educationLevel" placeholder="请选择学历层次">
+                <el-option
+                        v-for="item in options"
+                        :key="item"
+                        :label="item"
+                        :value="item">
+                </el-option>
+            </el-select>
+        </el-form-item>
+
+        <el-form-item label="信息员班级">
+            <el-input v-model="query.className" placeholder="请输入信息员班级"></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="handleQuery" class="el-icon-search">查询</el-button>
+            <el-button type="primary" @click="resetQuery" class="el-icon-refresh">重置</el-button>
+        </el-form-item>
+    </el-form>
+
+    <el-button @click="handleBatchDelete()" type="danger" plain class="el-icon-delete">批量删除</el-button>
+    <el-button @click="handleAdd()" type="primary" plain class="el-icon-plus">新增信息员用户</el-button>
+
+    <el-table :data="dataList" stripe style="width: 100%" highlight-current-row
+              :default-sort="{prop:'createTime',order:'descending'}"
+              @selection-change="handleSelectionChange">
+
+        <el-table-column type="selection"></el-table-column>
+        <el-table-column type="index" label="序号" align="center"></el-table-column>
+        <el-table-column prop="username" label="用户名" align="center" sortable></el-table-column>
+        <el-table-column prop="name" label="姓名" align="center" sortable></el-table-column>
+        <el-table-column prop="college" label="学院" align="center" sortable></el-table-column>
+        <el-table-column prop="className" label="班级" align="center" sortable></el-table-column>
+        <el-table-column prop="educationLevel" label="层次" align="center" sortable></el-table-column>
+        <el-table-column prop="enrollmentYear" label="入学年份" align="center" sortable></el-table-column>
+
+        <el-table-column prop="createTime" label="创建时间" align="center" sortable width="180px"></el-table-column>
+        <el-table-column prop="updateTime" label="修改时间" align="center" sortable width="180px"></el-table-column>
+
+        <el-table-column label="操作" align="center" fixed="right" width="250px">
+            <template slot-scope="scope">
+                <el-button type="primary" @click="handleEdit(scope.row)" class="el-icon-edit">修改</el-button>
+                <el-button type="danger" @click="handleDelete(scope.row)" class="el-icon-delete">删除</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+    <!--分页工具条-->
+    <el-pagination
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :hide-on-single-page=false
+            :current-page="currentPage"
+            :page-sizes="[10, 20,  30, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalPage">
+    </el-pagination>
+
+    <el-dialog title="新增信息员用户" :visible.sync="dialogFormAddVisible" center width="40%" top="10vh">
+        <el-form ref="formData" :model="formData" :rules="rules" label-position="right"
+                 label-width="100px">
+            <el-form-item label="用户名" prop="username">
+                <el-input v-model="formData.username" placeholder="请输入至多30位长度用户名"
+                          clearable maxlength="30">
+                </el-input>
+            </el-form-item>
+
+            <el-form-item label="密码" prop="password">
+                <el-input v-model="formData.password" placeholder="请输入至多30位长度密码(密码只做登录检验，不做记录)"
+                          clearable maxlength="30" show-password>
+                </el-input>
+            </el-form-item>
+            <el-form-item label="姓名" prop="name">
+                <el-input v-model="formData.name" placeholder="请输入至多10位长度姓名"
+                          clearable maxlength="10">
+                </el-input>
+            </el-form-item>
+
+            <el-form-item label="学院" prop="college">
+                <el-select v-model="formData.college" placeholder="请选择学院">
+                    <el-option
+                            v-for="item in college"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item label="班级" prop="className">
+                <el-input v-model="formData.className" placeholder="请输入至多30位长度班级"
+                          clearable maxlength="30">
+                </el-input>
+            </el-form-item>
+
+            <el-form-item label="层次" prop="educationLevel">
+                <el-select v-model="formData.educationLevel" placeholder="请选择学历层次">
+                    <el-option v-for="item in options"
+                               :key="item"
+                               :label="item"
+                               :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item label="入学年份" prop="enrollmentYear">
+                <el-select v-model="formData.enrollmentYear" placeholder="请选择入学年份">
+                    <el-option v-for="item in enrollmentYears"
+                               :key="item"
+                               :label="item"
+                               :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormAddVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleAddSubmit()">完成</el-button>
+        </div>
+    </el-dialog>
+
+
+    <el-dialog title="修改信息员用户" :visible.sync="dialogFormEditVisible" center width="40%" top="10vh">
+        <p style="text-align: center">可以动态修改，可以只填写需要修改的；都不填，即不修改</p>
+        <el-form ref="formData" :model="formData" label-position="right"
+                 label-width="100px">
+            <!--            <el-form-item label="用户名" prop="username">-->
+            <!--                <el-input v-model="formData.username" placeholder="请输入至多30位长度用户名"-->
+            <!--                          clearable maxlength="30"></el-input>-->
+            <!--            </el-form-item>-->
+            <el-form-item label="密码" prop="password">
+                <el-input v-model="formData.password" placeholder="请输入至多30位长度密码(密码只做登录检验，不做记录)"
+                          clearable maxlength="30" show-password>
+                </el-input>
+            </el-form-item>
+            <el-form-item label="姓名" prop="name">
+                <el-input v-model="formData.name" placeholder="请输入至多10位长度姓名"
+                          clearable maxlength="10"></el-input>
+            </el-form-item>
+            <el-form-item label="学院" prop="college">
+                <el-select v-model="formData.college" placeholder="请选择学院">
+                    <el-option
+                            v-for="item in college"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="班级" prop="className">
+                <el-input v-model="formData.className" placeholder="请输入至多30位长度班级"
+                          clearable maxlength="30">
+                </el-input>
+            </el-form-item>
+
+            <el-form-item label="层次" prop="educationLevel">
+                <el-select v-model="formData.educationLevel" placeholder="请选择学历层次">
+                    <el-option
+                            v-for="item in options"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item label="入学年份" prop="enrollmentYear">
+                <el-select v-model="formData.enrollmentYear" placeholder="请选择入学年份">
+                    <el-option v-for="item in enrollmentYears"
+                               :key="item"
+                               :label="item"
+                               :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormEditVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleUpdateSubmit()">完成</el-button>
+        </div>
+    </el-dialog>
+
+</div>
+
+<!-- 引入组件库 -->
+<script src="https://npm.elemecdn.com/vue@2/dist/vue.js"></script>
+<script src="https://npm.elemecdn.com/element-ui/lib/index.js"></script>
+<script src="https://npm.elemecdn.com/axios@1.3/dist/axios.min.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        computed: {
+            years() {
+                return calculateYear()
+            },
+            enrollmentYears() {
+                if (this.formData.educationLevel === '本科') {
+                    return this.years
+                } else if (this.formData.educationLevel === '专科') {
+                    return this.years.slice(0, 2)
+                } else if (this.formData.educationLevel === '专升本') {
+                    return [this.years[0]]
+                } else {
+                    return []
+                }
+            }
+        },
+        data: {
+            dataList: [],//渲染表格数据集合
+            query: {},//搜索表单对象
+            formData: {},//提交表单(新增、编辑)
+            dialogFormAddVisible: false,//新增窗口
+            dialogFormEditVisible: false,//编辑窗口
+            currentPage: 1,
+            pageSize: 10,
+            totalPage: 100,
+            multipleSelection: [],//多选框
+            selectedIdList: [],//选中数据的id数组
+            college: [],
+            // years: [2020, 2021, 2022],
+
+            //下拉菜单，选择学历层次
+            options: ['本科', '专升本', '专科'],
+            rules: {//校验规则
+                username: [
+                    {required: true, message: '请输入用户名', trigger: 'blur'}
+                ],
+                password: [
+                    {required: true, message: '请输入密码', trigger: 'blur'},
+                    {min: 5, max: 30, message: '用户密码长度必须介于5-30之间'}
+                ],
+                name: [
+                    {required: true, message: '请输入姓名', trigger: 'blur'}
+                ],
+                college: [
+                    {required: true, message: '请选择学院', trigger: 'blur'}
+                ],
+                className: [
+                    {required: true, message: '请输入班级', trigger: 'blur'}
+                ],
+                enrollmentYear: [
+                    {required: true, message: '请选择入学年份', trigger: 'blur'}
+                ],
+                educationLevel: [
+                    {required: true, message: '请选择学历层次', trigger: 'blur'}
+                ],
+
+            }
+        },
+        created() {
+            listCollege().then((res) => {
+                if (res.data.code === 20040) {
+                    for (let i = 0; i < res.data.data.length; i++) {
+                        this.college[i] = res.data.data[i].name
+                    }
+                }
+            })
+        },
+        mounted() {
+            this.handleQuery()
+        },
+        methods: {
+            //处理分页查询当前页面变化
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.handleQuery();
+            },
+            //处理分页查询页面大小变化
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.handleQuery()
+            },
+            //重置查询
+            resetQuery() {
+                this.query = {};
+                this.handleQuery()
+            },
+            //查询
+            handleQuery() {
+                list(this.query, this.currentPage, this.pageSize)
+                    .then((res) => {
+                        if (res.data.code === 20040) {
+                            this.dataList = res.data.data.records;
+                            this.totalPage = res.data.data.total;
+                            setTimeout(() => {
+                                this.$message.success('加载完成')
+                            }, 1500)
+                        } else {
+                            this.$message.error(res.data.msg)
+                        }
+                    })
+            },
+            // 处理删除操作
+            handleDelete(row) {
+                this.$confirm('此操作将永久删除当前数据,是否继续？', '提示', {
+                    type: 'warning'
+                }).then(() => {
+                    removeBatchUser(row.id).then((res) => {
+                        if (res.data.code === 20021) {
+                            this.$message.success('删除完成')
+                        }
+                    }).finally(() => {
+                        this.handleQuery()
+                    });
+                }).catch((e) => {
+                    this.$message('操作异常' + e)
+                })
+            },
+            //处理复选框选中的数据,提取id
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+
+                for (let i = 0; i < this.multipleSelection.length; i++) {
+                    let element = this.multipleSelection[i];
+                    this.selectedIdList[i] = element.id;
+                }
+            },
+            // 处理编辑操作,弹出编辑窗口
+            handleEdit(row) {
+                //根据id查询数据,将之前数据显示
+                this.dialogFormEditVisible = true
+                getUser(row.id).then((res) => {
+                    if (res.data.code === 20040 && res.data.data != null) {
+                        this.formData = res.data.data
+                    }
+                })
+            },
+
+            // 处理添加操作,弹出对话框
+            handleAdd() {
+                this.dialogFormAddVisible = true
+                this.formData = {}
+            },
+            //添加提交
+            handleAddSubmit() {
+                this.$refs.formData.validate((v) => {
+                    if (v) {
+                        addUser(this.formData).then((res) => {
+                            if (res.data.code === 20010) {
+                                this.dialogFormAddVisible = false
+                                this.handleQuery()
+                                this.$message.success(res.data.msg)
+                            } else {
+                                this.$message.error(res.data.msg)
+                            }
+                        }).catch((e) => {
+                            this.$message({
+                                message: ('接口请求异常 ' + e),
+                                type: 'error',
+                                center: true
+                            })
+                        })
+                    }
+                })
+
+
+            },
+            //修改提交
+            handleUpdateSubmit() {
+                this.$refs.formData.validate((v) => {
+                    if (v) {
+                        updateUser(this.formData).then((res) => {
+                            if (res.data.code === 20031) {
+                                this.dialogFormEditVisible = false
+                                this.$message.success(res.data.msg)
+                            } else {
+                                this.$message.error(res.data.msg)
+                            }
+                        }).catch((e) => {
+                            this.$message({
+                                message: ('接口请求异常 ' + e),
+                                type: 'error',
+                                center: true
+                            })
+                        }).finally(() => {
+                            this.handleQuery()
+                        })
+                    }
+
+                })
+
+            },
+
+            //批量删除
+            handleBatchDelete() {
+                if (this.selectedIdList.length === 0) {
+                    this.$message('至少选择一条数据再进行操作')
+                } else {
+                    this.$confirm('此操作将永久删除所选数据,是否继续?', '提示', {
+                        type: 'warning',
+                    }).then(() => {
+                        removeBatchUser(this.selectedIdList).then((res) => {
+                            if (res.data.code === 20021) {
+                                this.$message.success('删除完成')
+                            }
+                        }).finally(() => {
+                            this.handleQuery()
+                        })
+                    }).catch((e) => {
+                        this.$message({
+                            message: ('接口请求异常 ' + e),
+                            type: 'error',
+                            center: true
+                        })
+                    })
+                }
+
+            }
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://npm.elemecdn.com/element-ui/lib/theme-chalk/index.css">
     <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.2/??flexible_css.js,flexible.js"></script>
 
+    <script src="/api/teach-info.js"></script>
     <link rel="stylesheet" href="./style/index.css">
 
     <style>
@@ -207,7 +208,8 @@
             handleSubmit() {
                 this.$refs.teachInfoFormData.validate((valid) => {
                     if (valid) {
-                        axios.post("/feedback/stu/add", this.teachInfoFormData)
+                        // axios.post("/feedback/stu/add", this.teachInfoFormData)
+                        addTeachInfo(this.teachInfoFormData)
                             .then((response) => {
                                     if (response.data.code === 20011) {
                                         this.$message.success(response.data.msg)
