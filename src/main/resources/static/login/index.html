@@ -129,9 +129,9 @@
 <script src="https://npm.elemecdn.com/element-ui/lib/index.js"></script>
 <script src="https://npm.elemecdn.com/axios@1.3/dist/axios.min.js"></script>
 
-<script src="./api/login.js"></script>
-<script src="./api/stu-pwd.js"></script>
-<script src="./api/auth.js"></script>
+<script src="/api/login.js"></script>
+<script src="/api/student.js"></script>
+<script src="/api/auth.js"></script>
 
 
 <script>
@@ -189,7 +189,7 @@
                         } else if (this.updateUserInfoForm.password !== this.updateUserInfoForm.password2) {
                             this.$message("两次输入密码不一致，请检查后重试")
                         } else {
-                            updateTApi(this.updateUserInfoForm, this.updateUserInfoForm.oldPassword)
+                            updatePassword(this.updateUserInfoForm, this.updateUserInfoForm.oldPassword)
                                 .then((response) => {
                                     if (response.data.code === 20031) {
                                         this.$message.success(response.data.msg);
@@ -208,7 +208,7 @@
                     }
                 })
             },
-            loginSubmit: function () {
+            loginSubmit() {
                 this.$refs.loginForm.validate((valid) => {
                     if (valid) {
                         // 权限检验
@@ -279,6 +279,7 @@
                                         localStorage.setItem("loginUser", JSON.stringify(loginUser))
                                         this.$message.success(r.data.msg);
                                         this.$message.success(r.data.msg);
+                                        window.location.href = '../backend/index.html'
                                     } else if (r.data.code === 20042) {
                                         this.$message(r.data.msg);
                                     } else {

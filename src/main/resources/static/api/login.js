@@ -20,26 +20,30 @@
  *
  */
 
-function loginSApi(data, urlParam) {
+
+const apiUrlPrefix = '/login/users/';
+
+function loginSApi(data, captcha) {
     return axios({
         method: 'post',
-        url: '/login/users/stu/' + urlParam,
+        url: apiUrlPrefix + 'stu/' + captcha,
+        // url: '/login/users/stu/' + captcha,
         data
     })
 }
 
-function loginTApi(data, urlParam) {
+function loginTApi(data, captcha) {
     return axios({
         method: 'post',
-        url: '/login/users/stuAdmin/' + urlParam,
+        url: apiUrlPrefix + 'stuAdmin/' + captcha,
         data
     })
 }
 
-function loginAApi(data, urlParam) {
+function loginAApi(data, captcha) {
     return axios({
         method: 'post',
-        url: '/login/users/admin/' + urlParam,
+        url: apiUrlPrefix + 'admin/' + captcha,
         data
     })
 }
