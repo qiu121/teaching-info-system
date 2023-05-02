@@ -42,8 +42,8 @@ function listTeachInfo2(username) {
     })
 }
 
-// DOTO
-function listAllTeachInfo2(stuAdmin, teachInfo, currentPage, pageSize) {
+function listAllTeachInfoByPermission(requestData, currentPage, pageSize) {
+    const {stuAdmin, teachInfo} = requestData;
     return axios({
         method: 'post',
         url: `/feedback/stuAdmin/selectAllByPermission/${currentPage}/${pageSize}`,
