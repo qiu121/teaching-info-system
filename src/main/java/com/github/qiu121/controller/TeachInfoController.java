@@ -2,6 +2,7 @@ package com.github.qiu121.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -63,6 +64,8 @@ public class TeachInfoController {
         QueryWrapper<TeachInfo> wrapper = new QueryWrapper<>();
         if (teachInfo != null) {
             wrapper.select("*").lambda()
+                    .like(StringUtils.isNotBlank(teachInfo.getSubmitPersonCollege()), TeachInfo::getSubmitPersonCollege, teachInfo.getSubmitPersonCollege())
+
                     .like(StringUtils.isNotBlank(teachInfo.getTeacherName()), TeachInfo::getTeacherName, teachInfo.getTeacherName())
                     .like(StringUtils.isNotBlank(teachInfo.getCourseName()), TeachInfo::getCourseName, teachInfo.getCourseName())
                     .like(StringUtils.isNotBlank(teachInfo.getClassLocation()), TeachInfo::getClassLocation, teachInfo.getClassLocation());
@@ -137,10 +140,26 @@ public class TeachInfoController {
      * @return R<Boolean>
      */
     @PutMapping("/update")
-    public R<Boolean> updateTeachInfo(@RequestBody @Validated TeachInfo teachInfo) {
+    public R<?> updateTeachInfo(@RequestBody @Validated TeachInfo teachInfo) {
 
         teachInfoValidate(teachInfo);
-        boolean update = teachInfoService.updateById(teachInfo);
+
+        final LambdaUpdateWrapper<TeachInfo> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(TeachInfo::getId, teachInfo.getId())
+                .set(TeachInfo::getCourseName, teachInfo.getCourseName())//课程名称
+                .set(TeachInfo::getTeacherName, teachInfo.getTeacherName())//教师姓名
+                .set(TeachInfo::getShouldArriveNum, teachInfo.getShouldArriveNum())//实到人数
+                .set(TeachInfo::getActualArriveNum, teachInfo.getActualArriveNum())//应到人数
+
+                .set(TeachInfo::getClassLocation, teachInfo.getClassLocation())//上课地点
+                .set(TeachInfo::getRecordClassDate, teachInfo.getRecordClassDate())//记录时间-日期
+                .set(TeachInfo::getRecordCourseNum, teachInfo.getRecordCourseNum())//记录时间-上课节次
+                .set(TeachInfo::getFeedbackGood, teachInfo.getFeedbackGood())//信息反馈，好的方面
+                .set(TeachInfo::getFeedbackNotEnough, teachInfo.getFeedbackNotEnough())//信息反馈，不足之处
+                .set(TeachInfo::getHopesAndSuggestions, teachInfo.getHopesAndSuggestions());//希望和建议
+
+
+        boolean update = teachInfoService.update(wrapper);
         log.info("修改完成：{}", update);
         return update ? new R<>(20031, "修改成功") :
                 new R<>(20032, "修改失败");
