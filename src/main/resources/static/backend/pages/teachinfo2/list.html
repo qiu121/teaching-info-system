@@ -7,6 +7,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="https://npm.elemecdn.com/element-ui/lib/theme-chalk/index.css">
     <script src="/api/teach-info2.js"></script>
+    <script src="/api/college.js"></script>
 </head>
 
 <style>
@@ -36,11 +37,21 @@
 <body>
 <div id="app">
     <el-form :inline="true" :model="query">
-        <el-form-item label="提交人学院">
-            <el-input v-model="query.submitPersonCollege" placeholder="输入提交人学院"></el-input>
+        <el-form-item label="学院">
+            <el-select v-model="query.submitPersonCollege" placeholder="请选择学院">
+                <el-option
+                        v-for="item in college"
+                        :key="item"
+                        :label="item"
+                        :value="item">
+                </el-option>
+            </el-select>
         </el-form-item>
         <el-form-item label="提交人班级">
             <el-input v-model="query.submitPersonClass" placeholder="输入提交人班级"></el-input>
+        </el-form-item>
+        <el-form-item label="提交人姓名">
+            <el-input v-model="query.submitPersonName" placeholder="输入提交人姓名"></el-input>
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="handleQuery" class="el-icon-search">查询</el-button>
@@ -116,8 +127,18 @@
             totalPage: 100,
             multipleSelection: [],//多选框
             selectedIdList: [],//选中数据的id数组
+            college: []
         },
         created() {
+            listCollege().then((res) => {
+                if (res.data.code === 20040) {
+                    for (let i = 0; i < res.data.data.length; i++) {
+                        this.college[i] = res.data.data[i].name
+                    }
+                }
+            })
+        },
+        mounted() {
             this.handleQuery()
         },
         methods: {
@@ -158,7 +179,7 @@
                 }).then(() => {
                     removeTeachInfo2(row.id).then((res) => {
                         if (res.data.code === 20021) {
-                            this.$message.success('删除完成')
+                            this.$message.success(res.data.msg)
                         }
                     }).finally(() => {
                         this.handleQuery()
@@ -188,7 +209,7 @@
                     }).then(() => {
                         removeBatchTeachInfo2(this.selectedIdList).then((res) => {
                             if (res.data.code === 20021) {
-                                this.$message.success('删除完成')
+                                this.$message.success(res.data.msg)
                             }
                         }).finally(() => {
                             this.handleQuery()

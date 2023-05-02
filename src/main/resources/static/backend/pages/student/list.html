@@ -195,7 +195,8 @@
             </el-form-item>
             <el-form-item label="姓名" prop="name">
                 <el-input v-model="formData.name" placeholder="请输入至多10位长度姓名"
-                          clearable maxlength="10"></el-input>
+                          clearable maxlength="10">
+                </el-input>
             </el-form-item>
             <el-form-item label="学院" prop="college">
                 <el-select v-model="formData.college" placeholder="请选择学院">
@@ -360,7 +361,7 @@
                 }).then(() => {
                     removeBatchUser(row.id).then((res) => {
                         if (res.data.code === 20021) {
-                            this.$message.success('删除完成')
+                            this.$message.success(res.data.msg)
                         }
                     }).finally(() => {
                         this.handleQuery()
@@ -420,8 +421,8 @@
             },
             //修改提交
             handleUpdateSubmit() {
-                this.$refs.formData.validate((v) => {
-                    if (v) {
+                this.$refs.formData.validate((valid) => {
+                    if (valid) {
                         updateUser(this.formData).then((res) => {
                             if (res.data.code === 20031) {
                                 this.dialogFormEditVisible = false
@@ -454,7 +455,7 @@
                     }).then(() => {
                         removeBatchUser(this.selectedIdList).then((res) => {
                             if (res.data.code === 20021) {
-                                this.$message.success('删除完成')
+                                this.$message.success(res.data.msg)
                             }
                         }).finally(() => {
                             this.handleQuery()

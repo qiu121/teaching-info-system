@@ -10,8 +10,8 @@
     <!-- 引入样式 -->
     <link rel="stylesheet" href="https://npm.elemecdn.com/element-ui/lib/theme-chalk/index.css">
 
-    <link rel="stylesheet" href="styles/common.css"/>
-    <link rel="stylesheet" href="styles/index.css"/>
+    <link rel="stylesheet" href="../styles/common.css"/>
+    <link rel="stylesheet" href="../styles/index.css"/>
     <style>
         .body {
             min-width: 1366px;
@@ -150,11 +150,14 @@
             logout() {
                 logoutApi().then((res) => {
                     if (res.data.code === 200) {
-                        // localStorage.removeItem('loginUser')
+                        localStorage.removeItem('loginUser')
                         this.$message({
                             message: res.data.msg,
                             center: true
                         })
+                        setTimeout(() => {
+                            window.location.href = '/login/index.html'
+                        }, 1500)
                         // window.location.href = 'https://baidu.com'
                     } else {
                         this.$message({

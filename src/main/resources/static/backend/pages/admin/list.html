@@ -156,7 +156,7 @@
                 }).then(() => {
                     removeUser(row.id).then((res) => {
                         if (res.data.code === 20021) {
-                            this.$message.success('删除完成')
+                            this.$message.success(res.data.msg)
                         }
                     }).finally(() => {
                         this.handleQuery()
@@ -172,8 +172,8 @@
             },
             //添加提交
             handleAddSubmit() {
-                this.$refs.formData.validate((v) => {
-                    if (v) {
+                this.$refs.formData.validate((valid) => {
+                    if (valid) {
                         addUser(this.formData).then((res) => {
                             if (res.data.code === 20010) {
                                 this.dialogFormAddVisible = false

@@ -7,6 +7,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="https://npm.elemecdn.com/element-ui/lib/theme-chalk/index.css">
     <script src="/api/teach-info.js"></script>
+    <script src="/api/college.js"></script>
 </head>
 
 <style>
@@ -36,6 +37,16 @@
 <body>
 <div id="app">
     <el-form :inline="true" :model="query">
+        <el-form-item label="学院">
+            <el-select v-model="query.submitPersonCollege" placeholder="请选择学院">
+                <el-option
+                        v-for="item in college"
+                        :key="item"
+                        :label="item"
+                        :value="item">
+                </el-option>
+            </el-select>
+        </el-form-item>
         <el-form-item label="课程名称">
             <el-input v-model="query.courseName" placeholder="输入课程名称"></el-input>
         </el-form-item>
@@ -134,8 +145,19 @@
             totalPage: 100,
             multipleSelection: [],//多选框
             selectedIdList: [],//选中数据的id数组
+            college: [],
+
         },
         created() {
+            listCollege().then((res) => {
+                if (res.data.code === 20040) {
+                    for (let i = 0; i < res.data.data.length; i++) {
+                        this.college[i] = res.data.data[i].name
+                    }
+                }
+            })
+        },
+        mounted() {
             this.handleQuery()
         },
         methods: {
@@ -178,7 +200,7 @@
                 }).then(() => {
                     removeTeachInfo(row.id).then((res) => {
                         if (res.data.code === 20021) {
-                            this.$message.success('删除完成')
+                            this.$message.success(res.data.msg)
                         }
                     }).finally(() => {
                         this.handleQuery()
@@ -209,7 +231,7 @@
                     }).then(() => {
                         removeBatchTeachInfo(this.selectedIdList).then((res) => {
                             if (res.data.code === 20021) {
-                                this.$message('删除完成')
+                                this.$message.success(res.data.msg)
                             }
                         }).finally(() => {
                             this.handleQuery()

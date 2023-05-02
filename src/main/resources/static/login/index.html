@@ -248,10 +248,10 @@
                             loginTApi(this.loginForm, this.loginForm.captcha)
                                 .then((r) => {
                                     if (r.data.code === 20041) {
-                                        //TODO 信息员组长后台页面
                                         const loginUser = r.data.data[0].info
                                         localStorage.setItem("loginUser", JSON.stringify(loginUser))
                                         this.$message.success(r.data.msg);
+                                        window.location.href = '../secondary/index.html'
                                     } else if (r.data.code === 20042) {
                                         this.$message(r.data.msg);
                                     } else {
@@ -274,10 +274,8 @@
                             loginAApi(this.loginForm, this.loginForm.captcha)
                                 .then((r) => {
                                     if (r.data.code === 20041) {
-                                        //TODO 管理员业务操作页面
                                         const loginUser = r.data.data[0].info
                                         localStorage.setItem("loginUser", JSON.stringify(loginUser))
-                                        this.$message.success(r.data.msg);
                                         this.$message.success(r.data.msg);
                                         window.location.href = '../backend/index.html'
                                     } else if (r.data.code === 20042) {

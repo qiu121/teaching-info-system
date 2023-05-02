@@ -343,7 +343,7 @@
                 }).then(() => {
                     removeBatchUser(row.id).then((res) => {
                         if (res.data.code === 20021) {
-                            this.$message.success('删除完成')
+                            this.$message.success(res.data.msg)
                         }
                     }).finally(() => {
                         this.handleQuery()
@@ -437,7 +437,7 @@
                     }).then(() => {
                         removeBatchUser(this.selectedIdList).then((res) => {
                             if (res.data.code === 20021) {
-                                this.$message.success('删除完成')
+                                this.$message.success(res.data.msg)
                             }
                         }).finally(() => {
                             this.handleQuery()
