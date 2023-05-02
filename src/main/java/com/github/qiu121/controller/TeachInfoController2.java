@@ -1,6 +1,7 @@
 package com.github.qiu121.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -49,11 +50,11 @@ public class TeachInfoController2 {
      * @return R
      */
     @PostMapping("/add")
-    public R<String> addTeachInfo2(@RequestBody @Validated TeachInfo2 teachInfo) {
-        teacherInfoValidate2(teachInfo);
+    public R<String> addTeachInfo2(@RequestBody @Validated TeachInfo2 teachInfo2) {
+        teacherInfoValidate2(teachInfo2);
 
         final R<String> r = new R<>();
-        final boolean save = teachInfoService2.save(teachInfo);
+        final boolean save = teachInfoService2.save(teachInfo2);
         return save ? (r.setCode(20011).setMsg("提交成功"))
                 : (r.setCode(20012).setMsg("提交失败"));
     }
@@ -107,15 +108,20 @@ public class TeachInfoController2 {
      * @return R
      */
     @PutMapping("/update")
-    public R<String> updateTeachInfo2(@RequestBody TeachInfo2 teachInfo) {
+    public R<String> updateTeachInfo2(@RequestBody @Validated TeachInfo2 teachInfo2) {
 
-        teacherInfoValidate2(teachInfo);
+        teacherInfoValidate2(teachInfo2);
 
         final R<String> r = new R<>();
-        final boolean updateFlag = teachInfoService2.updateById(teachInfo);
-        return updateFlag ? (r.setCode(20031).setMsg("修改完成"))
-                : (r.setCode(20032).setMsg("修改失败"));
+        final LambdaUpdateWrapper<TeachInfo2> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(TeachInfo2::getId, teachInfo2.getId())
+                .set(TeachInfo2::getFeedbackGood, teachInfo2.getFeedbackGood())
+                .set(TeachInfo2::getFeedbackNotEnough, teachInfo2.getFeedbackNotEnough())
+                .set(TeachInfo2::getHopesAndSuggestions, teachInfo2.getHopesAndSuggestions());
+        final boolean updateFlag = teachInfoService2.update(wrapper);
 
+        return updateFlag ? new R<>(20031, "修改完成") :
+                new R<>(20032, "修改失败");
     }
 
     /**
@@ -209,7 +215,9 @@ public class TeachInfoController2 {
         //判空，不为空，则加入条件构造；为空条件无效，查询所有
         teachInfoWrapper.in(!CollectionUtils.isEmpty(studentNameList), TeachInfo::getSubmitPerson, studentNameList);
 
-        teachInfoWrapper.like(StringUtils.isNotBlank(teachInfo.getTeacherName()), TeachInfo::getTeacherName, teachInfo.getTeacherName())
+        //可以同通过，教师姓名、课程名、上课地点筛查
+        teachInfoWrapper.like(StringUtils.isNotBlank(teachInfo.getSubmitPersonCollege()), TeachInfo::getSubmitPersonCollege, teachInfo.getSubmitPersonCollege())
+                .like(StringUtils.isNotBlank(teachInfo.getTeacherName()), TeachInfo::getTeacherName, teachInfo.getTeacherName())
                 .like(StringUtils.isNotBlank(teachInfo.getCourseName()), TeachInfo::getCourseName, teachInfo.getCourseName())
                 .like(StringUtils.isNotBlank(teachInfo.getClassLocation()), TeachInfo::getClassLocation, teachInfo.getClassLocation());
         Page<TeachInfo> infoPage = teachInfoService.page(new Page<>(currentNum, pageSize), teachInfoWrapper);
@@ -256,7 +264,7 @@ public class TeachInfoController2 {
                 .like(StringUtils.isNotBlank(teachInfo2.getSubmitPersonName()),
                         TeachInfo2::getSubmitPersonName, teachInfo2.getSubmitPersonName())
                 .like(StringUtils.isNotBlank(teachInfo2.getSubmitPersonClass()),
-                        TeachInfo2::getSubmitPersonName, teachInfo2.getSubmitPersonClass());
+                        TeachInfo2::getSubmitPersonClass, teachInfo2.getSubmitPersonClass());
 
         IPage<TeachInfo2> iPage = teachInfoService2.page(new Page<>(currentNum, pageSize), wrapper);
 
