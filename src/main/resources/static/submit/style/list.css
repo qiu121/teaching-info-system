@@ -1,0 +1,28 @@
+/* styles for screens smaller than 768px */
+@media (max-width: 700px) {
+    /* adjust table font size */
+    .el-table {
+        font-size: 14px;
+    }
+
+    /* make table expand button full width */
+    .el-table-column--expand > .cell {
+        width: 100%;
+    }
+
+    /* adjust form label width */
+    .el-form-item__label {
+        width: 80px !important;
+    }
+
+    /* make form inputs full width */
+    .el-form-item__content {
+        flex: 1;
+    }
+
+    /* adjust dialog width and top position */
+    .el-dialog {
+        width: 90% !important;
+        top: 5vh !important;
+    }
+}
