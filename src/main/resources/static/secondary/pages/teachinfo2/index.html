@@ -285,6 +285,8 @@
                 getTeachInfo2(row.id).then((res) => {
                     if (res.data.code === 20040 && res.data.data != null) {
                         this.formData = res.data.data
+                    } else {
+                        this.$message.error(res.data.msg)
                     }
                 })
             },
@@ -333,12 +335,14 @@
                     removeTeachInfo2(row.id).then((res) => {
                         if (res.data.code === 20021) {
                             this.$message.success(res.data.msg)
+                        } else {
+                            this.$message.error(res.data.msg)
                         }
                     }).finally(() => {
                         this.handleQuery()
                     });
                 }).catch((e) => {
-                    this.$message('操作异常' + e)
+                    this.$message('操作 ' + e)
                 })
             },
             //弹出窗口
@@ -391,12 +395,14 @@
                         removeBatchTeachInfo2(this.selectedIdList).then((res) => {
                             if (res.data.code === 20021) {
                                 this.$message.success(res.data.msg)
+                            } else {
+                                this.$message.error(res.data.msg)
                             }
                         }).finally(() => {
                             this.handleQuery()
                         })
                     }).catch((e) => {
-                        this.$message('操作异常' + e)
+                        this.$message('操作 ' + e)
                     })
                 }
 

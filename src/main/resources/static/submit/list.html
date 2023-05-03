@@ -236,6 +236,8 @@
                 getTeachInfo(row.id).then((res) => {
                     if (res.data.code === 20040 && res.data.data != null) {
                         this.teachInfoFormData = res.data.data
+                    } else {
+                        this.$message.error(res.data.msg)
                     }
                 })
             },
@@ -303,6 +305,8 @@
                         removeBatchTeachInfo(this.selectedIdList).then((res) => {
                             if (res.data.code === 20021) {
                                 this.$message.success(res.data.msg)
+                            } else {
+                                this.$message.error(res.data.msg)
                             }
                         }).finally(() => {
                             this.handleQuery()

@@ -114,12 +114,14 @@
                     removeCollege(row.id).then((res) => {
                         if (res.data.code === 20021) {
                             this.$message.success(res.data.msg)
+                        } else {
+                            this.$message.error(res.data.msg)
                         }
                     }).finally(() => {
                         this.handleQuery()
                     });
                 }).catch((e) => {
-                    this.$message('操作异常' + e)
+                    this.$message('操作 ' + e)
                 })
             },
             // 处理添加操作,弹出对话框

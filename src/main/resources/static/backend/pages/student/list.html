@@ -362,12 +362,14 @@
                     removeBatchUser(row.id).then((res) => {
                         if (res.data.code === 20021) {
                             this.$message.success(res.data.msg)
+                        } else {
+                            this.$message.error(res.data.msg)
                         }
                     }).finally(() => {
                         this.handleQuery()
                     });
                 }).catch((e) => {
-                    this.$message('操作异常' + e)
+                    this.$message('操作 ' + e)
                 })
             },
             //处理复选框选中的数据,提取id
@@ -386,6 +388,8 @@
                 getUser(row.id).then((res) => {
                     if (res.data.code === 20040 && res.data.data != null) {
                         this.formData = res.data.data
+                    } else {
+                        this.$message.error(res.data.msg)
                     }
                 })
             },
@@ -456,16 +460,14 @@
                         removeBatchUser(this.selectedIdList).then((res) => {
                             if (res.data.code === 20021) {
                                 this.$message.success(res.data.msg)
+                            } else {
+                                this.$message.error(res.data.msg)
                             }
                         }).finally(() => {
                             this.handleQuery()
                         })
                     }).catch((e) => {
-                        this.$message({
-                            message: ('接口请求异常 ' + e),
-                            type: 'error',
-                            center: true
-                        })
+                        this.$message('操作 ' + e)
                     })
                 }
 
