@@ -182,7 +182,7 @@
 
     <el-dialog title="修改信息员用户" :visible.sync="dialogFormEditVisible" center width="40%" top="10vh">
         <p style="text-align: center">可以动态修改，可以只填写需要修改的；都不填，即不修改</p>
-        <el-form ref="formData" :model="formData" label-position="right"
+        <el-form ref="formData" :model="formData" label-position="right" :rules="rules"
                  label-width="100px">
             <!--            <el-form-item label="用户名" prop="username">-->
             <!--                <el-input v-model="formData.username" placeholder="请输入至多30位长度用户名"-->
@@ -193,12 +193,12 @@
                           clearable maxlength="30" show-password>
                 </el-input>
             </el-form-item>
-            <el-form-item label="姓名" prop="name">
+            <el-form-item label="姓名">
                 <el-input v-model="formData.name" placeholder="请输入至多10位长度姓名"
                           clearable maxlength="10">
                 </el-input>
             </el-form-item>
-            <el-form-item label="学院" prop="college">
+            <el-form-item label="学院">
                 <el-select v-model="formData.college" placeholder="请选择学院">
                     <el-option
                             v-for="item in college"
@@ -208,13 +208,13 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="班级" prop="className">
+            <el-form-item label="班级">
                 <el-input v-model="formData.className" placeholder="请输入至多30位长度班级"
                           clearable maxlength="30">
                 </el-input>
             </el-form-item>
 
-            <el-form-item label="层次" prop="educationLevel">
+            <el-form-item label="层次">
                 <el-select v-model="formData.educationLevel" placeholder="请选择学历层次">
                     <el-option
                             v-for="item in options"
@@ -225,7 +225,7 @@
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="入学年份" prop="enrollmentYear">
+            <el-form-item label="入学年份">
                 <el-select v-model="formData.enrollmentYear" placeholder="请选择入学年份">
                     <el-option v-for="item in enrollmentYears"
                                :key="item"
