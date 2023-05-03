@@ -28,6 +28,15 @@ function updateUser(stuAdmin) {
     })
 }
 
+function updateUserSecure(old, stuAdmin) {
+    return axios({
+        method: 'put',
+        url: '/users/stuAdmin/update/secure',
+        params: {old},
+        data: stuAdmin
+    })
+}
+
 function list(stuAdmin, currentNum, pageSize) {
     return axios({
         method: 'post',

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://npm.elemecdn.com/element-ui/lib/theme-chalk/index.css">
     <script src="/api/teach-info2.js"></script>
     <script src="/api/college.js"></script>
+    <script src="/api/stu-admin.js"></script>
 </head>
 
 <style>
@@ -39,6 +40,7 @@
 
     <el-button @click="handleBatchDelete()" type="danger" plain class="el-icon-delete">批量删除</el-button>
     <el-button @click="handleAdd()" type="primary" plain class="el-icon-plus">新增提交</el-button>
+    <el-button type="primary" @click="updateSecure" class="el-icon-edit">修改账户</el-button>
 
     <el-table :data="dataList" stripe style="width: 100%" highlight-current-row
               :default-sort="{prop:'createTime',order:'descending'}" @selection-change="handleSelectionChange">
@@ -157,6 +159,30 @@
         </div>
     </el-dialog>
 
+    <el-dialog title="修改账户密码" :visible.sync="dialogVisible"
+               center width="40%" top="10vh">
+        <el-form :model="secureData" label-position="right"
+                 label-width="100px" ref="secureData" :rules="rules">
+            <el-form-item prop="password" prop="password">
+                <el-input v-model="old"
+                          placeholder="请输入旧密码"
+                          clearable maxlength="30" show-password>
+                </el-input>
+            </el-form-item>
+
+            <el-form-item prop="password" prop="password">
+                <el-input v-model="secureData.password"
+                          placeholder="请输入新密码"
+                          clearable maxlength="30" show-password>
+                </el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleUpdateSecure()">完成</el-button>
+        </div>
+    </el-dialog>
+
 </div>
 
 <!-- 引入组件库 -->
@@ -169,16 +195,17 @@
         el: '#app',
         data: {
             dataList: [],
-            query: {},
-            currentPage: 1,
-            pageSize: 10,
-            totalPage: 100,
             multipleSelection: [],
             selectedIdList: [],
-            college: [],
             loginUser: {},
             dialogFormAddVisible: false,
             dialogFormEditVisible: false,
+            dialogVisible: false,
+            secureData: {
+                username: '',
+                password: ''
+            },
+            old: '',
             formData: {
                 submitPerson: '',
                 submitPersonName: '',
@@ -194,7 +221,13 @@
                 ],
                 hopesAndSuggestions: [
                     {required: true, message: '希望和建议未填写', trigger: 'blur'}
-                ]
+                ],
+
+                password: [
+                    {required: true, message: '请输入密码', trigger: 'blur'},
+                    {min: 5, max: 30, message: '用户密码长度必须介于5-30之间'}
+                ],
+
             }
         },
         created() {
@@ -207,13 +240,8 @@
             this.formData.submitPersonCollege = this.loginUser.college;
             this.formData.submitPersonClass = this.loginUser.className;
 
-            listCollege().then((res) => {
-                if (res.data.code === 20040) {
-                    for (let i = 0; i < res.data.data.length; i++) {
-                        this.college[i] = res.data.data[i].name
-                    }
-                }
-            })
+            this.secureData.username = this.loginUser.username;//用户名验证旧密码
+
         },
         mounted() {
             this.handleQuery()
@@ -313,7 +341,37 @@
                     this.$message('操作异常' + e)
                 })
             },
+            //弹出窗口
+            updateSecure() {
+                this.dialogVisible = true
+                this.secureData.password = ''
+                this.old = ''
 
+            },
+            //提交修改
+            handleUpdateSecure() {
+                console.log(this.secureData)
+                this.$refs.secureData.validate((valid) => {
+                    if (valid) {
+                        updateUserSecure(this.old, this.secureData).then((res) => {
+                            if (res.data.code === 20031) {
+                                this.dialogVisible = false
+                                this.$message.success(res.data.msg)
+                                // this.$message('当前用户信息已失效，即将登出')
+                                // setTimeout(() => {
+                                //     window.location.href = '/login/index.html'
+                                // }, 1500)
+                            } else {
+                                this.$message.error(res.data.msg)
+                            }
+                        }).catch((e) => {
+                            this.$message({
+                                message: ('接口请求异常 ' + e),
+                            })
+                        })
+                    }
+                })
+            },
             //处理复选框选中的数据,提取id
             handleSelectionChange(val) {
                 this.multipleSelection = val;

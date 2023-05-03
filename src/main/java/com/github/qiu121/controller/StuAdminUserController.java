@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.qiu121.common.R;
 import com.github.qiu121.common.enumeration.PermissionEnum;
+import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.common.exception.DuplicateException;
+import com.github.qiu121.common.exception.NotFoundException;
 import com.github.qiu121.pojo.Permission;
 import com.github.qiu121.pojo.StuAdmin;
 import com.github.qiu121.service.PermissionService;
@@ -23,6 +25,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -125,6 +128,39 @@ public class StuAdminUserController {
         }
         return new R<>(code, msg, null);
 
+    }
+
+    /**
+     * 修改信息员组长账户密码
+     *
+     * @param stuAdmin 组长账户
+     * @return R
+     */
+    @PutMapping("/update/secure")
+    public R<?> updateUserPassword(@RequestParam String old, @RequestBody StuAdmin stuAdmin) {
+        // 验证旧密码
+        StuAdmin stuAdminOne = stuAdminService.getOne(new LambdaQueryWrapper<StuAdmin>()
+                .eq(StuAdmin::getUsername, stuAdmin.getUsername()));
+        if (stuAdminOne == null) {
+            throw new NotFoundException("账户不存在");
+        } else {
+            if (!SecureUtil.verify(old, stuAdminOne.getPassword())) {
+                return new R<>(20033, "旧密码错误");
+            }
+            if (Objects.equals(stuAdmin.getPassword(), old)) {
+                throw new BusinessException("新密码与原密码相同，请重试");
+            }
+        }
+
+        // 修改新密码
+        stuAdmin.setPassword(SecureUtil.encrypt(stuAdmin.getPassword()));
+
+        final LambdaUpdateWrapper<StuAdmin> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(StuAdmin::getUsername, stuAdmin.getUsername())
+                .set(StringUtils.isNotBlank(stuAdmin.getPassword()), StuAdmin::getPassword, stuAdmin.getPassword());
+        final boolean success = stuAdminService.update(wrapper);
+        return success ? new R<>(20031, "修改完成") :
+                new R<>(20032, "修改失败");
     }
 
     /**

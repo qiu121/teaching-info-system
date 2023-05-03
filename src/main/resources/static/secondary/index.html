@@ -64,7 +64,7 @@
             <!-- <navbar /> -->
             <div class="navbar">
                 <div class="right-menu">
-                    <div class="avatar-wrapper">{{ userInfo.name }}</div>
+                    <div class="avatar-wrapper">{{ loginUser.username }}</div>
                     <!-- <div class="logout" @click="logout">退出</div> -->
                     <img src="/images/btn_close@2x.png" class="outLogin" alt="退出" @click="logout"/>
                 </div>
@@ -90,9 +90,11 @@
         el: '#app',
         data() {
             return {
+                updateUserInfoForm: false,
                 defAct: '2',
                 menuActived: '2',
                 userInfo: {},
+                loginUser: {},
                 menuList: [
                     {
                         id: '2',
@@ -101,7 +103,7 @@
                     },
                     {
                         id: '6',
-                        name: '个人提交管理',
+                        name: '个人管理',
                         url: 'pages/teachinfo2/index.html',
                     }
                 ],
