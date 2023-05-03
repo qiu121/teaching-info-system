@@ -111,11 +111,16 @@ VALUES ('机械与车辆工程学院'),
 ;
 
 INSERT INTO `tes_db`.`student` (`username`, `password`, `college`, `enrollment_year`, `education_level`)
-VALUES ('test', SHA2(MD5('test'), 256), '教育学院', 2020, '本科');
+VALUES ('test', '248ef48fc412eac3ee683d4ade175a92db95ee9a4e42cfb27c1790130adcbbfd', '教育学院', 2020, '本科');
 INSERT INTO `tes_db`.`permission`(`username`, `type`)
 VALUES ('test', 'stu');
 
+INSERT INTO `tes_db`.`stu_admin` (`username`, `password`, `college`, `enrollment_year`, `education_level`)
+VALUES ('stuadmin', 'ba458532cde997bc5258287ad40911a57e110a4db3854d1f664309598f2a3cf4', '教育学院', 2020, '本科');
+INSERT INTO `tes_db`.`permission`(`username`, `type`)
+VALUES ('stuadmin', 'stuAdmin');
+
 INSERT INTO `tes_db`.`admin` (`username`, `password`)
-VALUES ('admin', SHA2(MD5('admin'), 256));
+VALUES ('admin', '3e673637f4bc2e4aa7496ad884df94c4fbbb8ed7a433b8692f4363829c0a7738');
 INSERT INTO `tes_db`.`permission`(`username`, `type`)
 VALUES ('admin', 'admin');
