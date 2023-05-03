@@ -354,7 +354,6 @@
             },
             //提交修改
             handleUpdateSecure() {
-                console.log(this.secureData)
                 this.$refs.secureData.validate((valid) => {
                     if (valid) {
                         updateUserSecure(this.old, this.secureData).then((res) => {
