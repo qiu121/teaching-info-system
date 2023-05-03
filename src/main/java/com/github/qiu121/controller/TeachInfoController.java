@@ -1,5 +1,7 @@
 package com.github.qiu121.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -40,6 +42,7 @@ public class TeachInfoController {
      * @return R
      */
     @PostMapping("/add")
+    @SaCheckRole("stu")
     public R<String> addTeachInfo(@RequestBody @Validated TeachInfo teachInfo) {
         R<String> r = new R<>();
         teachInfoValidate(teachInfo);
@@ -56,6 +59,7 @@ public class TeachInfoController {
      * @return 集合对象
      */
     @PostMapping("/listAll/{currentNum}/{pageSize}")
+    @SaCheckRole("admin")
     public R<IPage<TeachInfo>> listAllTeachInfo(@RequestBody TeachInfo teachInfo,
                                                 @PathVariable long currentNum,
                                                 @PathVariable long pageSize) {
@@ -82,6 +86,7 @@ public class TeachInfoController {
      * @return 封装集合
      */
     @GetMapping("/list/{username}")
+    @SaCheckRole("stu")
     public R<List<TeachInfo>> listTeachInfo(@PathVariable String username) {
         LambdaQueryWrapper<TeachInfo> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TeachInfo::getSubmitPerson, username);
@@ -99,6 +104,7 @@ public class TeachInfoController {
      * @return R<TeachInfo>
      */
     @GetMapping("/get/{id}")
+    @SaCheckRole("stu")
     public R<TeachInfo> getTeachInfo(@PathVariable Long id) {
         TeachInfo info = teachInfoService.getById(id);
         return new R<>(20040, "查询完成", info);
@@ -111,6 +117,7 @@ public class TeachInfoController {
      * @return R<Boolean>
      */
     @DeleteMapping("/remove/{id}")
+    @SaCheckRole(value = {"stu", "admin"}, mode = SaMode.OR)
     public R<Boolean> removeTeachInfo(@PathVariable Long id) {
         final boolean remove = teachInfoService.removeById(id);
         log.info("删除完成：{}", remove);
@@ -125,6 +132,7 @@ public class TeachInfoController {
      * @return R
      */
     @DeleteMapping("/removeBatch/{idList}")
+    @SaCheckRole(value = {"stu", "admin"}, mode = SaMode.OR)
     public R<Boolean> removeBatchTeachInfo(@PathVariable Long[] idList) {
         final boolean remove = teachInfoService.removeByIds(Arrays.asList(idList));
         log.info("批量删除完成：{}", remove);
@@ -140,6 +148,7 @@ public class TeachInfoController {
      * @return R<Boolean>
      */
     @PutMapping("/update")
+    @SaCheckRole("stu")
     public R<?> updateTeachInfo(@RequestBody @Validated TeachInfo teachInfo) {
 
         teachInfoValidate(teachInfo);

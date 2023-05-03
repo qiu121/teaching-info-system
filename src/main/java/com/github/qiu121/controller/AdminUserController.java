@@ -1,10 +1,13 @@
 package com.github.qiu121.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.github.qiu121.common.R;
 import com.github.qiu121.common.enumeration.PermissionEnum;
+import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.common.exception.DuplicateException;
 import com.github.qiu121.pojo.Admin;
 import com.github.qiu121.pojo.Permission;
@@ -14,11 +17,13 @@ import com.github.qiu121.util.SecureUtil;
 import com.github.qiu121.vo.AdminVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +37,7 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @CrossOrigin
+@SaCheckRole("admin")
 @RequestMapping("/users/admin")
 public class AdminUserController {
     @Resource
@@ -113,6 +119,10 @@ public class AdminUserController {
         final ArrayList<String> adminUsernameList = new ArrayList<>();
         for (Admin admin : adminService.list(wrapper)) {
             adminUsernameList.add(admin.getUsername());
+        }
+
+        if (CollectionUtils.containsAny(adminUsernameList, Collections.singleton(StpUtil.getLoginId()))) {
+            throw new BusinessException("当前用户不可移除");
         }
 
         //编写条件构造器，查询用户名，进行权限删除

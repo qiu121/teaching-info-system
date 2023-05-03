@@ -1,5 +1,6 @@
 package com.github.qiu121.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import com.github.qiu121.common.R;
 import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.pojo.College;
@@ -20,6 +21,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin
+@SaCheckRole("admin")
 @RequestMapping("/colleges")
 public class CollegeController {
     @Resource

@@ -1,5 +1,6 @@
 package com.github.qiu121.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -52,6 +53,7 @@ public class StuAdminUserController {
      * @return
      */
     @PostMapping("/add")
+    @SaCheckRole("admin")
     public R<Boolean> addUser(@RequestBody StuAdmin stuAdmin) {
         final String username = stuAdmin.getUsername();
         final String password = stuAdmin.getPassword();
@@ -86,6 +88,7 @@ public class StuAdminUserController {
      * @return
      */
     @DeleteMapping("/removeBatch/{idArray}")
+    @SaCheckRole("admin")
     public R<Boolean> removeBatchUser(@PathVariable Long[] idArray) {
 
         //根据 用户id 查询用户名
@@ -118,6 +121,7 @@ public class StuAdminUserController {
      * @return
      */
     @GetMapping("/get/{id}")
+    @SaCheckRole("admin")
     public R<StuAdminVo> getUser(@PathVariable Long id) {
         final StuAdmin stuAdmin = stuAdminService.getById(id);
         Integer code = 20040;
@@ -137,6 +141,7 @@ public class StuAdminUserController {
      * @return R
      */
     @PutMapping("/update/secure")
+    @SaCheckRole("stuAdmin")
     public R<?> updateUserPassword(@RequestParam String old, @RequestBody StuAdmin stuAdmin) {
         // 验证旧密码
         StuAdmin stuAdminOne = stuAdminService.getOne(new LambdaQueryWrapper<StuAdmin>()
@@ -170,6 +175,7 @@ public class StuAdminUserController {
      * @return
      */
     @PutMapping("/update")
+    @SaCheckRole("admin")
     private R<Boolean> updateUser(@RequestBody StuAdmin stuAdmin) {
 
         final String oldPassword = stuAdmin.getPassword();
@@ -204,6 +210,7 @@ public class StuAdminUserController {
      * @return R<IPage < StuAdmin>>
      */
     @PostMapping("/list/{currentNum}/{pageSize}")
+    @SaCheckRole("admin")
     public R<IPage<StuAdminVo>> list(@RequestBody StuAdmin stuAdmin,
                                      @PathVariable long currentNum,
                                      @PathVariable long pageSize) {

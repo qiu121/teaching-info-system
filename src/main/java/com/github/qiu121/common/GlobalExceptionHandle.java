@@ -2,6 +2,7 @@ package com.github.qiu121.common;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
+import cn.dev33.satoken.exception.NotRoleException;
 import cn.dev33.satoken.exception.SaTokenException;
 import cn.dev33.satoken.util.SaResult;
 import cn.hutool.http.HttpStatus;
@@ -39,20 +40,22 @@ public class GlobalExceptionHandle {
         String message;
         if (e instanceof NotLoginException) {
             log.error("账号未登录: {}", e.getMessage());
-            if (((NotLoginException) e).getType().equals(NotLoginException.TOKEN_TIMEOUT_MESSAGE)) {
+            String type = ((NotLoginException) e).getType();
+            if (type.equals(NotLoginException.TOKEN_TIMEOUT_MESSAGE)) {
                 message = "账号登录已过期，请重新登录";
             } else {
                 message = "请登录后再进行操作";
             }
-            return SaResult.error(message);
-        }
-        if (e instanceof NotPermissionException) {
+        } else if (e instanceof NotPermissionException) {
             message = "当前用户无访问权限";
+        } else if (e instanceof NotRoleException) {
+            message = "当前访问对应无角色权限";
         } else {
             message = "权限异常！";
         }
         return SaResult.error(message);
     }
+
 
     @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
     public R<Object> handleException(MethodArgumentNotValidException e) {

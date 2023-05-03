@@ -26,27 +26,16 @@ public class SaTokenConfigure implements WebMvcConfigurer {
             //拦截路径，排除路径
             SaRouter.match("/**")
                     .notMatch("/login/**",
-                            "/login/users/**",
                             "/users/stu/update/**",
-                            "/api/v1/captcha/**",
-
-                            "/api/v1/QRcode/**",
-                            "/favicon.ico",
-
-                            //第三方引用资源放行
-                            "/lib/**"
-
+                            "/api/**",
+                            "/favicon.ico"
 
                     ).check(r -> StpUtil.checkLogin());
 
-            // 权限校验 -- 不同模块校验不同权限
-            SaRouter.match("/users/admin/**", r -> StpUtil.checkPermission(PermissionEnum.ADMIN_PERMISSION.getType()));
-            SaRouter.match("/colleges/**", r -> StpUtil.checkPermission(PermissionEnum.ADMIN_PERMISSION.getType()));
-
-            SaRouter.match("/users/stuAdmin/**", r -> StpUtil.checkPermission(
-                    PermissionEnum.ADMIN_PERMISSION.getType()));
-            SaRouter.match("/users/stuAdmin/**", r -> StpUtil.checkPermission(
-                    PermissionEnum.STU_ADMIN_PERMISSION.getType()));
+            // 角色权限校验 -- 不同模块校验不同权限
+            SaRouter.match("/submit/**", r -> StpUtil.checkRole(PermissionEnum.STU_PERMISSION.getType()));
+            SaRouter.match("/secondary/**", r -> StpUtil.checkRole(PermissionEnum.STU_ADMIN_PERMISSION.getType()));
+            SaRouter.match("/backend/**", r -> StpUtil.checkRole(PermissionEnum.ADMIN_PERMISSION.getType()));
 
         })).addPathPatterns("/**");
     }

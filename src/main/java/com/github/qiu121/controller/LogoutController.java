@@ -1,5 +1,6 @@
 package com.github.qiu121.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.basic.SaBasicUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/logout/users")
 @Slf4j
+@SaCheckLogin
 @CrossOrigin
 public class LogoutController {
 

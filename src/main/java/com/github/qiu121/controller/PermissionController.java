@@ -1,5 +1,6 @@
 package com.github.qiu121.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.qiu121.common.R;
 import com.github.qiu121.common.exception.BusinessException;
@@ -20,6 +21,7 @@ import javax.annotation.Resource;
 @RestController
 @Slf4j
 @CrossOrigin
+@SaCheckLogin
 @RequestMapping("/users/permission")
 public class PermissionController {
     @Resource

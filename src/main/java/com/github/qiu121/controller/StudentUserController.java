@@ -1,5 +1,6 @@
 package com.github.qiu121.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -44,6 +45,7 @@ public class StudentUserController {
     private PermissionService permissionService;
 
     @PostMapping("/add")
+    @SaCheckRole("admin")
     public R<Boolean> addUser(@RequestBody Student student) {
 
         final String username = student.getUsername();
@@ -81,6 +83,7 @@ public class StudentUserController {
      * @return 响应封装类型
      */
     @PutMapping("/update/{oldPassword}")
+    @SaCheckRole("stu")
     public R<String> updatePassword(@RequestBody Student student,
                                     @PathVariable String oldPassword) {
         LambdaQueryWrapper<Student> studentWrapper = new LambdaQueryWrapper<>();
@@ -121,6 +124,7 @@ public class StudentUserController {
      * @return R
      */
     @DeleteMapping("/removeBatch/{idArray}")
+    @SaCheckRole("admin")
     public R<Boolean> removeBatchUser(@PathVariable Long[] idArray) {
 
         //根据 用户id 查询用户名
@@ -153,6 +157,7 @@ public class StudentUserController {
      * @return R
      */
     @GetMapping("/get/{id}")
+    @SaCheckRole("admin")
     public R<StudentVo> getUser(@PathVariable Long id) {
         final Student student = studentService.getById(id);
         Integer code = 20040;
@@ -172,6 +177,7 @@ public class StudentUserController {
      * @return R
      */
     @PutMapping("/update")
+    @SaCheckRole("admin")
     private R<Boolean> updateUser(@RequestBody Student student) {
 
         final String oldPassword = student.getPassword();
@@ -210,6 +216,7 @@ public class StudentUserController {
      * @return R
      */
     @PostMapping("/listAll/{currentNum}/{pageSize}")
+    @SaCheckRole("admin")
     public R<IPage<StudentVo>> list(@RequestBody Student student,
                                     @PathVariable long currentNum,
                                     @PathVariable long pageSize) {

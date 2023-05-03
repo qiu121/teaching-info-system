@@ -1,5 +1,7 @@
 package com.github.qiu121.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -50,6 +52,7 @@ public class TeachInfoController2 {
      * @return R
      */
     @PostMapping("/add")
+    @SaCheckRole("stuAdmin")
     public R<String> addTeachInfo2(@RequestBody @Validated TeachInfo2 teachInfo2) {
         teacherInfoValidate2(teachInfo2);
 
@@ -66,6 +69,7 @@ public class TeachInfoController2 {
      * @return R
      */
     @GetMapping("/get/{id}")
+    @SaCheckRole("stuAdmin")
     public R<TeachInfo2> getTeachInfo2(@PathVariable Long id) {
         final TeachInfo2 teachInfo2 = teachInfoService2.getById(id);
         return new R<>(20040, "查询完成", teachInfo2);
@@ -78,6 +82,7 @@ public class TeachInfoController2 {
      * @return R 封装响应对象
      */
     @DeleteMapping("/remove/{id}")
+    @SaCheckRole(value = {"stuAdmin", "admin"}, mode = SaMode.OR)
     public R<String> removeTeachInfo2(@PathVariable Long id) {
         final boolean removed = teachInfoService2.removeById(id);
         final R<String> r = new R<>();
@@ -92,6 +97,7 @@ public class TeachInfoController2 {
      * @return R
      */
     @DeleteMapping("/removeBatch/{idArray}")
+    @SaCheckRole(value = {"stuAdmin", "admin"}, mode = SaMode.OR)
     public R<String> removeBatchTeachInfo2(@PathVariable Long[] idArray) {
         final boolean batchRemoved = teachInfoService2.removeBatchByIds(Arrays.asList(idArray));
         log.info("批量删除完成：{}", batchRemoved);
@@ -108,6 +114,7 @@ public class TeachInfoController2 {
      * @return R
      */
     @PutMapping("/update")
+    @SaCheckRole("stuAdmin")
     public R<String> updateTeachInfo2(@RequestBody @Validated TeachInfo2 teachInfo2) {
 
         teacherInfoValidate2(teachInfo2);
@@ -153,6 +160,7 @@ public class TeachInfoController2 {
      * @return R
      */
     @PostMapping("/selectAllByPermission/{currentNum}/{pageSize}")
+    @SaCheckRole("stuAdmin")
     public R<IPage<TeachInfo>> selectList(@RequestBody RequestBodyData requestBodyData,
                                           @PathVariable long currentNum,
                                           @PathVariable long pageSize) {
@@ -237,6 +245,7 @@ public class TeachInfoController2 {
      * @return R
      */
     @GetMapping("/list/{username}")
+    @SaCheckRole("stuAdmin")
     public R<List<TeachInfo2>> listTeachInfo2(@PathVariable String username) {
         final LambdaQueryWrapper<TeachInfo2> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TeachInfo2::getSubmitPerson, username);
@@ -255,6 +264,7 @@ public class TeachInfoController2 {
      * @return R
      */
     @PostMapping("/listAll/{currentNum}/{pageSize}")
+    @SaCheckRole("admin")
     public R<IPage<TeachInfo2>> ListAll(@RequestBody TeachInfo2 teachInfo2,
                                         @PathVariable long currentNum,
                                         @PathVariable long pageSize) {

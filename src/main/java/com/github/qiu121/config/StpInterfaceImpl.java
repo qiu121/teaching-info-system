@@ -28,6 +28,14 @@ public class StpInterfaceImpl implements StpInterface {
      */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
+        return new ArrayList<>();
+    }
+
+    /**
+     * 返回一个账号所拥有的角色标识集合 (权限与角色可分开校验)
+     */
+    @Override
+    public List<String> getRoleList(Object loginId, String loginType) {
 
         final LambdaQueryWrapper<Permission> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(Permission::getType)
@@ -36,17 +44,9 @@ public class StpInterfaceImpl implements StpInterface {
 
         final ArrayList<String> list = new ArrayList<>();
         list.add(one.getType());
-        log.info("当前用户权限：{}", list);
+        log.info("当前账号角色标识：{}", list);
 
         return list;
-    }
-
-    /**
-     * 返回一个账号所拥有的角色标识集合 (权限与角色可分开校验)
-     */
-    @Override
-    public List<String> getRoleList(Object loginId, String loginType) {
-        return new ArrayList<>();
     }
 
 }
