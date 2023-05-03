@@ -349,7 +349,7 @@
                         this.handleQuery()
                     });
                 }).catch((e) => {
-                    this.$message('操作异常' + e)
+                    this.$message('操作 ' + e)
                 })
             },
             //处理复选框选中的数据,提取id
@@ -443,11 +443,7 @@
                             this.handleQuery()
                         })
                     }).catch((e) => {
-                        this.$message({
-                            message: ('接口请求异常 ' + e),
-                            type: 'error',
-                            center: true
-                        })
+                        this.$message('操作 ' + e)
                     })
                 }
 
