@@ -10,6 +10,7 @@ import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.common.exception.DuplicateException;
 import com.github.qiu121.common.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -49,13 +50,13 @@ public class GlobalExceptionHandle {
         } else if (e instanceof NotPermissionException) {
             message = "当前用户无访问权限";
         } else if (e instanceof NotRoleException) {
-            message = "当前访问对应无角色权限";
+            message = "当前访问无对应角色权限";
+
         } else {
             message = "权限异常！";
         }
         return SaResult.error(message);
     }
-
 
     @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
     public R<Object> handleException(MethodArgumentNotValidException e) {
@@ -81,6 +82,12 @@ public class GlobalExceptionHandle {
     public R<Object> handleException(DuplicateKeyException e) {
         log.error(e.getMessage());
         return new R<>(HttpStatus.HTTP_BAD_GATEWAY, "记录已存在,不可重复添加");
+    }
+
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public R<?> handleException(DataIntegrityViolationException e) {
+        log.error(e.getMessage());
+        return new R<>(HttpStatus.HTTP_BAD_GATEWAY, "数据不合规范,请重新输入");
     }
 
     @ExceptionHandler(org.springframework.web.bind.MissingPathVariableException.class)
