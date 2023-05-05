@@ -182,13 +182,13 @@
 
     <el-dialog title="修改信息员用户" :visible.sync="dialogFormEditVisible" center width="40%" top="10vh">
         <p style="text-align: center">可以动态修改，可以只填写需要修改的；都不填，即不修改</p>
-        <el-form ref="formData" :model="formData" label-position="right" :rules="rules"
+        <el-form :model="formData" label-position="right"
                  label-width="100px">
             <!--            <el-form-item label="用户名" prop="username">-->
             <!--                <el-input v-model="formData.username" placeholder="请输入至多30位长度用户名"-->
             <!--                          clearable maxlength="30"></el-input>-->
             <!--            </el-form-item>-->
-            <el-form-item label="密码" prop="password">
+            <el-form-item label="密码">
                 <el-input v-model="formData.password" placeholder="请输入至多30位长度密码(密码只做登录检验，不做记录)"
                           clearable maxlength="30" show-password>
                 </el-input>
@@ -291,6 +291,9 @@
                 ],
                 password: [
                     {required: true, message: '请输入密码', trigger: 'blur'},
+                    {min: 5, max: 30, message: '用户密码长度必须介于5-30之间'}
+                ],
+                password2: [
                     {min: 5, max: 30, message: '用户密码长度必须介于5-30之间'}
                 ],
                 name: [
@@ -401,27 +404,21 @@
             },
             //添加提交
             handleAddSubmit() {
-                this.$refs.formData.validate((v) => {
-                    if (v) {
-                        addUser(this.formData).then((res) => {
-                            if (res.data.code === 20010) {
-                                this.dialogFormAddVisible = false
-                                this.handleQuery()
-                                this.$message.success(res.data.msg)
-                            } else {
-                                this.$message.error(res.data.msg)
-                            }
-                        }).catch((e) => {
-                            this.$message({
-                                message: ('接口请求异常 ' + e),
-                                type: 'error',
-                                center: true
-                            })
-                        })
+                addUser(this.formData).then((res) => {
+                    if (res.data.code === 20010) {
+                        this.dialogFormAddVisible = false
+                        this.handleQuery()
+                        this.$message.success(res.data.msg)
+                    } else {
+                        this.$message.error(res.data.msg)
                     }
+                }).catch((e) => {
+                    this.$message({
+                        message: ('接口请求异常 ' + e),
+                        type: 'error',
+                        center: true
+                    })
                 })
-
-
             },
             //修改提交
             handleUpdateSubmit() {

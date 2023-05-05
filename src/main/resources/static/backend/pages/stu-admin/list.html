@@ -179,7 +179,7 @@
 
     <el-dialog title="修改信息员组长用户" :visible.sync="dialogFormEditVisible" center width="40%" top="10vh">
         <p style="text-align: center">可以动态修改，可以只填写需要修改的；都不填，即不修改</p>
-        <el-form ref="formData" :model="formData" label-position="right" :rules="rules"
+        <el-form :model="formData" label-position="right"
                  label-width="100px">
 
             <el-form-item label="密码" prop="password">
@@ -407,27 +407,25 @@
             },
             //修改提交
             handleUpdateSubmit() {
-                this.$refs.formData.validate((v) => {
-                    if (v) {
-                        updateUser(this.formData).then((res) => {
-                            if (res.data.code === 20031) {
-                                this.dialogFormEditVisible = false
-                                this.$message.success(res.data.msg)
-                            } else {
-                                this.$message.error(res.data.msg)
-                            }
-                        }).catch((e) => {
-                            this.$message({
-                                message: ('接口请求异常 ' + e),
-                                type: 'error',
-                                center: true
-                            })
-                        }).finally(() => {
-                            this.handleQuery()
-                        })
-                    }
 
+
+                updateUser(this.formData).then((res) => {
+                    if (res.data.code === 20031) {
+                        this.dialogFormEditVisible = false
+                        this.$message.success(res.data.msg)
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                }).catch((e) => {
+                    this.$message({
+                        message: ('接口请求异常 ' + e),
+                        type: 'error',
+                        center: true
+                    })
+                }).finally(() => {
+                    this.handleQuery()
                 })
+
 
             },
 
