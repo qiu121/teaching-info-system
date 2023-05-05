@@ -224,6 +224,8 @@
                                 .then((res) => {
                                     if (res.data.code === 20041) {
                                         const loginUser = res.data.data[0]["info"]
+                                        const token = res.data.data[0]["sa-token"]
+                                        localStorage.setItem("sa-token", token)
                                         localStorage.setItem("loginUser", JSON.stringify(loginUser))
                                         this.$message.success(res.data.msg);
                                         window.location.href = "../submit/index.html"
@@ -250,6 +252,8 @@
                                 .then((res) => {
                                     if (res.data.code === 20041) {
                                         const loginUser = res.data.data[0].info
+                                        const token = res.data.data[0]["sa-token"]
+                                        localStorage.setItem("sa-token", token)
                                         localStorage.setItem("loginUser", JSON.stringify(loginUser))
                                         this.$message.success(res.data.msg);
                                         window.location.href = '../secondary/index.html'
@@ -277,6 +281,8 @@
                                 .then((res) => {
                                     if (res.data.code === 20041) {
                                         const loginUser = res.data.data[0].info
+                                        const token = res.data.data[0]["sa-token"]
+                                        localStorage.setItem("sa-token", token)
                                         localStorage.setItem("loginUser", JSON.stringify(loginUser))
                                         this.$message.success(res.data.msg);
                                         window.location.href = '../backend/index.html'

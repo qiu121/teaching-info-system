@@ -151,6 +151,7 @@
                 logoutApi().then((res) => {
                     if (res.data.code === 200) {
                         localStorage.removeItem('loginUser')
+                        localStorage.removeItem('sa-token')
                         this.$message({
                             message: res.data.msg,
                             center: true
