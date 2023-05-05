@@ -221,17 +221,18 @@
                             })
                         if (this.userSelect === "s") {
                             loginSApi(this.loginForm, this.loginForm.captcha)
-                                .then((response) => {
-                                    if (response.data.code === 20041) {
-                                        const loginUser = response.data.data[0].info
+                                .then((res) => {
+                                    if (res.data.code === 20041) {
+                                        const loginUser = res.data.data[0]["info"]
                                         localStorage.setItem("loginUser", JSON.stringify(loginUser))
-                                        this.$message.success(response.data.msg);
+                                        this.$message.success(res.data.msg);
                                         window.location.href = "../submit/index.html"
-                                    } else if (response.data.code === 20042) {
-                                        this.$message(response.data.msg);
+                                    } else if (res.data.code === 20042) {
+                                        this.$message(res.data.msg);
                                     } else {
+                                        this.freshCaptcha()
                                         this.$message({
-                                            message: (response.data.msg),
+                                            message: (res.data.msg),
                                             type: 'error',
                                             center: true
                                         })
@@ -246,17 +247,18 @@
                         }
                         if (this.userSelect === "t") {
                             loginTApi(this.loginForm, this.loginForm.captcha)
-                                .then((r) => {
-                                    if (r.data.code === 20041) {
-                                        const loginUser = r.data.data[0].info
+                                .then((res) => {
+                                    if (res.data.code === 20041) {
+                                        const loginUser = res.data.data[0].info
                                         localStorage.setItem("loginUser", JSON.stringify(loginUser))
-                                        this.$message.success(r.data.msg);
+                                        this.$message.success(res.data.msg);
                                         window.location.href = '../secondary/index.html'
-                                    } else if (r.data.code === 20042) {
+                                    } else if (res.data.code === 20042) {
                                         this.$message(r.data.msg);
                                     } else {
+                                        this.freshCaptcha()
                                         this.$message({
-                                            message: (r.data.msg),
+                                            message: (res.data.msg),
                                             type: 'error',
                                             center: true
                                         })
@@ -272,17 +274,18 @@
 
                         if (this.userSelect === "a") {
                             loginAApi(this.loginForm, this.loginForm.captcha)
-                                .then((r) => {
-                                    if (r.data.code === 20041) {
-                                        const loginUser = r.data.data[0].info
+                                .then((res) => {
+                                    if (res.data.code === 20041) {
+                                        const loginUser = res.data.data[0].info
                                         localStorage.setItem("loginUser", JSON.stringify(loginUser))
-                                        this.$message.success(r.data.msg);
+                                        this.$message.success(res.data.msg);
                                         window.location.href = '../backend/index.html'
-                                    } else if (r.data.code === 20042) {
-                                        this.$message(r.data.msg);
+                                    } else if (res.data.code === 20042) {
+                                        this.$message(res.data.msg);
                                     } else {
+                                        this.freshCaptcha()
                                         this.$message({
-                                            message: (r.data.msg),
+                                            message: (res.data.msg),
                                             type: 'error',
                                             center: true
                                         })
