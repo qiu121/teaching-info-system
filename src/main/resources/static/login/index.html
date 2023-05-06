@@ -258,7 +258,7 @@
                                         this.$message.success(res.data.msg);
                                         window.location.href = '../secondary/index.html'
                                     } else if (res.data.code === 20042) {
-                                        this.$message(r.data.msg);
+                                        this.$message(res.data.msg);
                                     } else {
                                         this.freshCaptcha()
                                         this.$message({
