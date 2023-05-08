@@ -1,16 +1,13 @@
 package com.github.qiu121.controller;
 
 import com.github.qiu121.pojo.TeachInfo;
+import com.github.qiu121.pojo.TeachInfo2;
 import com.github.qiu121.util.ExcelUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,29 +21,23 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api/v1/excel")
 public class ExcelController {
-    @GetMapping("/download")
-    public void testExcel(HttpServletResponse response) throws IOException {
-        List<TeachInfo> list = new ArrayList<>();
+    @PostMapping("/teachInfo")
+    public void exportTeachInfo(HttpServletResponse response, @RequestBody List<TeachInfo> teachInfoList) throws IOException {
 
-        TeachInfo model = new TeachInfo();
-        model.setCourseName("操作系统")
-                .setTeacherName("邓田")
-                .setSubmitPerson("admin")
-                .setShouldArriveNum(49)
-                .setActualArriveNum(49)
-                .setClassLocation("至善楼3-110")
-                //.setRecordTime("2023年3月15日一、二节")
-                .setFeedbackGood("无迟到学生")
-                .setFeedbackNotEnough("无")
-                .setHopesAndSuggestions("无")
-                .setCreateTime(LocalDateTime.now());
-        System.out.println(LocalDateTime.now());
-
-        list.add(model);
+        List<TeachInfo> list = new ArrayList<>(teachInfoList);
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment;filename=" + "test.xlsx");//或者文件名后缀为xlsx
-        ExcelUtil.writeExcel(response, list);
+        //response.setHeader("Content-Disposition", "attachment;filename=" + "test.xlsx");//或者文件名后缀为xlsx
+        ExcelUtil.writeExcel(response, list, TeachInfo.class);
+    }
+
+    @PostMapping("/teachInfo2")
+    public void exportTeachInfo2(HttpServletResponse response, @RequestBody List<TeachInfo2> teachInfoList2) throws IOException {
+
+        List<TeachInfo2> list = new ArrayList<>(teachInfoList2);
+
+        response.setContentType("application/vnd.ms-excel");
+        ExcelUtil.writeExcel(response, list, TeachInfo2.class);
     }
 
 }

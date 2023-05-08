@@ -47,14 +47,17 @@ public class TeachInfo implements Serializable {
     /**
      * 信息员姓名
      */
+    @ExcelProperty("姓名")
     private String submitPersonName;
     /**
      * 信息员所在学院
      */
+    @ExcelProperty("学院")
     private String submitPersonCollege;
     /**
      * 信息员所在班级
      */
+    @ExcelProperty("班级")
     private String submitPersonClass;
     /**
      * 课程名称
@@ -118,7 +121,7 @@ public class TeachInfo implements Serializable {
     /**
      * 创建时间
      */
-    @ExcelProperty("创建时间")
+    @ExcelProperty("提交时间")
     @DateTimeFormat("yyyy年MM月dd日HH时mm分ss秒")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;

@@ -45,7 +45,7 @@ public class TeachInfo2 extends AbstractBaseTimeEntity implements Serializable {
     /**
      * 信息员组长账号
      */
-    @ExcelProperty("组长账号")
+    @ExcelProperty("信息员组长")
     @ApiModelProperty("组长账号")
     @Column(nullable = false, length = 15)
     private String submitPerson;
@@ -98,13 +98,13 @@ public class TeachInfo2 extends AbstractBaseTimeEntity implements Serializable {
     /**
      * 创建时间
      */
-    @ExcelProperty("创建时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @ExcelProperty("提交时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     /**
      * 更新时间
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 
     @Override

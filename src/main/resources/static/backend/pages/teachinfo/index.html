@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://npm.elemecdn.com/element-ui/lib/theme-chalk/index.css">
     <script src="/api/teach-info.js"></script>
     <script src="/api/college.js"></script>
+    <script src="/api/excel.js"></script>
 </head>
 
 <style>
@@ -59,6 +60,7 @@
         <el-form-item>
             <el-button type="primary" @click="handleQuery" class="el-icon-search">查询</el-button>
             <el-button type="primary" @click="resetQuery" class="el-icon-refresh">重置</el-button>
+            <el-button type="primary" @click="exportExcel" class="el-icon-download">导出</el-button>
         </el-form-item>
     </el-form>
 
@@ -191,6 +193,16 @@
                             this.$message.error(res.data.msg)
                         }
                     })
+            },
+            exportExcel() {
+                exportTeachInfo(this.dataList).then(response => {
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', '信息员提交记录表.xlsx');
+                    document.body.appendChild(link);
+                    link.click();
+                })
             },
 
             // 处理删除操作
