@@ -407,8 +407,6 @@
             },
             //修改提交
             handleUpdateSubmit() {
-
-
                 updateUser(this.formData).then((res) => {
                     if (res.data.code === 20031) {
                         this.dialogFormEditVisible = false
@@ -425,8 +423,6 @@
                 }).finally(() => {
                     this.handleQuery()
                 })
-
-
             },
 
             //批量删除

@@ -404,29 +404,12 @@
             },
             //添加提交
             handleAddSubmit() {
-                addUser(this.formData).then((res) => {
-                    if (res.data.code === 20010) {
-                        this.dialogFormAddVisible = false
-                        this.handleQuery()
-                        this.$message.success(res.data.msg)
-                    } else {
-                        this.$message.error(res.data.msg)
-                    }
-                }).catch((e) => {
-                    this.$message({
-                        message: ('接口请求异常 ' + e),
-                        type: 'error',
-                        center: true
-                    })
-                })
-            },
-            //修改提交
-            handleUpdateSubmit() {
                 this.$refs.formData.validate((valid) => {
                     if (valid) {
-                        updateUser(this.formData).then((res) => {
-                            if (res.data.code === 20031) {
-                                this.dialogFormEditVisible = false
+                        addUser(this.formData).then((res) => {
+                            if (res.data.code === 20010) {
+                                this.dialogFormAddVisible = false
+                                this.handleQuery()
                                 this.$message.success(res.data.msg)
                             } else {
                                 this.$message.error(res.data.msg)
@@ -437,13 +420,28 @@
                                 type: 'error',
                                 center: true
                             })
-                        }).finally(() => {
-                            this.handleQuery()
                         })
                     }
-
                 })
-
+            },
+            //修改提交
+            handleUpdateSubmit() {
+                updateUser(this.formData).then((res) => {
+                    if (res.data.code === 20031) {
+                        this.dialogFormEditVisible = false
+                        this.$message.success(res.data.msg)
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                }).catch((e) => {
+                    this.$message({
+                        message: ('接口请求异常 ' + e),
+                        type: 'error',
+                        center: true
+                    })
+                }).finally(() => {
+                    this.handleQuery()
+                })
             },
 
             //批量删除
