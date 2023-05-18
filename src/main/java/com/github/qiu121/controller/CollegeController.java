@@ -4,7 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import com.github.qiu121.common.R;
 import com.github.qiu121.common.exception.BusinessException;
-import com.github.qiu121.pojo.College;
+import com.github.qiu121.entity.College;
 import com.github.qiu121.service.CollegeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;

@@ -4,7 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.qiu121.common.R;
 import com.github.qiu121.common.exception.BusinessException;
-import com.github.qiu121.pojo.Permission;
+import com.github.qiu121.entity.Permission;
 import com.github.qiu121.service.PermissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;

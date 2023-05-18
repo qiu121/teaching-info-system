@@ -1,4 +1,4 @@
-package com.github.qiu121.pojo;
+package com.github.qiu121.entity;
 
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;

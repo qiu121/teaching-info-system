@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.qiu121.common.R;
 import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.common.exception.DuplicateException;
-import com.github.qiu121.pojo.TeachInfo;
+import com.github.qiu121.entity.TeachInfo;
 import com.github.qiu121.service.TeachInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;

@@ -1,7 +1,7 @@
 package com.github.qiu121.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.github.qiu121.pojo.Student;
+import com.github.qiu121.entity.Student;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

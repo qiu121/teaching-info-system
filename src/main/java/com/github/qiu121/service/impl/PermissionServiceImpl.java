@@ -1,8 +1,8 @@
 package com.github.qiu121.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.qiu121.entity.Permission;
 import com.github.qiu121.mapper.PermissionMapper;
-import com.github.qiu121.pojo.Permission;
 import com.github.qiu121.service.PermissionService;
 import org.springframework.stereotype.Service;
 

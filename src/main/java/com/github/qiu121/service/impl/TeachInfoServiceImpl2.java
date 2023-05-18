@@ -1,8 +1,8 @@
 package com.github.qiu121.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.qiu121.entity.TeachInfo2;
 import com.github.qiu121.mapper.TeachInfoMapper2;
-import com.github.qiu121.pojo.TeachInfo2;
 import com.github.qiu121.service.TeachInfoService2;
 import org.springframework.stereotype.Service;
 

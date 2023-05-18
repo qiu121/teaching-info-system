@@ -1,7 +1,7 @@
 package com.github.qiu121.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.qiu121.pojo.Admin;
+import com.github.qiu121.entity.Admin;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

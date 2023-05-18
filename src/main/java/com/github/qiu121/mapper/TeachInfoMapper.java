@@ -1,7 +1,7 @@
 package com.github.qiu121.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.github.qiu121.pojo.TeachInfo;
+import com.github.qiu121.entity.TeachInfo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

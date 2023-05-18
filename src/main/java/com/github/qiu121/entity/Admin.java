@@ -1,4 +1,4 @@
-package com.github.qiu121.pojo;
+package com.github.qiu121.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -19,8 +19,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class Student implements Serializable {
-    private static final long serialVersionUID = -5226463491045623482L;
+public class Admin implements Serializable {
+    private static final long serialVersionUID = -7931538101927338973L;
     /**
      * 主键
      */
@@ -35,27 +35,6 @@ public class Student implements Serializable {
      */
     @NotBlank(message = "密码不可为空")
     private String password;
-    /**
-     * 信息员所在学院
-     */
-    private String college;
-    /**
-     * 层次级别(本、专)
-     */
-    private String educationLevel;
-    /**
-     * 入学年份(年级)
-     */
-    private Integer enrollmentYear;
-    /**
-     * 信息员所在班级
-     */
-    private String className;
-    /**
-     * 信息员姓名
-     */
-    private String name;
-
     /**
      * 创建时间
      */

@@ -2,7 +2,7 @@ package com.github.qiu121.config;
 
 import cn.dev33.satoken.stp.StpInterface;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.github.qiu121.pojo.Permission;
+import com.github.qiu121.entity.Permission;
 import com.github.qiu121.service.PermissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

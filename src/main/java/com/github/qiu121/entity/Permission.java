@@ -1,26 +1,24 @@
-package com.github.qiu121.pojo;
+package com.github.qiu121.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.*;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * @author <a href="mailto:qiu0089@foxmail.com">qiu121</a>
  * @version 1.0
- * @date 2023/3/14
+ * @date 2023/04/03
+ * <p>
+ * 账户权限记录表
  */
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
-@Accessors(chain = true)
-public class Admin implements Serializable {
-    private static final long serialVersionUID = -7931538101927338973L;
+@RequiredArgsConstructor
+public class Permission implements Serializable {
+    private static final long serialVersionUID = 2228839092249057512L;
     /**
      * 主键
      */
@@ -28,13 +26,13 @@ public class Admin implements Serializable {
     /**
      * 用户名
      */
-    @NotBlank(message = "用户名不可为空")
+    @NonNull
     private String username;
     /**
-     * 用户密码
+     * 权限等级(类型)
      */
-    @NotBlank(message = "密码不可为空")
-    private String password;
+    @NonNull
+    private String type;
     /**
      * 创建时间
      */
@@ -45,4 +43,5 @@ public class Admin implements Serializable {
      */
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
+
 }

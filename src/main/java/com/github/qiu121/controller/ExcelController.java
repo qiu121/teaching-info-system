@@ -1,7 +1,7 @@
 package com.github.qiu121.controller;
 
-import com.github.qiu121.pojo.TeachInfo;
-import com.github.qiu121.pojo.TeachInfo2;
+import com.github.qiu121.entity.TeachInfo;
+import com.github.qiu121.entity.TeachInfo2;
 import com.github.qiu121.util.ExcelUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

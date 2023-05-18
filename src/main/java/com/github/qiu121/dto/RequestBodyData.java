@@ -1,5 +1,7 @@
-package com.github.qiu121.pojo;
+package com.github.qiu121.dto;
 
+import com.github.qiu121.entity.StuAdmin;
+import com.github.qiu121.entity.TeachInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
