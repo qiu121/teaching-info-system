@@ -23,25 +23,25 @@ html{
         transform: translate(-50%,-50%)
      }
 }
-@media (min-width:810px) {
-    .el-card{
+@media (min-width: 810px) {
+    .el-card {
         position: absolute;
         height: 550px;
         width: 600px;
         top: 50%;
         left: 50%;
-        transform: translate(-50%,-50%);
-       /* overflow: hidden; */
-     }
-     .el-dislog{
-        position: absolute;
-        height: 550px;
-        width: 600px;
-        /* padding-top:300px ; */
-        top: 50%;
-        left: 50%; 
-        transform: translate(-50%,-50%);
-     /* overflow-y: visible; */ 
+        transform: translate(-50%, -50%);
+        /* overflow: hidden; */
+    }
 
-     }
+    /*.el-dialog{*/
+    /*   position: absolute;*/
+    /*   height: 550px;*/
+    /*   width: 600px;*/
+    /*   !* padding-top:300px ; *!*/
+    /*   top: 50%;*/
+    /*   left: 50%; */
+    /*   transform: translate(-50%,-50%);*/
+    /*!* overflow-y: visible; *! */
+    /*}*/
 }
