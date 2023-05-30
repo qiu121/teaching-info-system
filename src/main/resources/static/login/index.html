@@ -35,19 +35,19 @@
             <h1>信息员教学反馈系统登录界面</h1>
             <el-form :model="loginForm" :rules="rules" ref="loginForm">
                 <el-form-item label="账户" prop="username">
-                    <el-input v-model="loginForm.username" placeholder="请输入账户名" clearable
+                    <el-input v-model.trim="loginForm.username" placeholder="请输入账户名" clearable
                               prefix-icon="iconfont el-icon-user" maxlength="20">
                     </el-input>
                 </el-form-item>
 
                 <el-form-item label="密码" prop="password">
-                    <el-input v-model="loginForm.password" placeholder="请输入密码" clearable
+                    <el-input v-model.trim="loginForm.password" placeholder="请输入密码" clearable
                               prefix-icon="iconfont el-icon-lock" show-password maxlength="20">
                     </el-input>
                 </el-form-item>
 
                 <el-form-item label="验证码" prop="captcha">
-                    <el-input v-model="loginForm.captcha" placeholder="请输入验证码"
+                    <el-input v-model.trim="loginForm.captcha" placeholder="请输入验证码"
                               prefix-icon="iconfont el-icon-edit" clearable maxlength="5">
                     </el-input>
                     <img :src="captchaPath" alt="图形验证码" style="opacity: 1;"

@@ -33,26 +33,26 @@
                      ref="teachInfoFormData" size="small">
 
                 <el-form-item label="课程名称" prop="courseName">
-                    <el-input v-model="teachInfoFormData.courseName"
+                    <el-input v-model.trim="teachInfoFormData.courseName"
                               placeholder="填写课程名称">
                     </el-input>
                 </el-form-item>
 
                 <el-form-item label="教师姓名" prop="teacherName">
-                    <el-input v-model="teachInfoFormData.teacherName"
+                    <el-input v-model.trim="teachInfoFormData.teacherName"
                               placeholder="填写教师姓名"
                               show-input>
                     </el-input>
                 </el-form-item>
 
                 <el-form-item label="应到人数" prop="shouldArriveNum">
-                    <el-input-number v-model="teachInfoFormData.shouldArriveNum"
+                    <el-input-number v-model.number="teachInfoFormData.shouldArriveNum" type="number"
                                      :min=1 :max=70>
                     </el-input-number>
                 </el-form-item>
 
                 <el-form-item label="实到人数" prop="actualArriveNum">
-                    <el-input-number v-model="teachInfoFormData.actualArriveNum"
+                    <el-input-number v-model.number="teachInfoFormData.actualArriveNum" type="number"
                                      :min=1 :max=teachInfoFormData.shouldArriveNum>
                     </el-input-number>
                 </el-form-item>
@@ -74,14 +74,14 @@
                 </el-form-item>
 
                 <el-form-item label="上课地点" prop="classLocation">
-                    <el-input v-model="teachInfoFormData.classLocation"
+                    <el-input v-model.trim="teachInfoFormData.classLocation"
                               placeholder="填写上课地点"
                               show-input>
                     </el-input>
                 </el-form-item>
 
                 <el-form-item label="信息反馈(好的方面)" prop="feedbackGood">
-                    <el-input v-model="teachInfoFormData.feedbackGood"
+                    <el-input v-model.trim="teachInfoFormData.feedbackGood"
                               placeholder="填写信息反馈"
                               type="textarea"
                               :autosize="{ minRows: 3, maxRows: 5}"
@@ -91,7 +91,7 @@
                 </el-form-item>
 
                 <el-form-item label="信息反馈(不足之处)" prop="feedbackNotEnough">
-                    <el-input v-model="teachInfoFormData.feedbackNotEnough"
+                    <el-input v-model.trim="teachInfoFormData.feedbackNotEnough"
                               placeholder="填写信息反馈"
                               type="textarea"
                               :autosize="{ minRows: 3, maxRows: 5}"
@@ -101,7 +101,7 @@
                 </el-form-item>
 
                 <el-form-item label="希望和建议" prop="hopesAndSuggestions">
-                    <el-input v-model="teachInfoFormData.hopesAndSuggestions"
+                    <el-input v-model.trim="teachInfoFormData.hopesAndSuggestions"
                               placeholder="填写希望和建议"
                               type="textarea"
                               :autosize="{ minRows: 3, maxRows: 5}"
