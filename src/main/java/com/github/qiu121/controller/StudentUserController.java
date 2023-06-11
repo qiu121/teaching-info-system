@@ -146,7 +146,7 @@ public class StudentUserController {
         final boolean removed = permissionService.remove(queryWrapper);
         final boolean success = studentService.removeByIds(Arrays.asList(idArray));
 
-        log.info("修改完成： {}", success & removed);
+        log.info("删除完成： {}", success & removed);
         return success & removed ? new R<>(20021, "删除完成") :
                 new R<>(20022, "删除失败");
     }
