@@ -26,10 +26,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:qiu0089@foxmail.com">qiu121</a>
@@ -177,10 +177,17 @@ public class TeachInfoController2 {
         wrapper.select(TeachInfo::getSubmitPerson)
                 .eq(TeachInfo::getSubmitPersonCollege, stuAdmin.getCollege());//筛查同学院提交的信息
 
-        final ArrayList<String> submitPersonUserameList = new ArrayList<>();
-        for (TeachInfo info : teachInfoService.list(wrapper)) {
-            submitPersonUserameList.add(info.getSubmitPerson());
-        }
+//        final ArrayList<String> submitPersonUserameList = new ArrayList<>();
+//        for (TeachInfo info : teachInfoService.list(wrapper)) {
+//            submitPersonUserameList.add(info.getSubmitPerson());
+//        }
+
+        //Stream API重构上述代码
+        final List<String> submitPersonUserameList = teachInfoService.list(wrapper)
+                .stream()
+                .map(TeachInfo::getSubmitPerson)
+                .collect(Collectors.toList());
+
 
         //通过信息员用户名，查询信息员信息
         if (CollectionUtils.isEmpty(submitPersonUserameList)) {
@@ -216,10 +223,16 @@ public class TeachInfoController2 {
         });
 
         //将满足条件的信息员对象，用新的集合处理信息员对象用户名集合
-        final ArrayList<String> studentNameList = new ArrayList<>();
-        for (Student student : studentService.list(mainWrapper)) {
-            studentNameList.add(student.getUsername());
-        }
+//        final ArrayList<String> studentNameList = new ArrayList<>();
+//        for (Student student : studentService.list(mainWrapper)) {
+//            studentNameList.add(student.getUsername());
+//        }
+        //Stream API
+        final List<String> studentNameList = studentService.list(mainWrapper)
+                .stream()
+                .map(Student::getUsername)
+                .collect(Collectors.toList());
+
 
         //通过满足条件的信息员的用户名，查询提交信息
         final LambdaQueryWrapper<TeachInfo> teachInfoWrapper = new LambdaQueryWrapper<>();

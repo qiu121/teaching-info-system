@@ -22,10 +22,9 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -59,14 +58,11 @@ public class AdminUserController {
             admin.setPassword(SecureUtil.encrypt(password));
         }
         //查询现有用户名，校验重复数据
-        final HashSet<String> usernameList = new HashSet<>();
-//        for (Admin a : adminService.list()) {
-//            usernameList.add(a.getUsername());
-//        }
+        final Set<String> usernameList = permissionService.list()
+                .stream()
+                .map(Permission::getUsername)
+                .collect(Collectors.toSet());
 
-        for (Permission permission : permissionService.list()) {
-            usernameList.add(permission.getUsername());
-        }
         if (!usernameList.contains(username)) {
             final boolean savePermission = permissionService.save(
                     new Permission(username, PermissionEnum.ADMIN_PERMISSION.getType()));
@@ -116,10 +112,10 @@ public class AdminUserController {
         wrapper.select(Admin::getUsername)
                 .in(Admin::getId, id);
 
-        final ArrayList<String> adminUsernameList = new ArrayList<>();
-        for (Admin admin : adminService.list(wrapper)) {
-            adminUsernameList.add(admin.getUsername());
-        }
+        final List<String> adminUsernameList = adminService.list(wrapper)
+                .stream()
+                .map(Admin::getUsername)
+                .collect(Collectors.toList());
 
         if (CollectionUtils.containsAny(adminUsernameList, Collections.singleton(StpUtil.getLoginId()))) {
             throw new BusinessException("当前用户不可移除");

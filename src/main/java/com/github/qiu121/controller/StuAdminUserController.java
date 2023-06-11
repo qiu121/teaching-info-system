@@ -23,7 +23,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -61,11 +60,11 @@ public class StuAdminUserController {
             stuAdmin.setPassword(SecureUtil.encrypt(password));
         }
         //查询现有用户名，校验重复数据
-        final ArrayList<String> usernameList = new ArrayList<>();
-        //查询权限表，而不是用户表
-        for (Permission permission : permissionService.list()) {
-            usernameList.add(permission.getUsername());
-        }
+        final List<String> usernameList = permissionService.list()
+                .stream()
+                .map(Permission::getUsername)
+                .collect(Collectors.toList());
+
         if (!usernameList.contains(username)) {
             final boolean saveUser = stuAdminService.save(stuAdmin);
             final boolean savePermission = permissionService.save(
@@ -96,10 +95,11 @@ public class StuAdminUserController {
         wrapper.lambda()
                 .select(StuAdmin::getUsername)
                 .in(StuAdmin::getId, Arrays.asList(idArray));
-        final ArrayList<String> usernameList = new ArrayList<>();
-        for (StuAdmin stuAdmin : stuAdminService.list(wrapper)) {
-            usernameList.add(stuAdmin.getUsername());
-        }
+
+        final List<String> usernameList = stuAdminService.list(wrapper)
+                .stream()
+                .map(StuAdmin::getUsername)
+                .collect(Collectors.toList());
 
         //根据用户名,删除权限表中对应数据
         final LambdaQueryWrapper<Permission> queryWrapper = new QueryWrapper<Permission>().lambda();
