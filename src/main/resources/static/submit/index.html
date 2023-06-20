@@ -106,7 +106,9 @@
                               type="textarea"
                               :autosize="{ minRows: 3, maxRows: 5}"
                               maxlength="200"
-                              show-word-limit>
+                              show-word-limit
+                              @keyup.enter.native="handleSubmit"
+                    >
                     </el-input>
                 </el-form-item>
 
