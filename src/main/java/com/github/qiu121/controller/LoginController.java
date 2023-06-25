@@ -19,7 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,13 +46,13 @@ public class LoginController {
      *
      * @param student   学生类对象(用户名、密码)
      * @param inputCode 图形验证码
-     * @param request   请求体参数
+     * @param session   session参数
      * @return 响应体封装类
      */
     @PostMapping("/stu/{inputCode}")
     public R<List<HashMap<String, Object>>> login(@RequestBody @Validated Student student,
                                                   @PathVariable String inputCode,
-                                                  HttpServletRequest request) {
+                                                  HttpSession session) {
         QueryWrapper<Student> wrapper = new QueryWrapper<>();
         //查询账户名，为后续转存调用
         wrapper.lambda()
@@ -61,7 +61,7 @@ public class LoginController {
         //查询出多个结果抛出异常
         Student one = studentService.getOne(wrapper, true);
 
-        String verifyCode = (String) request.getSession().getAttribute("verifyCode");
+        String verifyCode = (String) session.getAttribute("verifyCode");
 
         //忽略字母大小写比对
         boolean flag = verifyCode.equalsIgnoreCase(inputCode);
@@ -101,13 +101,13 @@ public class LoginController {
      *
      * @param stuAdmin  信息员组长类对象(用户名、密码)
      * @param inputCode 图形验证码
-     * @param request   请求体参数
+     * @param session   session参数
      * @return 响应体封装类
      */
     @PostMapping("/stuAdmin/{inputCode}")
     public R<List<HashMap<String, Object>>> login(@RequestBody @Validated StuAdmin stuAdmin,
                                                   @PathVariable String inputCode,
-                                                  HttpServletRequest request) {
+                                                  HttpSession session) {
         LambdaQueryWrapper<StuAdmin> wrapper = new LambdaQueryWrapper<>();
         wrapper
                 .eq(StuAdmin::getUsername, stuAdmin.getUsername())//哈希算法加密
@@ -115,7 +115,7 @@ public class LoginController {
         //查询出多个结果抛出异常
         StuAdmin stuAdminOne = stuAdminService.getOne(wrapper, true);
 
-        String verifyCode = (String) request.getSession().getAttribute("verifyCode");
+        String verifyCode = (String) session.getAttribute("verifyCode");
 
         //忽略字母大小写比对
         boolean flag = verifyCode.equalsIgnoreCase(inputCode);
@@ -151,13 +151,13 @@ public class LoginController {
      *
      * @param admin     管理员用户
      * @param inputCode 验证码
-     * @param request   请求体参数
+     * @param session   session参数
      * @return R
      */
     @PostMapping("/admin/{inputCode}")
     public R<List<HashMap<String, Object>>> login(@RequestBody @Validated Admin admin,
                                                   @PathVariable String inputCode,
-                                                  HttpServletRequest request) {
+                                                  HttpSession session) {
         LambdaQueryWrapper<Admin> wrapper = new LambdaQueryWrapper<>();
         //查询账户名，为后续转存调用
         wrapper.eq(Admin::getUsername, admin.getUsername())
@@ -165,7 +165,7 @@ public class LoginController {
         //查询出多个结果抛出异常
         Admin adminOne = adminService.getOne(wrapper, true);
 
-        String verifyCode = (String) request.getSession().getAttribute("verifyCode");
+        String verifyCode = (String) session.getAttribute("verifyCode");
 
         //忽略字母大小写比对
         boolean flag = verifyCode.equalsIgnoreCase(inputCode);

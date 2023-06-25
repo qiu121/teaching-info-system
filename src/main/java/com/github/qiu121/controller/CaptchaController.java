@@ -5,8 +5,8 @@ import cn.hutool.captcha.LineCaptcha;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -22,13 +22,13 @@ import java.io.IOException;
 @Slf4j
 public class CaptchaController {
     /**
-     * @param request    请求体参数
+     * @param session    session参数
      * @param response   响应体参数
      * @param randomCode 随机数(不使用的参数、只是为了调用接口可以随机数刷新)
      * @throws IOException IO异常类型
      */
     @GetMapping("/captcha/{randomCode}")
-    public void getCode(HttpServletRequest request,
+    public void getCode(HttpSession session,
                         HttpServletResponse response,
                         @PathVariable String randomCode) throws IOException {
 
@@ -45,7 +45,7 @@ public class CaptchaController {
 
 
         // 利用session来存储验证码
-        request.getSession().setAttribute("verifyCode", lineCaptcha.getCode());
+        session.setAttribute("verifyCode", lineCaptcha.getCode());
         // 关闭流
         response.getOutputStream().close();
 
