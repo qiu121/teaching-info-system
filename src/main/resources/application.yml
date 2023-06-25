@@ -59,7 +59,7 @@ mybatis-plus:
     db-config:
       id-type: auto
   #  搜索指定包别名
-  type-aliases-package: com.github.qiu121.pojo
+  type-aliases-package: com.github.qiu121.entity
   configuration:
     # 数据库下划线字段与实体中的驼峰属性映射
     map-underscore-to-camel-case: true
