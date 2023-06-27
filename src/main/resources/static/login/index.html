@@ -41,8 +41,7 @@
                             clearable
                             prefix-icon="iconfont el-icon-user"
                             maxlength="20"
-                    >
-                    </el-input>
+                    ></el-input>
                 </el-form-item>
 
                 <el-form-item label="密码" prop="password">
@@ -54,8 +53,7 @@
                             show-password
                             maxlength="20"
                             @keyup.enter.native="loginSubmit"
-                    >
-                    </el-input>
+                    ></el-input>
                 </el-form-item>
 
                 <el-form-item label="验证码" prop="captcha">
@@ -66,10 +64,10 @@
                             clearable
                             maxlength="5"
                             @keyup.enter.native="loginSubmit"
-                    >
-                    </el-input>
+                    ></el-input>
                     <img :src="captchaPath" alt="图形验证码" style="opacity: 1;"
-                         ref="captcha" title="看不清？点击切换"
+                         ref="captcha"
+                         title="看不清？点击切换"
                          @click="freshCaptcha">
                 </el-form-item>
 
@@ -97,17 +95,23 @@
                     <el-row>
                         <el-col :span="20">
                             <el-form-item label="用户名" prop="username">
-                                <el-input v-model="updateUserInfoForm.username" placeholder="请输入用户名"
-                                          clearable maxlength="20"></el-input>
+                                <el-input
+                                        v-model="updateUserInfoForm.username"
+                                        placeholder="请输入用户名"
+                                        clearable maxlength="20"
+                                ></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="20">
                             <el-form-item label="用户密码" prop="oldPassword">
-                                <el-input v-model="updateUserInfoForm.oldPassword" placeholder="请输入当前密码"
-                                          clearable
-                                          show-password maxlength="20"></el-input>
+                                <el-input
+                                        v-model="updateUserInfoForm.oldPassword"
+                                        placeholder="请输入当前密码"
+                                        clearable
+                                        show-password maxlength="20"
+                                ></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -115,8 +119,14 @@
                     <el-row>
                         <el-col :span="20">
                             <el-form-item label="新的密码" prop="password">
-                                <el-input v-model="updateUserInfoForm.password" placeholder="请输入新的密码" clearable
-                                          show-password maxlength="20"></el-input>
+                                <el-input
+                                        v-model="updateUserInfoForm.password"
+                                        placeholder="请输入新的密码"
+                                        clearable
+                                        show-password maxlength="20"
+                                        @keyup.enter.native="handleUpdate"
+
+                                ></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -124,8 +134,12 @@
                     <el-row>
                         <el-col :span="20">
                             <el-form-item label="确认密码" prop="password2">
-                                <el-input v-model="updateUserInfoForm.password2" placeholder="请再次输入密码" clearable
-                                          show-password maxlength="20"></el-input>
+                                <el-input
+                                        v-model="updateUserInfoForm.password2"
+                                        placeholder="请再次输入密码" clearable
+                                        show-password maxlength="20"
+                                        @keyup.enter.native="handleUpdate"
+                                ></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -134,7 +148,7 @@
 
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisibleEdit = false" class="el-icon-close">取消</el-button>
-                    <el-button type="primary" @click="handleUpdate()" class="el-icon-check">完成</el-button>
+                    <el-button type="primary" @click="handleUpdate" class="el-icon-check">完成</el-button>
                 </div>
             </el-dialog>
         </div>
