@@ -1,5 +1,6 @@
 package com.github.qiu121.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import com.github.qiu121.entity.TeachInfo;
 import com.github.qiu121.entity.TeachInfo2;
 import com.github.qiu121.util.ExcelUtil;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @Slf4j
+@SaCheckRole("admin")
 @RequestMapping("/api/v1/excel")
 public class ExcelController {
     @PostMapping("/teachInfo")

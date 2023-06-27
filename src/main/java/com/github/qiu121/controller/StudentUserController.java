@@ -82,7 +82,6 @@ public class StudentUserController {
      * @return 响应封装类型
      */
     @PutMapping("/update/{oldPassword}")
-    @SaCheckRole("stu")
     public R<String> updatePassword(@RequestBody Student student,
                                     @PathVariable String oldPassword) {
         LambdaQueryWrapper<Student> studentWrapper = new LambdaQueryWrapper<>();

@@ -201,6 +201,7 @@ public class TeachInfoController2 {
 
 
         //TODO 中间过程情况查询为空的解决，会出现断链(单表查询嵌套问题)
+        //能从提交信息里查询出提交人账户，但在信息员用户无法查询出 上述提交人账户；即存在这个账号的提交,账户表没有这个账号！！
         if (CollectionUtils.isEmpty(studentList)) {
             throw new NotFoundException("查询完成，当前数据为空");
         }
