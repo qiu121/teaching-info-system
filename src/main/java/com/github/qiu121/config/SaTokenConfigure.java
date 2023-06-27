@@ -1,9 +1,12 @@
 package com.github.qiu121.config;
 
+import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.exception.SaTokenException;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
+import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.dev33.satoken.util.SaFoxUtil;
 import com.github.qiu121.common.enumeration.PermissionEnum;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -30,7 +33,18 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                             "/api/**",
                             "/favicon.ico"
 
-                    ).check(r -> StpUtil.checkLogin());
+//                    ).check(r -> StpUtil.checkLogin())
+                    ).check(r -> {
+                        //未登录，拦截重定向到登录页面
+                        if (!StpUtil.isLogin()) {
+                            String back = SaFoxUtil.joinParam(SaHolder.getRequest().getUrl(),
+                                    SpringMVCUtil.getRequest().getQueryString());
+                            SaHolder.getResponse().redirect("/login/index.html?back=" + SaFoxUtil.encodeUrl(back));
+                            SaRouter.back();
+                        }
+                    })
+            ;
+
 
             // 角色权限校验 -- 不同模块校验不同权限
             SaRouter.match("/submit/**", r -> StpUtil.checkRole(PermissionEnum.STU_PERMISSION.getType()));
