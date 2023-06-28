@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>教学信息员反馈系统组长端</title>
     <link rel="shortcut icon" href="/favicon.ico">
-    <!-- 引入样式 -->
     <link rel="stylesheet" href="https://npm.elemecdn.com/element-ui/lib/theme-chalk/index.css">
 
     <link rel="stylesheet" href="../styles/common.css"/>
@@ -46,8 +45,8 @@
                                 <i class="iconfont" :class="item.icon"></i>
                                 <span>{{item.name}}</span>
                             </template>
-                            <el-menu-item v-for="sub in item.children" :index="sub.id" :key="sub.id"
-                                          @click="menuHandle(sub,false)">
+                            <el-menu-item v-for="sub in item.children" :index="sub.id"
+                                          :key="sub.id" @click="menuHandle(sub,false)">
                                 <i :class="iconfont" :class="sub.icon"></i>
                                 <span slot="title">{{sub.name}}</span>
                             </el-menu-item>
@@ -71,14 +70,22 @@
             </div>
             <div class="app-main" v-loading="loading">
                 <div class="divTmp" v-show="loading"></div>
-                <iframe id="cIframe" class="c_iframe" name="cIframe" :src="iframeUrl" width="100%" height="auto"
-                        frameborder="0" v-show="!loading"></iframe>
+                <iframe
+                        id="cIframe"
+                        class="c_iframe"
+                        name="cIframe"
+                        :src="iframeUrl"
+                        width="100%"
+                        height="auto"
+                        frameborder="0"
+                        v-show="!loading"
+                ></iframe>
             </div>
         </div>
     </div>
 </div>
 
-<script src="https://npm.elemecdn.com/vue@2/dist/vue.js"></script>
+<script src="https://npm.elemecdn.com/vue@2/dist/vue.min.js"></script>
 <script src="https://npm.elemecdn.com/element-ui/lib/index.js"></script>
 <script src="https://npm.elemecdn.com/axios@1.3/dist/axios.min.js"></script>
 

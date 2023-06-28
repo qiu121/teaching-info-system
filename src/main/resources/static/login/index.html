@@ -29,15 +29,14 @@
 <body>
 
 <div id="app">
-    <!--登录表单-->
     <div class="all">
         <el-card>
             <h1>信息员教学反馈系统登录界面</h1>
             <el-form :model="loginForm" :rules="rules" ref="loginForm">
-                <el-form-item label="账户" prop="username">
+                <el-form-item label="用户名" prop="username">
                     <el-input
                             v-model.trim="loginForm.username"
-                            placeholder="请输入账户名"
+                            placeholder="请输入用户名"
                             clearable
                             prefix-icon="iconfont el-icon-user"
                             maxlength="20"
@@ -125,7 +124,6 @@
                                         clearable
                                         show-password maxlength="20"
                                         @keyup.enter.native="handleUpdate"
-
                                 ></el-input>
                             </el-form-item>
                         </el-col>
@@ -165,22 +163,15 @@
 <script src="/api/student.js"></script>
 <script src="/api/auth.js"></script>
 
-
 <script>
-
     new Vue({
         el: '#app',
         data: {
-
             captchaPath: "/api/v1/captcha/" + Date.now(),
             userSelect: "s", //默认以学生账户登录
             dialogFormVisibleEdit: false,
-            updateUserInfoForm: {
-                //修改账户表单数据
-            },
+            updateUserInfoForm: {},
             loginForm: {
-                //用户登录表单
-                //图形验证码
                 captcha: "",
             },
             rules: {//校验规则
@@ -246,7 +237,7 @@
                         // 权限检验
                         authUser(this.loginForm.username)
                             .then((response) => {
-                                console.log("Hello World!")
+                                //console.log("Hello World!")
                                 if (response.data.code === 20040) {
                                     window.localStorage.setItem("auth", response.data.data)
                                 }

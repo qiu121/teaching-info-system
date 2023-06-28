@@ -38,12 +38,18 @@
 <body>
 <div id="app">
 
-    <el-button @click="handleBatchDelete()" type="danger" plain class="el-icon-delete">批量删除</el-button>
-    <el-button @click="handleAdd()" type="primary" plain class="el-icon-plus">新增提交</el-button>
+    <el-button @click="handleBatchDelete" type="danger" plain class="el-icon-delete">批量删除</el-button>
+    <el-button @click="handleAdd" type="primary" plain class="el-icon-plus">新增提交</el-button>
     <el-button type="primary" @click="updateSecure" class="el-icon-edit">修改账户</el-button>
 
-    <el-table :data="dataList" stripe style="width: 100%" highlight-current-row
-              :default-sort="{prop:'createTime',order:'descending'}" @selection-change="handleSelectionChange">
+    <el-table
+            :data="dataList"
+            stripe
+            style="width: 100%"
+            highlight-current-row
+            :default-sort="{prop:'createTime',order:'descending'}"
+            @selection-change="handleSelectionChange"
+    >
         <el-table-column type="expand">
             <template slot-scope="props">
                 <el-form label-position="left" class="table-expand">
@@ -72,90 +78,106 @@
         <el-table-column label="操作" align="center" fixed="right">
             <template slot-scope="scope">
                 <el-button type="primary" @click="handleEdit(scope.row)" class="el-icon-edit">修改</el-button>
-                <el-button type="danger" @click="handleDelete(scope.row)" class="el-icon-delete">删除</el-button>
+                <el-button type="danger" @click.once="handleDelete(scope.row)" class="el-icon-delete">删除</el-button>
             </template>
         </el-table-column>
     </el-table>
 
-    <el-dialog title="提交信息员组长反馈信息" :visible.sync="dialogFormAddVisible" center width="40%" top="10vh">
-        <el-form ref="formData" :model="formData" :rules="rules" label-position="right"
-                 label-width="100px">
+    <el-dialog title="信息员组长反馈信息提交" :visible.sync="dialogFormAddVisible" center width="40%" top="10vh">
+        <el-form
+                ref="formData"
+                :model="formData"
+                :rules="rules"
+                label-position="right"
+                label-width="100px"
+        >
             <el-form-item label="信息反馈(好的方面)" prop="feedbackGood">
-                <el-input v-model="formData.feedbackGood"
-                          placeholder="填写信息反馈"
-                          type="textarea"
-                          :autosize="{ minRows: 3, maxRows: 5}"
-                          maxlength="200"
-                          show-word-limit>
-                </el-input>
+                <el-input
+                        v-model="formData.feedbackGood"
+                        placeholder="请填写信息反馈"
+                        type="textarea"
+                        :autosize="{ minRows: 3, maxRows: 5}"
+                        maxlength="200"
+                        show-word-limit
+                ></el-input>
             </el-form-item>
 
             <el-form-item label="信息反馈(不足之处)" prop="feedbackNotEnough">
-                <el-input v-model="formData.feedbackNotEnough"
-                          placeholder="填写信息反馈"
-                          type="textarea"
-                          :autosize="{ minRows: 3, maxRows: 5}"
-                          maxlength="200"
-                          show-word-limit>
-                </el-input>
+                <el-input
+                        v-model="formData.feedbackNotEnough"
+                        placeholder="请填写信息反馈"
+                        type="textarea"
+                        :autosize="{ minRows: 3, maxRows: 5}"
+                        maxlength="200"
+                        show-word-limit
+                ></el-input>
             </el-form-item>
 
             <el-form-item label="希望和建议" prop="hopesAndSuggestions">
-                <el-input v-model="formData.hopesAndSuggestions"
-                          placeholder="填写希望和建议"
-                          type="textarea"
-                          :autosize="{ minRows: 3, maxRows: 5}"
-                          maxlength="200"
-                          show-word-limit>
-                </el-input>
+                <el-input
+                        v-model="formData.hopesAndSuggestions"
+                        placeholder="请填写希望和建议"
+                        type="textarea"
+                        :autosize="{ minRows: 3, maxRows: 5}"
+                        maxlength="200"
+                        show-word-limit
+                ></el-input>
             </el-form-item>
 
         </el-form>
 
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormAddVisible = false">取消</el-button>
-            <el-button type="primary" @click="handleAddSubmit()">完成</el-button>
+            <el-button type="primary" @click="handleAddSubmit">完成</el-button>
         </div>
     </el-dialog>
 
     <el-dialog title="修改信息员组长反馈信息" :visible.sync="dialogFormEditVisible" center width="40%" top="10vh">
-        <el-form ref="formData" :model="formData" :rules="rules" label-position="right"
-                 label-width="100px">
+        <el-form
+                ref="formData"
+                :model="formData"
+                :rules="rules"
+                label-position="right"
+                label-width="100px"
+        >
             <el-form-item label="信息反馈(好的方面)" prop="feedbackGood">
-                <el-input v-model="formData.feedbackGood"
-                          placeholder="填写信息反馈"
-                          type="textarea"
-                          :autosize="{ minRows: 3, maxRows: 5}"
-                          maxlength="200"
-                          show-word-limit>
-                </el-input>
+                <el-input
+                        v-model="formData.feedbackGood"
+                        placeholder="填写信息反馈"
+                        type="textarea"
+                        :autosize="{ minRows: 3, maxRows: 5}"
+                        maxlength="200"
+                        show-word-limit
+                ></el-input>
             </el-form-item>
 
             <el-form-item label="信息反馈(不足之处)" prop="feedbackNotEnough">
-                <el-input v-model="formData.feedbackNotEnough"
-                          placeholder="填写信息反馈"
-                          type="textarea"
-                          :autosize="{ minRows: 3, maxRows: 5}"
-                          maxlength="200"
-                          show-word-limit>
-                </el-input>
+                <el-input
+                        v-model="formData.feedbackNotEnough"
+                        placeholder="填写信息反馈"
+                        type="textarea"
+                        :autosize="{ minRows: 3, maxRows: 5}"
+                        maxlength="200"
+                        show-word-limit
+                ></el-input>
             </el-form-item>
 
             <el-form-item label="希望和建议" prop="hopesAndSuggestions">
-                <el-input v-model="formData.hopesAndSuggestions"
-                          placeholder="填写希望和建议"
-                          type="textarea"
-                          :autosize="{ minRows: 3, maxRows: 5}"
-                          maxlength="200"
-                          show-word-limit>
-                </el-input>
+                <el-input
+                        v-model="formData.hopesAndSuggestions"
+                        placeholder="填写希望和建议"
+                        type="textarea"
+                        :autosize="{ minRows: 3, maxRows: 5}"
+                        maxlength="200"
+                        show-word-limit
+                ></el-input>
             </el-form-item>
 
         </el-form>
 
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormEditVisible = false">取消</el-button>
-            <el-button type="primary" @click="handleUpdateSubmit()">完成</el-button>
+            <el-button type="primary" @click="handleUpdateSubmit">完成</el-button>
         </div>
     </el-dialog>
 
@@ -164,29 +186,35 @@
         <el-form :model="secureData" label-position="right"
                  label-width="100px" ref="secureData" :rules="rules">
             <el-form-item prop="password" prop="password">
-                <el-input v-model="old"
-                          placeholder="请输入旧密码"
-                          clearable maxlength="30" show-password>
-                </el-input>
+                <el-input
+                        v-model="old"
+                        placeholder="请输入旧密码"
+                        clearable
+                        maxlength="30"
+                        show-password
+                ></el-input>
             </el-form-item>
 
             <el-form-item prop="password" prop="password">
-                <el-input v-model="secureData.password"
-                          placeholder="请输入新密码"
-                          clearable maxlength="30" show-password>
-                </el-input>
+                <el-input
+                        v-model="secureData.password"
+                        placeholder="请输入新密码"
+                        clearable
+                        maxlength="30"
+                        show-password
+                        @keyup.enter.native="handleUpdateSecure"
+                ></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取消</el-button>
-            <el-button type="primary" @click="handleUpdateSecure()">完成</el-button>
+            <el-button type="primary" @click="handleUpdateSecure">完成</el-button>
         </div>
     </el-dialog>
 
 </div>
 
-<!-- 引入组件库 -->
-<script src="https://npm.elemecdn.com/vue@2/dist/vue.js"></script>
+<script src="https://npm.elemecdn.com/vue@2/dist/vue.min.js"></script>
 <script src="https://npm.elemecdn.com/element-ui/lib/index.js"></script>
 <script src="https://npm.elemecdn.com/axios@1.3/dist/axios.min.js"></script>
 
@@ -360,10 +388,6 @@
                             if (res.data.code === 20031) {
                                 this.dialogVisible = false
                                 this.$message.success(res.data.msg)
-                                // this.$message('当前用户信息已失效，即将登出')
-                                // setTimeout(() => {
-                                //     window.location.href = '/login/index.html'
-                                // }, 1500)
                             } else {
                                 this.$message.error(res.data.msg)
                             }
