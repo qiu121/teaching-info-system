@@ -402,14 +402,20 @@
             //处理复选框选中的数据,提取id
             handleSelectionChange(val) {
                 this.multipleSelection = val;
+
                 for (let i = 0; i < this.multipleSelection.length; i++) {
                     let element = this.multipleSelection[i];
                     this.selectedIdList[i] = element.id;
                 }
+                //若点击多选框又取消,应初始化 选定的id 数组，将其制空
+                if (this.multipleSelection.length === 0) {
+                    this.selectedIdList = []
+                }
             },
             //批量删除
+            //复选框打钩再取消,之前选中数据扔进行了存储
             handleBatchDelete() {
-                if (this.selectedIdList.length === 0) {
+                if (this.multipleSelection.length === 0) {
                     this.$message('至少选择一条数据再进行操作')
                 } else {
                     this.$confirm('此操作将永久删除所选数据,是否继续?', '提示', {

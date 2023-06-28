@@ -387,15 +387,6 @@
                     this.$message('操作 ' + e)
                 })
             },
-            //处理复选框选中的数据,提取id
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-
-                for (let i = 0; i < this.multipleSelection.length; i++) {
-                    let element = this.multipleSelection[i];
-                    this.selectedIdList[i] = element.id;
-                }
-            },
             // 处理编辑操作,弹出编辑窗口
             handleEdit(row) {
                 //根据id查询数据,将之前数据显示
@@ -458,6 +449,18 @@
                 })
             },
 
+            //处理复选框选中的数据,提取id
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+
+                for (let i = 0; i < this.multipleSelection.length; i++) {
+                    let element = this.multipleSelection[i];
+                    this.selectedIdList[i] = element.id;
+                }
+                if (this.multipleSelection.length === 0) {
+                    this.selectedIdList = []
+                }
+            },
             //批量删除
             handleBatchDelete() {
                 if (this.selectedIdList.length === 0) {

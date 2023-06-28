@@ -243,6 +243,9 @@
                     let element = this.multipleSelection[i];
                     this.selectedIdList[i] = element.id;
                 }
+                if (this.multipleSelection.length === 0) {
+                    this.selectedIdList = []
+                }
             },
             //批量删除
             handleBatchDelete() {
