@@ -1,9 +1,13 @@
 package com.github.qiu121.common;
 
+import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.exception.NotRoleException;
 import cn.dev33.satoken.exception.SaTokenException;
+import cn.dev33.satoken.router.SaRouter;
+import cn.dev33.satoken.spring.SpringMVCUtil;
+import cn.dev33.satoken.util.SaFoxUtil;
 import cn.dev33.satoken.util.SaResult;
 import cn.hutool.http.HttpStatus;
 import com.github.qiu121.common.exception.BusinessException;
@@ -55,6 +59,11 @@ public class GlobalExceptionHandle {
         } else {
             message = "权限异常！";
         }
+        // 完善未登录重定向
+        String back = SaFoxUtil.joinParam(SaHolder.getRequest().getUrl(),
+                SpringMVCUtil.getRequest().getQueryString());
+        SaHolder.getResponse().redirect("/login/index.html?back=" + SaFoxUtil.encodeUrl(back));
+        SaRouter.back();
         return SaResult.error(message);
     }
 
