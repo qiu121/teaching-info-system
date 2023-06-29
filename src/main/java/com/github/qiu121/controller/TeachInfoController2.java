@@ -177,26 +177,26 @@ public class TeachInfoController2 {
         wrapper.select(TeachInfo::getSubmitPerson)
                 .eq(TeachInfo::getSubmitPersonCollege, stuAdmin.getCollege());//筛查同学院提交的信息
 
-//        final ArrayList<String> submitPersonUserameList = new ArrayList<>();
+//        final ArrayList<String> submitPersonUsernameList = new ArrayList<>();
 //        for (TeachInfo info : teachInfoService.list(wrapper)) {
-//            submitPersonUserameList.add(info.getSubmitPerson());
+//            submitPersonUsernameList.add(info.getSubmitPerson());
 //        }
 
         //Stream API重构上述代码
-        final List<String> submitPersonUserameList = teachInfoService.list(wrapper)
+        final List<String> submitPersonUsernameList = teachInfoService.list(wrapper)
                 .stream()
                 .map(TeachInfo::getSubmitPerson)
                 .collect(Collectors.toList());
 
 
         //通过信息员用户名，查询信息员信息
-        if (CollectionUtils.isEmpty(submitPersonUserameList)) {
+        if (CollectionUtils.isEmpty(submitPersonUsernameList)) {
             //按照提交人学院查询，如果没有查询到提交的信息只可能是  -> 没有信息
             throw new NotFoundException("查询完成，当前数据为空");
         }
         final LambdaQueryWrapper<Student> studentWrapper = new LambdaQueryWrapper<>();
         studentWrapper.select(Student::getEnrollmentYear, Student::getEducationLevel)
-                .in(Student::getUsername, submitPersonUserameList);
+                .in(Student::getUsername, submitPersonUsernameList);
         final List<Student> studentList = studentService.list(studentWrapper);
 
 
