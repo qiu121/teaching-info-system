@@ -1,10 +1,12 @@
 package com.github.qiu121.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.qiu121.dto.StudentDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
@@ -61,11 +63,15 @@ public class StuAdmin implements Serializable {
     /**
      * 创建时间
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     /**
      * 更新时间
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
+
+    public StuAdmin(StudentDTO studentDTO) {
+        BeanUtils.copyProperties(studentDTO, this);
+    }
 }

@@ -12,6 +12,7 @@ import com.github.qiu121.common.R;
 import com.github.qiu121.common.enumeration.PermissionEnum;
 import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.common.exception.DuplicateException;
+import com.github.qiu121.dto.StudentDTO;
 import com.github.qiu121.entity.Permission;
 import com.github.qiu121.entity.Student;
 import com.github.qiu121.service.PermissionService;
@@ -45,12 +46,12 @@ public class StudentUserController {
 
     @PostMapping("/add")
     @SaCheckRole("admin")
-    public R<Boolean> addUser(@RequestBody Student student) {
+    public R<Boolean> addUser(@RequestBody StudentDTO studentDTO) {
 
-        final String username = student.getUsername();
-        final String password = student.getPassword();
+        final String username = studentDTO.getUsername();
+        final String password = studentDTO.getPassword();
         if (password != null) {//哈希加密
-            student.setPassword(SecureUtil.encrypt(password));
+            studentDTO.setPassword(SecureUtil.encrypt(password));
         }
         //查询现有用户名，校验重复数据
         //修改为按权限表判定唯一性，而不是用户表
@@ -62,6 +63,9 @@ public class StudentUserController {
 
         if (!usernameList.contains(username)) {
             final boolean savePermission = permissionService.save(new Permission(username, PermissionEnum.STU_PERMISSION.getType()));
+
+            //将DTO对象转换为实体映射类
+            Student student = new Student(studentDTO);
             final boolean saveUser = studentService.save(student);
             if (savePermission & saveUser) {
                 log.info("添加完成： {}", true);
@@ -77,17 +81,17 @@ public class StudentUserController {
     /**
      * 学生账户修改密码
      *
-     * @param student     学生类对象(账户名、新的密码)
+     * @param studentDTO  学生类DTO对象(账户名、新的密码)
      * @param oldPassword 旧的密码
      * @return 响应封装类型
      */
     @PutMapping("/update/{oldPassword}")
-    public R<String> updatePassword(@RequestBody Student student,
+    public R<String> updatePassword(@RequestBody StudentDTO studentDTO,
                                     @PathVariable String oldPassword) {
         LambdaQueryWrapper<Student> studentWrapper = new LambdaQueryWrapper<>();
         final String encryptedOldPassword = SecureUtil.encrypt(oldPassword);
         studentWrapper.select(Student::getId)
-                .eq(Student::getUsername, student.getUsername())
+                .eq(Student::getUsername, studentDTO.getUsername())
                 .eq(Student::getPassword, encryptedOldPassword);
 
         Student one = studentService.getOne(studentWrapper);
@@ -96,17 +100,17 @@ public class StudentUserController {
         }
 
         //加密处理
-        if (StringUtils.isNotBlank(student.getPassword())) {
-            student.setPassword(SecureUtil.encrypt(student.getPassword()));
+        if (StringUtils.isNotBlank(studentDTO.getPassword())) {
+            studentDTO.setPassword(SecureUtil.encrypt(studentDTO.getPassword()));
 
-            if (encryptedOldPassword.equals(student.getPassword())) {
+            if (encryptedOldPassword.equals(studentDTO.getPassword())) {
                 throw new DuplicateException("新密码不可和原密码一致");
             }
         }
 
         LambdaUpdateWrapper<Student> wrapper = new UpdateWrapper<Student>().lambda();
-        wrapper.eq(Student::getUsername, student.getUsername())
-                .set(Student::getPassword, student.getPassword());
+        wrapper.eq(Student::getUsername, studentDTO.getUsername())
+                .set(Student::getPassword, studentDTO.getPassword());
 
         boolean success = studentService.update(wrapper);
         log.info("修改完成:{}", success);
@@ -173,29 +177,29 @@ public class StudentUserController {
     /**
      * 修改信息员账户信息
      *
-     * @param student 信息员用户(带id)
+     * @param studentDTO 信息员用户DTO对象(带id)
      * @return R
      */
     @PutMapping("/update")
     @SaCheckRole("admin")
-    private R<Boolean> updateUser(@RequestBody Student student) {
+    private R<Boolean> updateUser(@RequestBody StudentDTO studentDTO) {
 
-        final String oldPassword = student.getPassword();
+        final String oldPassword = studentDTO.getPassword();
         if (StringUtils.isNotBlank(oldPassword)) {
-            student.setPassword(SecureUtil.encrypt(student.getPassword()));
+            studentDTO.setPassword(SecureUtil.encrypt(studentDTO.getPassword()));
         }
 
         final LambdaUpdateWrapper<Student> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(Student::getId, student.getId())
-                .set(StringUtils.isNotBlank(student.getUsername()), Student::getUsername, student.getUsername())
-                .set(StringUtils.isNotBlank(student.getPassword()), Student::getPassword, student.getPassword())
-                .set(StringUtils.isNotBlank(student.getClassName()), Student::getClassName, student.getClassName())
-                .set(StringUtils.isNotBlank(student.getName()), Student::getName, student.getName())
+        wrapper.eq(Student::getId, studentDTO.getId())
+                .set(StringUtils.isNotBlank(studentDTO.getUsername()), Student::getUsername, studentDTO.getUsername())
+                .set(StringUtils.isNotBlank(studentDTO.getPassword()), Student::getPassword, studentDTO.getPassword())
+                .set(StringUtils.isNotBlank(studentDTO.getClassName()), Student::getClassName, studentDTO.getClassName())
+                .set(StringUtils.isNotBlank(studentDTO.getName()), Student::getName, studentDTO.getName())
 
                 //限定输入，不需要动态判断为空
-                .set(Student::getCollege, student.getCollege())
-                .set(Student::getEnrollmentYear, student.getEnrollmentYear())
-                .set(Student::getEducationLevel, student.getEducationLevel());
+                .set(Student::getCollege, studentDTO.getCollege())
+                .set(Student::getEnrollmentYear, studentDTO.getEnrollmentYear())
+                .set(Student::getEducationLevel, studentDTO.getEducationLevel());
 
         final boolean success = studentService.update(wrapper);
         //直接通过 id更新，不能动态更新。传入的数据包括时间类型，直接覆盖之前时间(也就是同样的时间,就不能做到自动同步更新修改时间)
@@ -210,20 +214,20 @@ public class StudentUserController {
     /**
      * 动态条件(学院、班级)、分页查询信息员账户
      *
-     * @param student    学生类对象
+     * @param studentDTO 学生类DTO对象
      * @param currentNum 当前页号
      * @param pageSize   每页条数
      * @return R
      */
     @PostMapping("/listAll/{currentNum}/{pageSize}")
     @SaCheckRole("admin")
-    public R<IPage<StudentVo>> list(@RequestBody Student student,
+    public R<IPage<StudentVo>> list(@RequestBody StudentDTO studentDTO,
                                     @PathVariable long currentNum,
                                     @PathVariable long pageSize) {
         final LambdaQueryWrapper<Student> wrapper = new QueryWrapper<Student>().lambda();
-        wrapper.like(StringUtils.isNotBlank(student.getCollege()), Student::getCollege, student.getCollege())
-                .like(StringUtils.isNotBlank(student.getClassName()), Student::getClassName, student.getClassName())
-                .like(StringUtils.isNotBlank(student.getEducationLevel()), Student::getEducationLevel, student.getEducationLevel());
+        wrapper.like(StringUtils.isNotBlank(studentDTO.getCollege()), Student::getCollege, studentDTO.getCollege())
+                .like(StringUtils.isNotBlank(studentDTO.getClassName()), Student::getClassName, studentDTO.getClassName())
+                .like(StringUtils.isNotBlank(studentDTO.getEducationLevel()), Student::getEducationLevel, studentDTO.getEducationLevel());
 
         final Page<Student> page = studentService.page(new Page<>(currentNum, pageSize), wrapper);
 

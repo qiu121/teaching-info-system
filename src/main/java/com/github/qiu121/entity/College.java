@@ -1,14 +1,15 @@
 package com.github.qiu121.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.qiu121.dto.CollegeDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * @author <a href="mailto:qiu0089@foxmail.com">qiu121</a>
@@ -35,29 +36,15 @@ public class College implements Serializable {
     /**
      * 创建时间
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     /**
      * 修改时间
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof College)) {
-            return false;
-        }
-        College college = (College) o;
-        return Objects.equals(getName(), college.getName());
+    public College(CollegeDTO collegeDTO) {
+        BeanUtils.copyProperties(collegeDTO, this);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName());
-    }
-
 }

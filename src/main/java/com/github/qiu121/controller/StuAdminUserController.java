@@ -12,6 +12,7 @@ import com.github.qiu121.common.enumeration.PermissionEnum;
 import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.common.exception.DuplicateException;
 import com.github.qiu121.common.exception.NotFoundException;
+import com.github.qiu121.dto.StudentDTO;
 import com.github.qiu121.entity.Permission;
 import com.github.qiu121.entity.StuAdmin;
 import com.github.qiu121.service.PermissionService;
@@ -48,16 +49,16 @@ public class StuAdminUserController {
     /**
      * 新增组长账户
      *
-     * @param stuAdmin
-     * @return
+     * @param stuAdminDTO 信息员组长DTO对象
+     * @return R
      */
     @PostMapping("/add")
     @SaCheckRole("admin")
-    public R<Boolean> addUser(@RequestBody StuAdmin stuAdmin) {
-        final String username = stuAdmin.getUsername();
-        final String password = stuAdmin.getPassword();
+    public R<Boolean> addUser(@RequestBody StudentDTO stuAdminDTO) {
+        final String username = stuAdminDTO.getUsername();
+        final String password = stuAdminDTO.getPassword();
         if (StringUtils.isNotBlank(password)) {//哈希加密
-            stuAdmin.setPassword(SecureUtil.encrypt(password));
+            stuAdminDTO.setPassword(SecureUtil.encrypt(password));
         }
         //查询现有用户名，校验重复数据
         final List<String> usernameList = permissionService.list()
@@ -66,6 +67,8 @@ public class StuAdminUserController {
                 .collect(Collectors.toList());
 
         if (!usernameList.contains(username)) {
+            //DTO-> DAO
+            StuAdmin stuAdmin = new StuAdmin(stuAdminDTO);
             final boolean saveUser = stuAdminService.save(stuAdmin);
             final boolean savePermission = permissionService.save(
                     new Permission(username, PermissionEnum.STU_ADMIN_PERMISSION.getType()));
@@ -84,7 +87,7 @@ public class StuAdminUserController {
      * 批量删除组长账户
      *
      * @param idArray id数组
-     * @return
+     * @return R
      */
     @DeleteMapping("/removeBatch/{idArray}")
     @SaCheckRole("admin")
@@ -117,8 +120,8 @@ public class StuAdminUserController {
     /**
      * 根据 id 查询组长账户信息
      *
-     * @param id
-     * @return
+     * @param id 主键
+     * @return R
      */
     @GetMapping("/get/{id}")
     @SaCheckRole("admin")
@@ -137,32 +140,32 @@ public class StuAdminUserController {
     /**
      * 修改信息员组长账户密码
      *
-     * @param stuAdmin 组长账户
+     * @param stuAdminDTO 组长账户DTO
      * @return R
      */
     @PutMapping("/update/secure")
     @SaCheckRole("stuAdmin")
-    public R<?> updateUserPassword(@RequestParam String old, @RequestBody StuAdmin stuAdmin) {
+    public R<?> updateUserPassword(@RequestParam String old, @RequestBody StudentDTO stuAdminDTO) {
         // 验证旧密码
         StuAdmin stuAdminOne = stuAdminService.getOne(new LambdaQueryWrapper<StuAdmin>()
-                .eq(StuAdmin::getUsername, stuAdmin.getUsername()));
+                .eq(StuAdmin::getUsername, stuAdminDTO.getUsername()));
         if (stuAdminOne == null) {
             throw new NotFoundException("账户不存在");
         } else {
             if (!SecureUtil.verify(old, stuAdminOne.getPassword())) {
                 return new R<>(20033, "旧密码错误");
             }
-            if (Objects.equals(stuAdmin.getPassword(), old)) {
+            if (Objects.equals(stuAdminDTO.getPassword(), old)) {
                 throw new BusinessException("新密码与原密码相同，请重试");
             }
         }
 
         // 修改新密码
-        stuAdmin.setPassword(SecureUtil.encrypt(stuAdmin.getPassword()));
+        stuAdminDTO.setPassword(SecureUtil.encrypt(stuAdminDTO.getPassword()));
 
         final LambdaUpdateWrapper<StuAdmin> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(StuAdmin::getUsername, stuAdmin.getUsername())
-                .set(StringUtils.isNotBlank(stuAdmin.getPassword()), StuAdmin::getPassword, stuAdmin.getPassword());
+        wrapper.eq(StuAdmin::getUsername, stuAdminDTO.getUsername())
+                .set(StringUtils.isNotBlank(stuAdminDTO.getPassword()), StuAdmin::getPassword, stuAdminDTO.getPassword());
         final boolean success = stuAdminService.update(wrapper);
         return success ? new R<>(20031, "修改完成") :
                 new R<>(20032, "修改失败");
@@ -171,28 +174,28 @@ public class StuAdminUserController {
     /**
      * 修改组长用户信息
      *
-     * @param stuAdmin
-     * @return
+     * @param stuAdminDTO 信息员组长DTO
+     * @return R
      */
     @PutMapping("/update")
     @SaCheckRole("admin")
-    private R<Boolean> updateUser(@RequestBody StuAdmin stuAdmin) {
+    private R<Boolean> updateUser(@RequestBody StudentDTO stuAdminDTO) {
 
-        final String oldPassword = stuAdmin.getPassword();
+        final String oldPassword = stuAdminDTO.getPassword();
         if (StringUtils.isNotBlank(oldPassword)) {
-            stuAdmin.setPassword(SecureUtil.encrypt(stuAdmin.getPassword()));
+            stuAdminDTO.setPassword(SecureUtil.encrypt(stuAdminDTO.getPassword()));
         }
 
         final LambdaUpdateWrapper<StuAdmin> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(StuAdmin::getId, stuAdmin.getId())
-                .set(StringUtils.isNotBlank(stuAdmin.getName()), StuAdmin::getName, stuAdmin.getName())
-                .set(StringUtils.isNotBlank(stuAdmin.getUsername()), StuAdmin::getUsername, stuAdmin.getUsername())
-                .set(StringUtils.isNotBlank(stuAdmin.getPassword()), StuAdmin::getPassword, stuAdmin.getPassword())
-                .set(StringUtils.isNotBlank(stuAdmin.getClassName()), StuAdmin::getClassName, stuAdmin.getClassName())
+        wrapper.eq(StuAdmin::getId, stuAdminDTO.getId())
+                .set(StringUtils.isNotBlank(stuAdminDTO.getName()), StuAdmin::getName, stuAdminDTO.getName())
+                .set(StringUtils.isNotBlank(stuAdminDTO.getUsername()), StuAdmin::getUsername, stuAdminDTO.getUsername())
+                .set(StringUtils.isNotBlank(stuAdminDTO.getPassword()), StuAdmin::getPassword, stuAdminDTO.getPassword())
+                .set(StringUtils.isNotBlank(stuAdminDTO.getClassName()), StuAdmin::getClassName, stuAdminDTO.getClassName())
 
                 //限定的输入格式，不需要判空
-                .set(StuAdmin::getCollege, stuAdmin.getCollege())
-                .set(StuAdmin::getEnrollmentYear, stuAdmin.getEnrollmentYear());
+                .set(StuAdmin::getCollege, stuAdminDTO.getCollege())
+                .set(StuAdmin::getEnrollmentYear, stuAdminDTO.getEnrollmentYear());
 
         final boolean success = stuAdminService.update(wrapper);
 
@@ -204,20 +207,20 @@ public class StuAdminUserController {
     /**
      * 动态条件(学院、班级)、分页询组长账户
      *
-     * @param stuAdmin   信息员组长对象
-     * @param currentNum 当前页号
-     * @param pageSize   每页条数
+     * @param stuAdminDTO 信息员组长DTo对象
+     * @param currentNum  当前页号
+     * @param pageSize    每页条数
      * @return R<IPage < StuAdmin>>
      */
     @PostMapping("/list/{currentNum}/{pageSize}")
     @SaCheckRole("admin")
-    public R<IPage<StuAdminVo>> list(@RequestBody StuAdmin stuAdmin,
+    public R<IPage<StuAdminVo>> list(@RequestBody StudentDTO stuAdminDTO,
                                      @PathVariable long currentNum,
                                      @PathVariable long pageSize) {
         final LambdaQueryWrapper<StuAdmin> wrapper = new QueryWrapper<StuAdmin>().lambda();
-        wrapper.like(StringUtils.isNotBlank(stuAdmin.getCollege()), StuAdmin::getCollege, stuAdmin.getCollege())
-                .like(StringUtils.isNotBlank(stuAdmin.getClassName()), StuAdmin::getClassName, stuAdmin.getClassName())
-                .like(StringUtils.isNotBlank(stuAdmin.getEducationLevel()), StuAdmin::getEducationLevel, stuAdmin.getEducationLevel());
+        wrapper.like(StringUtils.isNotBlank(stuAdminDTO.getCollege()), StuAdmin::getCollege, stuAdminDTO.getCollege())
+                .like(StringUtils.isNotBlank(stuAdminDTO.getClassName()), StuAdmin::getClassName, stuAdminDTO.getClassName())
+                .like(StringUtils.isNotBlank(stuAdminDTO.getEducationLevel()), StuAdmin::getEducationLevel, stuAdminDTO.getEducationLevel());
 
         final Page<StuAdmin> page = stuAdminService.page(new Page<>(currentNum, pageSize), wrapper);
 

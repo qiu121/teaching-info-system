@@ -1,35 +1,24 @@
-package com.github.qiu121.entity;
+package com.github.qiu121.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.qiu121.dto.StudentDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
-import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * @author <a href="mailto:qiu0089@foxmail.com">qiu121</a>
  * @version 1.0
- * @date 2023/3/14
+ * @date 2023/07/05
+ * @description 信息员、信息员组长(学生类)DTO对象
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true)
-public class Student implements Serializable {
-    private static final long serialVersionUID = -5226463491045623482L;
-    /**
-     * 主键
-     */
+public class StudentDTO {
+
     private Long id;
-    /**
-     * 用户名
-     */
+
     @NotBlank(message = "用户名不可为空")
     private String username;
     /**
@@ -58,18 +47,4 @@ public class Student implements Serializable {
      */
     private String name;
 
-    /**
-     * 创建时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createTime;
-    /**
-     * 更新时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updateTime;
-
-    public Student(StudentDTO studentDTO) {
-        BeanUtils.copyProperties(studentDTO, this);
-    }
 }

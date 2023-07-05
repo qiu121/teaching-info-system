@@ -9,6 +9,7 @@ import com.github.qiu121.common.R;
 import com.github.qiu121.common.enumeration.PermissionEnum;
 import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.common.exception.DuplicateException;
+import com.github.qiu121.dto.AdminDTO;
 import com.github.qiu121.entity.Admin;
 import com.github.qiu121.entity.Permission;
 import com.github.qiu121.service.AdminService;
@@ -47,15 +48,15 @@ public class AdminUserController {
     /**
      * 新增管理员用户
      *
-     * @param admin
-     * @return
+     * @param adminDTO 管理员DTO
+     * @return R
      */
     @PostMapping("/add")
-    public R<Boolean> addUser(@RequestBody Admin admin) {
-        final String username = admin.getUsername();
-        final String password = admin.getPassword();
+    public R<Boolean> addUser(@RequestBody AdminDTO adminDTO) {
+        final String username = adminDTO.getUsername();
+        final String password = adminDTO.getPassword();
         if (password != null) {//哈希加密
-            admin.setPassword(SecureUtil.encrypt(password));
+            adminDTO.setPassword(SecureUtil.encrypt(password));
         }
         //查询现有用户名，校验重复数据
         final Set<String> usernameList = permissionService.list()
@@ -66,6 +67,8 @@ public class AdminUserController {
         if (!usernameList.contains(username)) {
             final boolean savePermission = permissionService.save(
                     new Permission(username, PermissionEnum.ADMIN_PERMISSION.getType()));
+            //DTO -> DAO
+            Admin admin = new Admin(adminDTO);
             final boolean saveUser = adminService.save(admin);
             if (savePermission & saveUser) {
                 log.info("添加完成： {}", true);
@@ -136,22 +139,22 @@ public class AdminUserController {
     /**
      * 修改管理员用户
      *
-     * @param admin
-     * @return
+     * @param adminDTO 管理员DTO
+     * @return R
      */
     @PutMapping("/update")
-    public R<Boolean> updateUser(@RequestBody Admin admin) {
+    public R<Boolean> updateUser(@RequestBody AdminDTO adminDTO) {
 
-        final String oldPassword = admin.getPassword();
+        final String oldPassword = adminDTO.getPassword();
         if (StringUtils.isNotBlank(oldPassword)) {
-            admin.setPassword(SecureUtil.encrypt(admin.getPassword()));
+            adminDTO.setPassword(SecureUtil.encrypt(adminDTO.getPassword()));
         }
 
         //动态修改
         final LambdaUpdateWrapper<Admin> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(Admin::getId, admin.getId())
-                .set(StringUtils.isNotBlank(admin.getUsername()), Admin::getUsername, admin.getUsername())
-                .set(StringUtils.isNotBlank(admin.getPassword()), Admin::getPassword, admin.getPassword());
+        wrapper.eq(Admin::getId, adminDTO.getId())
+                .set(StringUtils.isNotBlank(adminDTO.getUsername()), Admin::getUsername, adminDTO.getUsername())
+                .set(StringUtils.isNotBlank(adminDTO.getPassword()), Admin::getPassword, adminDTO.getPassword());
 
         final boolean success = adminService.update(wrapper);
 
@@ -169,11 +172,12 @@ public class AdminUserController {
     @GetMapping("/list")
     public R<List<AdminVo>> list() {
         final List<Admin> list = adminService.list();
-        final List<AdminVo> voList = list.stream().map(admin -> {
-            AdminVo vo = new AdminVo();
-            BeanUtils.copyProperties(admin, vo);
-            return vo;
-        }).collect(Collectors.toList());
+        final List<AdminVo> voList = list.stream()
+                .map(admin -> {
+                    AdminVo vo = new AdminVo();
+                    BeanUtils.copyProperties(admin, vo);
+                    return vo;
+                }).collect(Collectors.toList());
 
         log.info("查询结果： {}", voList);
         return new R<>(20040, "查询完成", voList);
