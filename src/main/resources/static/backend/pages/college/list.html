@@ -131,10 +131,10 @@
             },
             //添加提交
             handleAddSubmit() {
-                this.formData.name += '学院'
                 // console.log(this.formData)
                 this.$refs.formData.validate((valid) => {
                     if (valid) {
+                        this.formData.name += '学院'
                         addCollege(this.formData).then((res) => {
                             if (res.data.code === 20011) {
                                 this.dialogFormAddVisible = false
