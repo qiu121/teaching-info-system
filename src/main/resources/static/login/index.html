@@ -161,7 +161,6 @@
 
 <script src="/api/login.js"></script>
 <script src="/api/student.js"></script>
-<script src="/api/auth.js"></script>
 
 <script>
     new Vue({
@@ -235,13 +234,7 @@
                 this.$refs.loginForm.validate((valid) => {
                     if (valid) {
                         // 权限检验
-                        authUser(this.loginForm.username)
-                            .then((response) => {
-                                //console.log("Hello World!")
-                                if (response.data.code === 20040) {
-                                    window.localStorage.setItem("auth", response.data.data)
-                                }
-                            })
+
                         if (this.userSelect === "s") {
                             loginSApi(this.loginForm, this.loginForm.captcha)
                                 .then((res) => {
