@@ -31,7 +31,6 @@ import java.util.List;
  * @date 2023/3/14
  */
 @RestController
-@CrossOrigin
 @RequestMapping("/login/users")
 @Slf4j
 public class LoginController {

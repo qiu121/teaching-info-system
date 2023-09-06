@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("/feedback/stuAdmin")
 public class TeachInfoController2 {
     @Resource
@@ -123,7 +122,6 @@ public class TeachInfoController2 {
 
         teacherInfoValidate2(teachInfo2);
 
-        final R<String> r = new R<>();
         final LambdaUpdateWrapper<TeachInfo2> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(TeachInfo2::getId, teachInfo2.getId())
                 .set(TeachInfo2::getFeedbackGood, teachInfo2.getFeedbackGood())

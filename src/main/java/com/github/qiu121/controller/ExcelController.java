@@ -18,7 +18,6 @@ import java.util.List;
  * @date 2023/3/22
  */
 @RestController
-@CrossOrigin
 @Slf4j
 @SaCheckRole("admin")
 @RequestMapping("/api/v1/excel")

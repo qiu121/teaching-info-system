@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Slf4j
-@CrossOrigin
 @SaCheckRole("admin")
 @RequestMapping("/users/admin")
 public class AdminUserController {

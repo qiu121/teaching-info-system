@@ -20,7 +20,6 @@ import javax.annotation.Resource;
  */
 @RestController
 @Slf4j
-@CrossOrigin
 @SaCheckLogin
 @RequestMapping("/users/permission")
 public class PermissionController {

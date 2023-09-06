@@ -29,7 +29,6 @@ import java.util.Map;
  */
 @RestController
 @Slf4j
-@CrossOrigin
 @RequestMapping("/api/v1/QRcode")
 public class QRCodeController {
     @GetMapping(produces = MediaType.IMAGE_PNG_VALUE)

@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
-@CrossOrigin
 @SaCheckRole(value = {"stuAdmin", "admin"}, mode = SaMode.OR)
 @RequestMapping("/colleges")
 public class CollegeController {

@@ -18,7 +18,6 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("/api/v1")
-@CrossOrigin
 @Slf4j
 public class CaptchaController {
     /**

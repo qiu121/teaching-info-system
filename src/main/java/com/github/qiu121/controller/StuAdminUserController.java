@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Slf4j
-@CrossOrigin
 @RequestMapping("/users/stuAdmin")
 public class StuAdminUserController {
 
