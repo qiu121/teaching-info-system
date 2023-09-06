@@ -51,7 +51,7 @@ public class TeachInfoController2 {
     /**
      * 信息员组长提交
      *
-     * @param teachInfo 教学信息对象
+     * @param teachInfo2 教学信息对象
      * @return R
      */
     @PostMapping("/add")
@@ -113,7 +113,7 @@ public class TeachInfoController2 {
     /**
      * 修改教学信息(组长提交)
      *
-     * @param teachInfo 教学信息对象(组长提交)
+     * @param teachInfo2 教学信息对象(组长提交)
      * @return R
      */
     @PutMapping("/update")
@@ -281,7 +281,7 @@ public class TeachInfoController2 {
      */
     @PostMapping("/listAll/{currentNum}/{pageSize}")
     @SaCheckRole("admin")
-    public R<IPage<TeachInfo2>> ListAll(@RequestBody TeachInfo2 teachInfo2,
+    public R<IPage<TeachInfo2>> listAll(@RequestBody TeachInfo2 teachInfo2,
                                         @PathVariable long currentNum,
                                         @PathVariable long pageSize) {
         LambdaQueryWrapper<TeachInfo2> wrapper = new LambdaQueryWrapper<>();
