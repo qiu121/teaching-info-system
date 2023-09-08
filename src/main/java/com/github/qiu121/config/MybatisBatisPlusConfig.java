@@ -1,11 +1,6 @@
 package com.github.qiu121.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
  * @date 2023/3/14
  */
 @Configuration
-@SuppressWarnings({"all"})
 public class MybatisBatisPlusConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
@@ -36,23 +30,4 @@ public class MybatisBatisPlusConfig {
         return interceptor;
     }
 
-    @Bean
-    public LambdaQueryWrapper createLambdaQueryWrapper() {
-        return Wrappers.lambdaQuery();
-    }
-
-    @Bean
-    public LambdaUpdateWrapper createLambdaUpdateWrapper() {
-        return Wrappers.lambdaUpdate();
-    }
-
-    @Bean
-    public QueryWrapper createQueryWrapper() {
-        return Wrappers.query();
-    }
-
-    @Bean
-    public UpdateWrapper createUpdateWrapper() {
-        return Wrappers.update();
-    }
 }
