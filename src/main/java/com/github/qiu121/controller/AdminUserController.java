@@ -16,6 +16,8 @@ import com.github.qiu121.service.AdminService;
 import com.github.qiu121.service.PermissionService;
 import com.github.qiu121.util.SecureUtil;
 import com.github.qiu121.vo.AdminVo;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
@@ -38,6 +40,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @SaCheckRole("admin")
 @RequestMapping("/users/admin")
+@Tag(name = "管理员用户操作接口")
 public class AdminUserController {
     @Resource
     private AdminService adminService;
@@ -51,13 +54,14 @@ public class AdminUserController {
      * @return R
      */
     @PostMapping("/add")
+    @Operation(description = "新增管理员用户信息", summary = "新增")
     public R<Boolean> addUser(@RequestBody AdminDTO adminDTO) {
         final String username = adminDTO.getUsername();
         final String password = adminDTO.getPassword();
-        if (password != null) {//哈希加密
+        if (password != null) {// 哈希加密
             adminDTO.setPassword(SecureUtil.encrypt(password));
         }
-        //查询现有用户名，校验重复数据
+        // 查询现有用户名，校验重复数据
         final Set<String> usernameList = permissionService.list()
                 .stream()
                 .map(Permission::getUsername)
@@ -66,7 +70,7 @@ public class AdminUserController {
         if (!usernameList.contains(username)) {
             final boolean savePermission = permissionService.save(
                     new Permission(username, PermissionEnum.ADMIN_PERMISSION.getType()));
-            //DTO -> DAO
+            // DTO -> DAO
             Admin admin = new Admin(adminDTO);
             final boolean saveUser = adminService.save(admin);
             if (savePermission & saveUser) {
@@ -88,6 +92,7 @@ public class AdminUserController {
      * @return
      */
     @GetMapping("/get/{id}")
+    @Operation(description = "查询管理员用户信息", summary = "查询")
     public R<AdminVo> getUser(@PathVariable Long id) {
         final Admin admin = adminService.getById(id);
         Integer code = 20040;
@@ -107,9 +112,10 @@ public class AdminUserController {
      * @return
      */
     @DeleteMapping("/remove/{id}")
+    @Operation(description = "删除管理员用户信息", summary = "删除")
     public R<Boolean> removeUser(@PathVariable Long id) {
 
-        //根据用户 id查询用户名
+        // 根据用户 id查询用户名
         final LambdaQueryWrapper<Admin> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(Admin::getUsername)
                 .in(Admin::getId, id);
@@ -123,7 +129,7 @@ public class AdminUserController {
             throw new BusinessException("当前用户不可移除");
         }
 
-        //编写条件构造器，查询用户名，进行权限删除
+        // 编写条件构造器，查询用户名，进行权限删除
         final LambdaQueryWrapper<Permission> permissionWrapper = new LambdaQueryWrapper<>();
         permissionWrapper.in(Permission::getUsername, adminUsernameList)
                 .eq(Permission::getType, PermissionEnum.ADMIN_PERMISSION.getType());
@@ -142,6 +148,7 @@ public class AdminUserController {
      * @return R
      */
     @PutMapping("/update")
+    @Operation(description = "修改管理员用户信息", summary = "修改")
     public R<Boolean> updateUser(@RequestBody AdminDTO adminDTO) {
 
         final String oldPassword = adminDTO.getPassword();
@@ -149,7 +156,7 @@ public class AdminUserController {
             adminDTO.setPassword(SecureUtil.encrypt(adminDTO.getPassword()));
         }
 
-        //动态修改
+        // 动态修改
         final LambdaUpdateWrapper<Admin> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(Admin::getId, adminDTO.getId())
                 .set(StringUtils.isNotBlank(adminDTO.getUsername()), Admin::getUsername, adminDTO.getUsername())
@@ -169,6 +176,7 @@ public class AdminUserController {
      * @return
      */
     @GetMapping("/list")
+    @Operation(description = "查询所有管理员用户信息", summary = "查询所有")
     public R<List<AdminVo>> list() {
         final List<Admin> list = adminService.list();
         final List<AdminVo> voList = list.stream()

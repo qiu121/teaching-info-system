@@ -23,4 +23,10 @@ spring:
       enable: true
       connection-init-sqls: set names utf8mb4
 
-
+knife4j:
+  enable: true
+  # 开启Swagger的Basic认证功能,默认是false
+  basic:
+    enable: true
+    username: admin
+    password: admin

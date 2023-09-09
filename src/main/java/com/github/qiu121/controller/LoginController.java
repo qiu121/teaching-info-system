@@ -15,6 +15,8 @@ import com.github.qiu121.util.SecureUtil;
 import com.github.qiu121.vo.AdminVo;
 import com.github.qiu121.vo.StuAdminVo;
 import com.github.qiu121.vo.StudentVo;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/login/users")
 @Slf4j
+@Tag(name = "用户登入接口")
 public class LoginController {
     @Resource
     private StudentService studentService;
@@ -50,20 +53,21 @@ public class LoginController {
      * @return 响应体封装类
      */
     @PostMapping("/stu/{inputCode}")
+    @Operation(description = "学生信息员用户登入", summary = "信息员用户登入")
     public R<List<HashMap<String, Object>>> studentLogin(@RequestBody @Validated LoginDTO student,
                                                          @PathVariable String inputCode,
                                                          HttpSession session) {
         QueryWrapper<Student> wrapper = new QueryWrapper<>();
-        //查询账户名，为后续转存调用
+        // 查询账户名，为后续转存调用
         wrapper.lambda()
                 .eq(Student::getUsername, student.getUsername())
                 .eq(Student::getPassword, SecureUtil.encrypt(student.getPassword()));
-        //查询出多个结果抛出异常
+        // 查询出多个结果抛出异常
         Student one = studentService.getOne(wrapper, true);
 
         String verifyCode = (String) session.getAttribute("verifyCode");
 
-        //忽略字母大小写比对
+        // 忽略字母大小写比对
         boolean flag = verifyCode.equalsIgnoreCase(inputCode);
 
         log.info("验证码为: {}", verifyCode);
@@ -80,7 +84,7 @@ public class LoginController {
                 log.info("登录设备类型： {}", StpUtil.getLoginDevice());
                 log.info("权限信息: {}", StpUtil.getTokenInfo());
 
-                //将数据用VO对象重新赋值，响应返回
+                // 将数据用VO对象重新赋值，响应返回
                 final StudentVo studentVo = new StudentVo(one);
 
                 final ArrayList<HashMap<String, Object>> list = new ArrayList<>();
@@ -105,19 +109,20 @@ public class LoginController {
      * @return 响应体封装类
      */
     @PostMapping("/stuAdmin/{inputCode}")
+    @Operation(description = "信息员组长用户登入", summary = "组长用户登入")
     public R<List<HashMap<String, Object>>> studentAdminLogin(@RequestBody @Validated LoginDTO stuAdmin,
                                                               @PathVariable String inputCode,
                                                               HttpSession session) {
         LambdaQueryWrapper<StuAdmin> wrapper = new LambdaQueryWrapper<>();
         wrapper
-                .eq(StuAdmin::getUsername, stuAdmin.getUsername())//哈希算法加密
+                .eq(StuAdmin::getUsername, stuAdmin.getUsername())// 哈希算法加密
                 .eq(StuAdmin::getPassword, SecureUtil.encrypt(stuAdmin.getPassword()));
-        //查询出多个结果抛出异常
+        // 查询出多个结果抛出异常
         StuAdmin stuAdminOne = stuAdminService.getOne(wrapper, true);
 
         String verifyCode = (String) session.getAttribute("verifyCode");
 
-        //忽略字母大小写比对
+        // 忽略字母大小写比对
         boolean flag = verifyCode.equalsIgnoreCase(inputCode);
 
         log.info("验证码为: {}", verifyCode);
@@ -155,19 +160,20 @@ public class LoginController {
      * @return R
      */
     @PostMapping("/admin/{inputCode}")
+    @Operation(description = "系统管理员用户登入", summary = "管理员登入")
     public R<List<HashMap<String, Object>>> administratorLogin(@RequestBody @Validated LoginDTO admin,
                                                                @PathVariable String inputCode,
                                                                HttpSession session) {
         LambdaQueryWrapper<Admin> wrapper = new LambdaQueryWrapper<>();
-        //查询账户名，为后续转存调用
+        // 查询账户名，为后续转存调用
         wrapper.eq(Admin::getUsername, admin.getUsername())
                 .eq(Admin::getPassword, SecureUtil.encrypt(admin.getPassword()));
-        //查询出多个结果抛出异常
+        // 查询出多个结果抛出异常
         Admin adminOne = adminService.getOne(wrapper, true);
 
         String verifyCode = (String) session.getAttribute("verifyCode");
 
-        //忽略字母大小写比对
+        // 忽略字母大小写比对
         boolean flag = verifyCode.equalsIgnoreCase(inputCode);
 
         log.info("验证码为: {}", verifyCode);

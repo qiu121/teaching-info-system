@@ -7,6 +7,8 @@ import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.dto.CollegeDTO;
 import com.github.qiu121.entity.College;
 import com.github.qiu121.service.CollegeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,12 +27,13 @@ import java.util.stream.Collectors;
 @RestController
 @SaCheckRole(value = {"stuAdmin", "admin"}, mode = SaMode.OR)
 @RequestMapping("/colleges")
+@Tag(name = "学院操作接口")
 public class CollegeController {
     @Resource
     private CollegeService collegeService;
 
     private void collegeValidate(CollegeDTO college) {
-        //final List<College> collegeList = collegeService.list();
+        // final List<College> collegeList = collegeService.list();
 
         final List<CollegeDTO> collegeDTOList = collegeService.list().stream()
                 .map(c -> {
@@ -47,6 +50,7 @@ public class CollegeController {
     }
 
     @PostMapping("/add")
+    @Operation(description = "新增学院信息", summary = "新增")
     public R<Boolean> addCollege(@RequestBody @Validated CollegeDTO collegeDTO) {
         collegeValidate(collegeDTO);
 
@@ -57,6 +61,7 @@ public class CollegeController {
     }
 
     @DeleteMapping("/remove/{id}")
+    @Operation(description = "删除学院信息", summary = "删除")
     public R<Boolean> removeCollege(@PathVariable Long id) {
         final boolean removed = collegeService.removeById(id);
         return removed ? new R<>(20021, "删除完成", true) :
@@ -64,6 +69,8 @@ public class CollegeController {
     }
 
     @PutMapping("/update")
+    @Operation(description = "修改学院信息", summary = "修改")
+    @Deprecated
     public R<Boolean> updateCollege(@RequestBody @Validated CollegeDTO collegeDTO) {
         collegeValidate(collegeDTO);
 
@@ -74,6 +81,7 @@ public class CollegeController {
     }
 
     @GetMapping("/list")
+    @Operation(description = "列出所有学院信息", summary = "查询所有")
     public R<List<College>> listCollege() {
         final List<College> collegeList = collegeService.list();
         return new R<>(20040, "查询完成", collegeList);

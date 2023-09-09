@@ -1,5 +1,6 @@
 package com.github.qiu121.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.core.io.ClassPathResource;
@@ -24,6 +25,7 @@ import java.util.Random;
  */
 @RestController
 @Slf4j
+@Tag(name = "")
 public class CustomErrorController implements ErrorController {
     @RequestMapping("/error")
     public ResponseEntity<byte[]> handleError(HttpServletRequest request) throws IOException {

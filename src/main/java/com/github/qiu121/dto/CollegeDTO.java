@@ -1,5 +1,6 @@
 package com.github.qiu121.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,11 +17,13 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "学院对象")
 public class CollegeDTO {
     /**
      * 学院名称
      */
     @NotBlank(message = "学院名称不可为空")
+    @Schema(description = "学院名称")
     private String name;
 
     @Override

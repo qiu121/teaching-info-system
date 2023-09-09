@@ -19,6 +19,8 @@ import com.github.qiu121.service.PermissionService;
 import com.github.qiu121.service.StuAdminService;
 import com.github.qiu121.util.SecureUtil;
 import com.github.qiu121.vo.StuAdminVo;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +40,7 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @RequestMapping("/users/stuAdmin")
+@Tag(name = "信息员组长用户操作接口")
 public class StuAdminUserController {
 
     @Resource
@@ -53,20 +56,21 @@ public class StuAdminUserController {
      */
     @PostMapping("/add")
     @SaCheckRole("admin")
+    @Operation(description = "新增信息员组长用户", summary = "新增")
     public R<Boolean> addUser(@RequestBody StudentDTO stuAdminDTO) {
         final String username = stuAdminDTO.getUsername();
         final String password = stuAdminDTO.getPassword();
-        if (StringUtils.isNotBlank(password)) {//哈希加密
+        if (StringUtils.isNotBlank(password)) {// 哈希加密
             stuAdminDTO.setPassword(SecureUtil.encrypt(password));
         }
-        //查询现有用户名，校验重复数据
+        // 查询现有用户名，校验重复数据
         final List<String> usernameList = permissionService.list()
                 .stream()
                 .map(Permission::getUsername)
                 .collect(Collectors.toList());
 
         if (!usernameList.contains(username)) {
-            //DTO-> DAO
+            // DTO-> DAO
             StuAdmin stuAdmin = new StuAdmin(stuAdminDTO);
             final boolean saveUser = stuAdminService.save(stuAdmin);
             final boolean savePermission = permissionService.save(
@@ -90,9 +94,10 @@ public class StuAdminUserController {
      */
     @DeleteMapping("/removeBatch/{idArray}")
     @SaCheckRole("admin")
+    @Operation(description = "批量删除信息员组长用户", summary = "批量删除")
     public R<Boolean> removeBatchUser(@PathVariable Long[] idArray) {
 
-        //根据 用户id 查询用户名
+        // 根据 用户id 查询用户名
         final QueryWrapper<StuAdmin> wrapper = new QueryWrapper<>();
         wrapper.lambda()
                 .select(StuAdmin::getUsername)
@@ -103,7 +108,7 @@ public class StuAdminUserController {
                 .map(StuAdmin::getUsername)
                 .collect(Collectors.toList());
 
-        //根据用户名,删除权限表中对应数据
+        // 根据用户名,删除权限表中对应数据
         final LambdaQueryWrapper<Permission> queryWrapper = new QueryWrapper<Permission>().lambda();
         queryWrapper.in(Permission::getUsername, usernameList)
                 .eq(Permission::getType, PermissionEnum.STU_ADMIN_PERMISSION.getType());
@@ -124,6 +129,7 @@ public class StuAdminUserController {
      */
     @GetMapping("/get/{id}")
     @SaCheckRole("admin")
+    @Operation(description = "查询信息员组长用户", summary = "查询")
     public R<StuAdminVo> getUser(@PathVariable Long id) {
         final StuAdmin stuAdmin = stuAdminService.getById(id);
         Integer code = 20040;
@@ -144,6 +150,7 @@ public class StuAdminUserController {
      */
     @PutMapping("/update/secure")
     @SaCheckRole("stuAdmin")
+    @Operation(description = "修改信息员组长用户密码", summary = "修改密码")
     public R<?> updateUserPassword(@RequestParam String old, @RequestBody StudentDTO stuAdminDTO) {
         // 验证旧密码
         StuAdmin stuAdminOne = stuAdminService.getOne(new LambdaQueryWrapper<StuAdmin>()
@@ -178,6 +185,7 @@ public class StuAdminUserController {
      */
     @PutMapping("/update")
     @SaCheckRole("admin")
+    @Operation(description = "修改信息员组长用户信息", summary = "修改")
     private R<Boolean> updateUser(@RequestBody StudentDTO stuAdminDTO) {
 
         final String oldPassword = stuAdminDTO.getPassword();
@@ -192,7 +200,7 @@ public class StuAdminUserController {
                 .set(StringUtils.isNotBlank(stuAdminDTO.getPassword()), StuAdmin::getPassword, stuAdminDTO.getPassword())
                 .set(StringUtils.isNotBlank(stuAdminDTO.getClassName()), StuAdmin::getClassName, stuAdminDTO.getClassName())
 
-                //限定的输入格式，不需要判空
+                // 限定的输入格式，不需要判空
                 .set(StuAdmin::getCollege, stuAdminDTO.getCollege())
                 .set(StuAdmin::getEnrollmentYear, stuAdminDTO.getEnrollmentYear());
 
@@ -213,6 +221,7 @@ public class StuAdminUserController {
      */
     @PostMapping("/list/{currentNum}/{pageSize}")
     @SaCheckRole("admin")
+    @Operation(description = "分页查询所有信息员用户信息", summary = "分页查询")
     public R<IPage<StuAdminVo>> list(@RequestBody StudentDTO stuAdminDTO,
                                      @PathVariable long currentNum,
                                      @PathVariable long pageSize) {

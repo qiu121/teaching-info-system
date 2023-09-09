@@ -19,6 +19,8 @@ import com.github.qiu121.service.PermissionService;
 import com.github.qiu121.service.StudentService;
 import com.github.qiu121.util.SecureUtil;
 import com.github.qiu121.vo.StudentVo;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +39,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/users/stu")
 @Slf4j
+@Tag(name = "学生信息员用户操作接口")
 public class StudentUserController {
     @Resource
     private StudentService studentService;
@@ -45,15 +48,16 @@ public class StudentUserController {
 
     @PostMapping("/add")
     @SaCheckRole("admin")
+    @Operation(description = "新增学生信息员用户", summary = "新增")
     public R<Boolean> addUser(@RequestBody StudentDTO studentDTO) {
 
         final String username = studentDTO.getUsername();
         final String password = studentDTO.getPassword();
-        if (password != null) {//哈希加密
+        if (password != null) {// 哈希加密
             studentDTO.setPassword(SecureUtil.encrypt(password));
         }
-        //查询现有用户名，校验重复数据
-        //修改为按权限表判定唯一性，而不是用户表
+        // 查询现有用户名，校验重复数据
+        // 修改为按权限表判定唯一性，而不是用户表
         final List<String> usernameList = permissionService.list()
                 .stream()
                 .map(Permission::getUsername)
@@ -63,7 +67,7 @@ public class StudentUserController {
         if (!usernameList.contains(username)) {
             final boolean savePermission = permissionService.save(new Permission(username, PermissionEnum.STU_PERMISSION.getType()));
 
-            //将DTO对象转换为实体映射类
+            // 将DTO对象转换为实体映射类
             Student student = new Student(studentDTO);
             final boolean saveUser = studentService.save(student);
             if (savePermission & saveUser) {
@@ -85,6 +89,7 @@ public class StudentUserController {
      * @return 响应封装类型
      */
     @PutMapping("/update/{oldPassword}")
+    @Operation(description = "修改学生信息员用户密码", summary = "修改密码")
     public R<String> updatePassword(@RequestBody StudentDTO studentDTO,
                                     @PathVariable String oldPassword) {
         LambdaQueryWrapper<Student> studentWrapper = new LambdaQueryWrapper<>();
@@ -98,7 +103,7 @@ public class StudentUserController {
             throw new BusinessException("账号或密码错误,请检查账号信息");
         }
 
-        //加密处理
+        // 加密处理
         if (StringUtils.isNotBlank(studentDTO.getPassword())) {
             studentDTO.setPassword(SecureUtil.encrypt(studentDTO.getPassword()));
 
@@ -119,6 +124,27 @@ public class StudentUserController {
     }
 
     /**
+     * 根据 id 查询信息员用户
+     *
+     * @param id 主键
+     * @return R
+     */
+    @GetMapping("/get/{id}")
+    @SaCheckRole("admin")
+    @Operation(description = "查询学生信息员用户信息", summary = "查询")
+    public R<StudentVo> getUser(@PathVariable Long id) {
+        final Student student = studentService.getById(id);
+        Integer code = 20040;
+        String msg = "查询完成";
+        if (student != null) {
+            log.info("查询完成,查询结果： {}", student);
+            return new R<>(code, msg, new StudentVo(student));
+        }
+        return new R<>(code, msg, null);
+
+    }
+
+    /**
      * 根据id 批量删除信息员账户
      *
      * @param idArray 主键数组
@@ -126,9 +152,10 @@ public class StudentUserController {
      */
     @DeleteMapping("/removeBatch/{idArray}")
     @SaCheckRole("admin")
+    @Operation(description = "批量删除学生信息员用户", summary = "批量删除")
     public R<Boolean> removeBatchUser(@PathVariable Long[] idArray) {
 
-        //根据 用户id 查询用户名
+        // 根据 用户id 查询用户名
         final LambdaQueryWrapper<Student> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(Student::getUsername)
                 .in(Student::getId, Arrays.asList(idArray));
@@ -139,7 +166,7 @@ public class StudentUserController {
                 .collect(Collectors.toList());
 
 
-        //根据用户名,删除权限表中对应数据
+        // 根据用户名,删除权限表中对应数据
         final LambdaQueryWrapper<Permission> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(Permission::getUsername, usernameList)
                 .eq(Permission::getType, PermissionEnum.STU_PERMISSION.getType());
@@ -154,26 +181,6 @@ public class StudentUserController {
     }
 
     /**
-     * 根据 id 查询信息员用户
-     *
-     * @param id 主键
-     * @return R
-     */
-    @GetMapping("/get/{id}")
-    @SaCheckRole("admin")
-    public R<StudentVo> getUser(@PathVariable Long id) {
-        final Student student = studentService.getById(id);
-        Integer code = 20040;
-        String msg = "查询完成";
-        if (student != null) {
-            log.info("查询完成,查询结果： {}", student);
-            return new R<>(code, msg, new StudentVo(student));
-        }
-        return new R<>(code, msg, null);
-
-    }
-
-    /**
      * 修改信息员账户信息
      *
      * @param studentDTO 信息员用户DTO对象(带id)
@@ -181,6 +188,7 @@ public class StudentUserController {
      */
     @PutMapping("/update")
     @SaCheckRole("admin")
+    @Operation(description = "修改学生信息员用户信息", summary = "修改")
     private R<Boolean> updateUser(@RequestBody StudentDTO studentDTO) {
 
         final String oldPassword = studentDTO.getPassword();
@@ -195,13 +203,13 @@ public class StudentUserController {
                 .set(StringUtils.isNotBlank(studentDTO.getClassName()), Student::getClassName, studentDTO.getClassName())
                 .set(StringUtils.isNotBlank(studentDTO.getName()), Student::getName, studentDTO.getName())
 
-                //限定输入，不需要动态判断为空
+                // 限定输入，不需要动态判断为空
                 .set(Student::getCollege, studentDTO.getCollege())
                 .set(Student::getEnrollmentYear, studentDTO.getEnrollmentYear())
                 .set(Student::getEducationLevel, studentDTO.getEducationLevel());
 
         final boolean success = studentService.update(wrapper);
-        //直接通过 id更新，不能动态更新。传入的数据包括时间类型，直接覆盖之前时间(也就是同样的时间,就不能做到自动同步更新修改时间)
+        // 直接通过 id更新，不能动态更新。传入的数据包括时间类型，直接覆盖之前时间(也就是同样的时间,就不能做到自动同步更新修改时间)
 //        final boolean success = studentService.updateById(student);
 
         log.info("修改完成: {}", success);
@@ -220,6 +228,7 @@ public class StudentUserController {
      */
     @PostMapping("/listAll/{currentNum}/{pageSize}")
     @SaCheckRole("admin")
+    @Operation(description = "分页查询所有学生信息员用户信息", summary = "分页查询")
     public R<IPage<StudentVo>> list(@RequestBody StudentDTO studentDTO,
                                     @PathVariable long currentNum,
                                     @PathVariable long pageSize) {

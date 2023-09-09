@@ -20,6 +20,8 @@ import com.github.qiu121.service.StudentService;
 import com.github.qiu121.service.TeachInfoService;
 import com.github.qiu121.service.TeachInfoService2;
 import com.github.qiu121.util.CalculateGradeUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
@@ -40,6 +42,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("/feedback/stuAdmin")
+@Tag(name = "组长提交反馈信息操作接口")
 public class TeachInfoController2 {
     @Resource
     private TeachInfoService teachInfoService;
@@ -56,6 +59,7 @@ public class TeachInfoController2 {
      */
     @PostMapping("/add")
     @SaCheckRole("stuAdmin")
+    @Operation(description = "组长提交反馈信息", summary = "组长提交")
     public R<String> addTeachInfo2(@RequestBody @Validated TeachInfo2 teachInfo2) {
         teacherInfoValidate2(teachInfo2);
 
@@ -73,6 +77,7 @@ public class TeachInfoController2 {
      */
     @GetMapping("/get/{id}")
     @SaCheckRole("stuAdmin")
+    @Operation(description = "查询反馈信息", summary = "查询")
     public R<TeachInfo2> getTeachInfo2(@PathVariable Long id) {
         final TeachInfo2 teachInfo2 = teachInfoService2.getById(id);
         return new R<>(20040, "查询完成", teachInfo2);
@@ -86,6 +91,7 @@ public class TeachInfoController2 {
      */
     @DeleteMapping("/remove/{id}")
     @SaCheckRole(value = {"stuAdmin", "admin"}, mode = SaMode.OR)
+    @Operation(description = "删除反馈信息", summary = "删除")
     public R<String> removeTeachInfo2(@PathVariable Long id) {
         final boolean removed = teachInfoService2.removeById(id);
         final R<String> r = new R<>();
@@ -101,6 +107,7 @@ public class TeachInfoController2 {
      */
     @DeleteMapping("/removeBatch/{idArray}")
     @SaCheckRole(value = {"stuAdmin", "admin"}, mode = SaMode.OR)
+    @Operation(description = "批量删除反馈信息", summary = "批量删除")
     public R<String> removeBatchTeachInfo2(@PathVariable Long[] idArray) {
         final boolean batchRemoved = teachInfoService2.removeBatchByIds(Arrays.asList(idArray));
         log.info("批量删除完成：{}", batchRemoved);
@@ -118,6 +125,7 @@ public class TeachInfoController2 {
      */
     @PutMapping("/update")
     @SaCheckRole("stuAdmin")
+    @Operation(description = "修改反馈信息", summary = "修改")
     public R<String> updateTeachInfo2(@RequestBody @Validated TeachInfo2 teachInfo2) {
 
         teacherInfoValidate2(teachInfo2);
@@ -163,6 +171,7 @@ public class TeachInfoController2 {
      */
     @PostMapping("/selectAllByPermission/{currentNum}/{pageSize}")
     @SaCheckRole("stuAdmin")
+    @Operation(description = "分页查询特定反馈信息", summary = "分页查询特定")
     public R<IPage<TeachInfo>> selectList(@RequestBody RequestBodyData requestBodyData,
                                           @PathVariable long currentNum,
                                           @PathVariable long pageSize) {
@@ -170,26 +179,26 @@ public class TeachInfoController2 {
         final StuAdmin stuAdmin = requestBodyData.getStuAdmin();
         final TeachInfo teachInfo = requestBodyData.getTeachInfo();
 
-        //通过提交信息,查询信息员用户
+        // 通过提交信息,查询信息员用户
         final LambdaQueryWrapper<TeachInfo> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(TeachInfo::getSubmitPerson)
-                .eq(TeachInfo::getSubmitPersonCollege, stuAdmin.getCollege());//筛查同学院提交的信息
+                .eq(TeachInfo::getSubmitPersonCollege, stuAdmin.getCollege());// 筛查同学院提交的信息
 
 //        final ArrayList<String> submitPersonUsernameList = new ArrayList<>();
 //        for (TeachInfo info : teachInfoService.list(wrapper)) {
 //            submitPersonUsernameList.add(info.getSubmitPerson());
 //        }
 
-        //Stream API重构上述代码
+        // Stream API重构上述代码
         final List<String> submitPersonUsernameList = teachInfoService.list(wrapper)
                 .stream()
                 .map(TeachInfo::getSubmitPerson)
                 .collect(Collectors.toList());
 
 
-        //通过信息员用户名，查询信息员信息
+        // 通过信息员用户名，查询信息员信息
         if (CollectionUtils.isEmpty(submitPersonUsernameList)) {
-            //按照提交人学院查询，如果没有查询到提交的信息只可能是  -> 没有信息
+            // 按照提交人学院查询，如果没有查询到提交的信息只可能是  -> 没有信息
             throw new NotFoundException("查询完成，当前数据为空");
         }
         final LambdaQueryWrapper<Student> studentWrapper = new LambdaQueryWrapper<>();
@@ -198,12 +207,12 @@ public class TeachInfoController2 {
         final List<Student> studentList = studentService.list(studentWrapper);
 
 
-        //TODO 中间过程情况查询为空的解决，会出现断链(单表查询嵌套问题)
-        //能从提交信息里查询出提交人账户，但在信息员用户无法查询出 上述提交人账户；即存在这个账号的提交,账户表没有这个账号！！
+        // TODO 中间过程情况查询为空的解决，会出现断链(单表查询嵌套问题)
+        // 能从提交信息里查询出提交人账户，但在信息员用户无法查询出 上述提交人账户；即存在这个账号的提交,账户表没有这个账号！！
         if (CollectionUtils.isEmpty(studentList)) {
             throw new NotFoundException("查询完成，当前数据为空");
         }
-        //筛查年级、学历层次符合条件的信息员对象(AI:sob:😭)
+        // 筛查年级、学历层次符合条件的信息员对象(AI:sob:😭)
         LambdaQueryWrapper<Student> mainWrapper = new LambdaQueryWrapper<>();
         mainWrapper.select(Student::getUsername)
                 .eq(Student::getCollege, stuAdmin.getCollege());
@@ -221,25 +230,25 @@ public class TeachInfoController2 {
             }
         });
 
-        //将满足条件的信息员对象，用新的集合处理信息员对象用户名集合
+        // 将满足条件的信息员对象，用新的集合处理信息员对象用户名集合
 //        final ArrayList<String> studentNameList = new ArrayList<>();
 //        for (Student student : studentService.list(mainWrapper)) {
 //            studentNameList.add(student.getUsername());
 //        }
-        //Stream API
+        // Stream API
         final List<String> studentNameList = studentService.list(mainWrapper)
                 .stream()
                 .map(Student::getUsername)
                 .collect(Collectors.toList());
 
 
-        //通过满足条件的信息员的用户名，查询提交信息
+        // 通过满足条件的信息员的用户名，查询提交信息
         final LambdaQueryWrapper<TeachInfo> teachInfoWrapper = new LambdaQueryWrapper<>();
 
-        //判空，不为空，则加入条件构造；为空条件无效，查询所有
+        // 判空，不为空，则加入条件构造；为空条件无效，查询所有
         teachInfoWrapper.in(!CollectionUtils.isEmpty(studentNameList), TeachInfo::getSubmitPerson, studentNameList);
 
-        //可以同通过，教师姓名、课程名、上课地点筛查
+        // 可以同通过，教师姓名、课程名、上课地点筛查
         teachInfoWrapper.like(StringUtils.isNotBlank(teachInfo.getSubmitPersonCollege()), TeachInfo::getSubmitPersonCollege, teachInfo.getSubmitPersonCollege())
                 .like(StringUtils.isNotBlank(teachInfo.getTeacherName()), TeachInfo::getTeacherName, teachInfo.getTeacherName())
                 .like(StringUtils.isNotBlank(teachInfo.getCourseName()), TeachInfo::getCourseName, teachInfo.getCourseName())
@@ -249,7 +258,7 @@ public class TeachInfoController2 {
         if (CollectionUtils.isEmpty(studentNameList)) {
             infoPage = null;
         }
-        //code==20040 && data ！= null ,
+        // code==20040 && data ！= null ,
         return new R<>(20040, "查询完成", infoPage);
 
     }
@@ -262,6 +271,7 @@ public class TeachInfoController2 {
      */
     @GetMapping("/list/{username}")
     @SaCheckRole("stuAdmin")
+    @Operation(description = "列出当前组长用户的提交记录", summary = "查询当前")
     public R<List<TeachInfo2>> listTeachInfo2(@PathVariable String username) {
         final LambdaQueryWrapper<TeachInfo2> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TeachInfo2::getSubmitPerson, username);
@@ -281,6 +291,7 @@ public class TeachInfoController2 {
      */
     @PostMapping("/listAll/{currentNum}/{pageSize}")
     @SaCheckRole("admin")
+    @Operation(description = "分页查询所有反馈信息", summary = "分页查询")
     public R<IPage<TeachInfo2>> listAll(@RequestBody TeachInfo2 teachInfo2,
                                         @PathVariable long currentNum,
                                         @PathVariable long pageSize) {

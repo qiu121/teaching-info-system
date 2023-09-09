@@ -6,6 +6,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,8 +32,10 @@ import java.util.Map;
 @RestController
 @Slf4j
 @RequestMapping("/api/v1/QRcode")
+@Tag(name = "二维码入口生成接口")
 public class QRCodeController {
     @GetMapping(produces = MediaType.IMAGE_PNG_VALUE)
+    @Operation(description = "生成二维码图片", summary = "生成")
     public ResponseEntity<byte[]> generate(@RequestParam("url") String url) throws IOException, WriterException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         Map<EncodeHintType, Object> hint = new HashMap<>();
@@ -54,8 +58,8 @@ public class QRCodeController {
     }
 
     public static void main(String[] args) throws UnsupportedEncodingException {
-        //final String decode = URLEncoder.encode("baidu.com", StandardCharsets.UTF_8);
-        //System.out.println(decode);
+        // final String decode = URLEncoder.encode("baidu.com", StandardCharsets.UTF_8);
+        // System.out.println(decode);
 
         String[] imageTypes = ImageIO.getReaderFileSuffixes();
         for (String imageType : imageTypes) {

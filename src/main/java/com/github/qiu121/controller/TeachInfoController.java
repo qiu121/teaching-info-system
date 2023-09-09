@@ -13,6 +13,8 @@ import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.common.exception.DuplicateException;
 import com.github.qiu121.entity.TeachInfo;
 import com.github.qiu121.service.TeachInfoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +32,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/feedback/stu")
+@Tag(name = "信息员提交反馈信息操作接口")
 public class TeachInfoController {
     @Resource
     private TeachInfoService teachInfoService;
@@ -42,6 +45,7 @@ public class TeachInfoController {
      */
     @PostMapping("/add")
     @SaCheckRole("stu")
+    @Operation(description = "提交反馈信息", summary = "提交")
     public R<String> addTeachInfo(@RequestBody @Validated TeachInfo teachInfo) {
         R<String> r = new R<>();
         teachInfoValidate(teachInfo);
@@ -59,6 +63,7 @@ public class TeachInfoController {
      */
     @PostMapping("/listAll/{currentNum}/{pageSize}")
     @SaCheckRole("admin")
+    @Operation(description = "分页查询所有反馈信息", summary = "分页查询")
     public R<IPage<TeachInfo>> listAllTeachInfo(@RequestBody TeachInfo teachInfo,
                                                 @PathVariable long currentNum,
                                                 @PathVariable long pageSize) {
@@ -86,6 +91,7 @@ public class TeachInfoController {
      */
     @GetMapping("/list/{username}")
     @SaCheckRole("stu")
+    @Operation(description = "列出当前用户的提交记录", summary = "查询当前")
     public R<List<TeachInfo>> listTeachInfo(@PathVariable String username) {
         LambdaQueryWrapper<TeachInfo> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TeachInfo::getSubmitPerson, username);
@@ -104,6 +110,7 @@ public class TeachInfoController {
      */
     @GetMapping("/get/{id}")
     @SaCheckRole("stu")
+    @Operation(description = "查询反馈信息", summary = "查询")
     public R<TeachInfo> getTeachInfo(@PathVariable Long id) {
         TeachInfo info = teachInfoService.getById(id);
         return new R<>(20040, "查询完成", info);
@@ -117,11 +124,12 @@ public class TeachInfoController {
      */
     @DeleteMapping("/remove/{id}")
     @SaCheckRole(value = {"stu", "admin"}, mode = SaMode.OR)
+    @Operation(description = "删除反馈信息", summary = "删除")
     public R<Boolean> removeTeachInfo(@PathVariable Long id) {
         final boolean remove = teachInfoService.removeById(id);
         log.info("删除完成：{}", remove);
         return remove ? new R<>(20021, "删除成功") :
-                new R<>(20022, "删除失败,该数据不存在!");//好像只有多线程下才会出现(multithreading)
+                new R<>(20022, "删除失败,该数据不存在!");// 好像只有多线程下才会出现(multithreading)
     }
 
     /**
@@ -131,6 +139,7 @@ public class TeachInfoController {
      * @return R
      */
     @DeleteMapping("/removeBatch/{idList}")
+    @Operation(description = "批量删除反馈信息", summary = "批量删除")
     @SaCheckRole(value = {"stu", "admin"}, mode = SaMode.OR)
     public R<Boolean> removeBatchTeachInfo(@PathVariable Long[] idList) {
         final boolean remove = teachInfoService.removeByIds(Arrays.asList(idList));
@@ -148,23 +157,24 @@ public class TeachInfoController {
      */
     @PutMapping("/update")
     @SaCheckRole("stu")
+    @Operation(description = "修改反馈信息", summary = "修改")
     public R<?> updateTeachInfo(@RequestBody @Validated TeachInfo teachInfo) {
 
         teachInfoValidate(teachInfo);
 
         final LambdaUpdateWrapper<TeachInfo> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(TeachInfo::getId, teachInfo.getId())
-                .set(TeachInfo::getCourseName, teachInfo.getCourseName())//课程名称
-                .set(TeachInfo::getTeacherName, teachInfo.getTeacherName())//教师姓名
-                .set(TeachInfo::getShouldArriveNum, teachInfo.getShouldArriveNum())//实到人数
-                .set(TeachInfo::getActualArriveNum, teachInfo.getActualArriveNum())//应到人数
+                .set(TeachInfo::getCourseName, teachInfo.getCourseName())// 课程名称
+                .set(TeachInfo::getTeacherName, teachInfo.getTeacherName())// 教师姓名
+                .set(TeachInfo::getShouldArriveNum, teachInfo.getShouldArriveNum())// 实到人数
+                .set(TeachInfo::getActualArriveNum, teachInfo.getActualArriveNum())// 应到人数
 
-                .set(TeachInfo::getClassLocation, teachInfo.getClassLocation())//上课地点
-                .set(TeachInfo::getRecordClassDate, teachInfo.getRecordClassDate())//记录时间-日期
-                .set(TeachInfo::getRecordCourseNum, teachInfo.getRecordCourseNum())//记录时间-上课节次
-                .set(TeachInfo::getFeedbackGood, teachInfo.getFeedbackGood())//信息反馈，好的方面
-                .set(TeachInfo::getFeedbackNotEnough, teachInfo.getFeedbackNotEnough())//信息反馈，不足之处
-                .set(TeachInfo::getHopesAndSuggestions, teachInfo.getHopesAndSuggestions());//希望和建议
+                .set(TeachInfo::getClassLocation, teachInfo.getClassLocation())// 上课地点
+                .set(TeachInfo::getRecordClassDate, teachInfo.getRecordClassDate())// 记录时间-日期
+                .set(TeachInfo::getRecordCourseNum, teachInfo.getRecordCourseNum())// 记录时间-上课节次
+                .set(TeachInfo::getFeedbackGood, teachInfo.getFeedbackGood())// 信息反馈，好的方面
+                .set(TeachInfo::getFeedbackNotEnough, teachInfo.getFeedbackNotEnough())// 信息反馈，不足之处
+                .set(TeachInfo::getHopesAndSuggestions, teachInfo.getHopesAndSuggestions());// 希望和建议
 
 
         boolean update = teachInfoService.update(wrapper);
