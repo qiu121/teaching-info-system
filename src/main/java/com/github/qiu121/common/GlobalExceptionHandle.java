@@ -72,8 +72,9 @@ public class GlobalExceptionHandle {
         BindingResult bindingResult = e.getBindingResult();
         StringBuilder builder = new StringBuilder();
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            builder.append(fieldError.getField())
-                    .append(":")
+            builder
+                    // .append(fieldError.getField())
+                    // .append(":")
                     .append(fieldError.getDefaultMessage()).append(", ");
         }
         String msg = builder.toString();
