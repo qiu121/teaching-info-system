@@ -63,10 +63,9 @@ public class TeachInfoController2 {
     public R<String> addTeachInfo2(@RequestBody @Validated TeachInfo2 teachInfo2) {
         teacherInfoValidate2(teachInfo2);
 
-        final R<String> r = new R<>();
         final boolean save = teachInfoService2.save(teachInfo2);
-        return save ? (r.setCode(20011).setMsg("提交成功"))
-                : (r.setCode(20012).setMsg("提交失败"));
+        return save ? new R<>(20011, "提交成功") :
+                new R<>(20012, "提交失败");
     }
 
     /**
@@ -94,9 +93,10 @@ public class TeachInfoController2 {
     @Operation(description = "删除反馈信息", summary = "删除")
     public R<String> removeTeachInfo2(@PathVariable Long id) {
         final boolean removed = teachInfoService2.removeById(id);
-        final R<String> r = new R<>();
-        return removed ? (r.setCode(20021).setMsg("删除完成")) :
-                (r.setCode(20022).setMsg("删除失败,该记录不存在或已删除"));
+        return removed ?
+                new R<>(20021, "删除完成") :
+                new R<>(20022, "删除失败，该记录不存在或已删除");
+
     }
 
     /**

@@ -47,12 +47,11 @@ public class TeachInfoController {
     @SaCheckRole("stu")
     @Operation(description = "提交反馈信息", summary = "提交")
     public R<String> addTeachInfo(@RequestBody @Validated TeachInfo teachInfo) {
-        R<String> r = new R<>();
         teachInfoValidate(teachInfo);
 
         boolean flag = teachInfoService.save(teachInfo);
-        return flag ? (r.setCode(20011).setMsg("提交成功"))
-                : (r.setCode(20012).setMsg("提交失败"));
+        return flag ? new R<>(20011, "提交成功") :
+                new R<>(20012, "提交失败");
     }
 
     /**
