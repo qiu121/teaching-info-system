@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.qiu121.common.R;
-import com.github.qiu121.common.enumeration.EducationLevel;
+import com.github.qiu121.common.enumeration.EducationLevelEnum;
 import com.github.qiu121.common.exception.DuplicateException;
 import com.github.qiu121.common.exception.NotFoundException;
 import com.github.qiu121.dto.RequestBodyData;
@@ -220,7 +220,7 @@ public class TeachInfoController2 {
             for (Student student : studentList) {
                 qw.or(wq -> {
                     // 专升本
-                    if (Objects.equals(student.getEducationLevel(), EducationLevel.COLLEGE_TO_UNDER_GRADUATE.getName())
+                    if (Objects.equals(student.getEducationLevel(), EducationLevelEnum.COLLEGE_TO_UNDER_GRADUATE.getName())
                             && CalculateGradeUtil.calculate(stuAdmin.getEnrollmentYear()) == 3) {
                         wq.eq(Student::getEnrollmentYear, stuAdmin.getEnrollmentYear() + 2);
                     } else { // 本科、专科
