@@ -75,28 +75,26 @@ public class LoginController {
         log.info("验证码校对: {}", flag);
         if (!flag) {
             return new R<>(20043, "验证码错误");
-        } else {
-            if (one == null) {
-                log.info("账号或密码错误: {}", (Object) null);
-                return new R<>(20042, "账号或密码错误,请检查登录信息");
-            } else {
-                StpUtil.login(one.getUsername());
-                log.info("登录设备类型： {}", StpUtil.getLoginDevice());
-                log.info("权限信息: {}", StpUtil.getTokenInfo());
-
-                // 将数据用VO对象重新赋值，响应返回
-                final StudentVo studentVo = new StudentVo(one);
-
-                final ArrayList<HashMap<String, Object>> list = new ArrayList<>();
-                final HashMap<String, Object> map = new HashMap<>();
-                map.put("sa-token", StpUtil.getTokenInfo().getTokenValue());
-                map.put("info", studentVo);
-
-                list.add(map);
-
-                return new R<>(20041, "登录成功", list);
-            }
         }
+        if (one == null) {
+            log.info("账号或密码错误: {}", (Object) null);
+            return new R<>(20042, "账号或密码错误,请检查登录信息");
+        }
+        StpUtil.login(one.getUsername());
+        log.info("登录设备类型： {}", StpUtil.getLoginDevice());
+        log.info("权限信息: {}", StpUtil.getTokenInfo());
+
+        // 将数据用VO对象重新赋值，响应返回
+        final StudentVo studentVo = new StudentVo(one);
+
+        final ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+        final HashMap<String, Object> map = new HashMap<>();
+        map.put("sa-token", StpUtil.getTokenInfo().getTokenValue());
+        map.put("info", studentVo);
+
+        list.add(map);
+        return new R<>(20041, "登录成功", list);
+
     }
 
 
@@ -114,8 +112,7 @@ public class LoginController {
                                                               @PathVariable String inputCode,
                                                               HttpSession session) {
         LambdaQueryWrapper<StuAdmin> wrapper = new LambdaQueryWrapper<>();
-        wrapper
-                .eq(StuAdmin::getUsername, stuAdmin.getUsername())// 哈希算法加密
+        wrapper.eq(StuAdmin::getUsername, stuAdmin.getUsername())// 哈希算法加密
                 .eq(StuAdmin::getPassword, SecureUtil.encrypt(stuAdmin.getPassword()));
         // 查询出多个结果抛出异常
         StuAdmin stuAdminOne = stuAdminService.getOne(wrapper, true);
@@ -130,25 +127,25 @@ public class LoginController {
         log.info("验证码校对: {}", flag);
         if (!flag) {
             return new R<>(20043, "验证码错误");
-        } else {
-            if (stuAdminOne == null) {
-                log.info("账号或密码错误: {}", (Object) null);
-                return new R<>(20042, "账号或密码错误,请检查账号信息");
-            } else {
-                log.info("登录成功: {}", stuAdminOne);
-                StpUtil.login(stuAdminOne.getUsername());
-
-                final ArrayList<HashMap<String, Object>> arrayList = new ArrayList<>();
-
-                final HashMap<String, Object> map = new HashMap<>();
-                map.put("sa-token", StpUtil.getTokenInfo().getTokenValue());
-                map.put("info", new StuAdminVo(stuAdminOne));
-
-                arrayList.add(map);
-
-                return new R<>(20041, "登录成功", arrayList);
-            }
         }
+        if (stuAdminOne == null) {
+            log.info("账号或密码错误: {}", (Object) null);
+            return new R<>(20042, "账号或密码错误,请检查账号信息");
+        }
+        log.info("登录成功: {}", stuAdminOne);
+        StpUtil.login(stuAdminOne.getUsername());
+
+        final ArrayList<HashMap<String, Object>> arrayList = new ArrayList<>();
+
+        final HashMap<String, Object> map = new HashMap<>();
+        map.put("sa-token", StpUtil.getTokenInfo().getTokenValue());
+        map.put("info", new StuAdminVo(stuAdminOne));
+
+        arrayList.add(map);
+
+        return new R<>(20041, "登录成功", arrayList);
+
+
     }
 
     /**
@@ -181,26 +178,24 @@ public class LoginController {
         log.info("验证码校对: {}", flag);
         if (!flag) {
             return new R<>(20043, "验证码错误");
-        } else {
-            if (adminOne == null) {
-                log.info("账号或密码错误: {}", (Object) null);
-                return new R<>(20042, "账号或密码错误,请检查登录信息");
-            } else {
-                StpUtil.login(adminOne.getUsername());
-                log.info("登录成功: {}", adminOne);
-                log.info("权限信息:{}", StpUtil.getTokenInfo());
-
-                final ArrayList<HashMap<String, Object>> list = new ArrayList<>();
-
-                final HashMap<String, Object> map = new HashMap<>();
-                map.put("sa-token", StpUtil.getTokenInfo().getTokenValue());
-                map.put("info", new AdminVo(adminOne));
-
-                list.add(map);
-
-                return new R<>(20041, "登录成功", list);
-            }
         }
+        if (adminOne == null) {
+            log.info("账号或密码错误: {}", (Object) null);
+            return new R<>(20042, "账号或密码错误,请检查登录信息");
+        }
+        StpUtil.login(adminOne.getUsername());
+        log.info("登录成功: {}", adminOne);
+        log.info("权限信息:{}", StpUtil.getTokenInfo());
+
+        final ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+
+        final HashMap<String, Object> map = new HashMap<>();
+        map.put("sa-token", StpUtil.getTokenInfo().getTokenValue());
+        map.put("info", new AdminVo(adminOne));
+
+        list.add(map);
+        return new R<>(20041, "登录成功", list);
+
     }
 
 }
