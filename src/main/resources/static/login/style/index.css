@@ -1,47 +1,42 @@
-
-html{
-    margin:0;
-    background-size:100% 100%;
+html, body {
+    margin: 0;
+    background-size: 100% 100%;
     background: url(../img/bg.png) no-repeat fixed;
+    height: 100%;
 }
-@media (max-width:810px) {
-    .el-card{
-        position: absolute;
-        height: 530px;
-        width: 350px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%,-50%);
-        overflow:hidden
-     }
-     .modify{
-        position: absolute;
-        height: 700px;
-        width: 600px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%,-50%)
-     }
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* 确保超出视口的内容不可见 */
+}
+
+.all {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 810px) {
+    .el-card,
+    .modify {
+        position: static;
+        width: 100%;
+        max-width: 350px;
+        margin: 0 auto;
+    }
+
+    .modify {
+        max-width: 600px;
+        margin-top: 20px;
+    }
 }
 @media (min-width: 810px) {
     .el-card {
         position: absolute;
         height: 550px;
         width: 600px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        /* overflow: hidden; */
     }
-
-    /*.el-dialog{*/
-    /*   position: absolute;*/
-    /*   height: 550px;*/
-    /*   width: 600px;*/
-    /*   !* padding-top:300px ; *!*/
-    /*   top: 50%;*/
-    /*   left: 50%; */
-    /*   transform: translate(-50%,-50%);*/
-    /*!* overflow-y: visible; *! */
-    /*}*/
 }
