@@ -8,11 +8,14 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.qiu121.common.R;
 import com.github.qiu121.common.exception.BusinessException;
 import com.github.qiu121.common.exception.DuplicateException;
 import com.github.qiu121.entity.TeachInfo;
 import com.github.qiu121.service.TeachInfoService;
+import com.github.qiu121.util.RedisClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.github.qiu121.util.Constant.ADMIN_TEACH_INFO_LIST;
 
 /**
  * @author <a href="mailto:qiu0089@foxmail.com">qiu121</a>
@@ -36,6 +42,8 @@ import java.util.List;
 public class TeachInfoController {
     @Resource
     private TeachInfoService teachInfoService;
+    @Resource
+    RedisClient<IPage<TeachInfo>> redisClient;
 
     /**
      * 教学信息反馈提交(信息员)
@@ -65,9 +73,16 @@ public class TeachInfoController {
     @Operation(description = "分页查询所有反馈信息", summary = "分页查询")
     public R<IPage<TeachInfo>> listAllTeachInfo(@RequestBody TeachInfo teachInfo,
                                                 @PathVariable long currentNum,
-                                                @PathVariable long pageSize) {
-
+                                                @PathVariable long pageSize) throws JsonProcessingException {
         log.info(String.valueOf(teachInfo));
+        // 数据缓存处理
+        TypeReference<IPage<TeachInfo>> typeReference = new TypeReference<IPage<TeachInfo>>() {
+        };
+        IPage<TeachInfo> iPage = redisClient.get(ADMIN_TEACH_INFO_LIST, typeReference);
+        if (iPage != null) {
+            return new R<>(20040, "查询完成", iPage);
+        }
+
         QueryWrapper<TeachInfo> wrapper = new QueryWrapper<>();
         if (teachInfo != null) {
             wrapper.select("*").lambda()
@@ -77,9 +92,10 @@ public class TeachInfoController {
                     .like(StringUtils.isNotBlank(teachInfo.getCourseName()), TeachInfo::getCourseName, teachInfo.getCourseName())
                     .like(StringUtils.isNotBlank(teachInfo.getClassLocation()), TeachInfo::getClassLocation, teachInfo.getClassLocation());
         }
-        IPage<TeachInfo> iPage = teachInfoService.page(new Page<>(currentNum, pageSize), wrapper);
-        return new R<>(20040, "查询完成", iPage);
 
+        iPage = teachInfoService.page(new Page<>(currentNum, pageSize), wrapper);
+        redisClient.set(ADMIN_TEACH_INFO_LIST, iPage, 1L, TimeUnit.MINUTES);
+        return new R<>(20040, "查询完成", iPage);
     }
 
     /**
