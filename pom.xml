@@ -159,6 +159,12 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
+        <!--分布式session-->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
         <!--        <dependency>-->
         <!--            <groupId>com.github.yulichang</groupId>-->
         <!--            <artifactId>mybatis-plus-join-boot-starter</artifactId>-->
